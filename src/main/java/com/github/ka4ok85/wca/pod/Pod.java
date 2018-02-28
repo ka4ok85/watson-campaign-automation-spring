@@ -10,7 +10,7 @@ public class Pod {
 	public static String getOAuthEndpoint(int podNumber) {
 		podList.contains(0);
 		if (false == isValidPodNumber(podNumber)) {
-
+			throw new RuntimeException("Unsupported Pod Number");
 		}
 
 		return ACCESS_URL.replaceAll("POD", String.valueOf(podNumber));
