@@ -1,13 +1,17 @@
 package com.github.ka4ok85.wca.response;
 
 public class ResponseContainer<T> {
-	private T resposne;
+	private T response;
+
+	public ResponseContainer(T response) {
+		this.response = response;
+	}
 
 	public T getResposne() {
-		return resposne;
+		return response;
 	}
 
 	public void setResposne(T resposne) {
-		this.resposne = resposne;
+		this.response = resposne;
 	}
 }
