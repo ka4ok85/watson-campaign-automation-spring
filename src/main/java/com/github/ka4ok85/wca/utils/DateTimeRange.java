@@ -29,6 +29,14 @@ public class DateTimeRange {
 		return endDateTime;
 	}
 
+	public String getFormattedStartDateTime() {
+		return startDateTime.format(formatter);
+	}
+
+	public String getFormattedEndDateTime() {
+		return endDateTime.format(formatter);
+	}
+
 	@Override
 	public String toString() {
 		return "DateTimeRange [startDateTime=" + startDateTime + ", endDateTime=" + endDateTime + "]";
