@@ -13,6 +13,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import com.github.ka4ok85.wca.oauth.OAuthClient;
 import com.github.ka4ok85.wca.options.AbstractOptions;
@@ -22,26 +23,37 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
 public abstract class AbstractCommand<T extends AbstractResponse, V extends AbstractOptions> {
 	protected OAuthClient oAuthClient;
 	protected Document doc;
+	protected Node currentNode;
 
 	{
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder;
 		try {
 			docBuilder = docFactory.newDocumentBuilder();
-			this.doc = docBuilder.newDocument();
-			Element rootElement = this.doc.createElement("Envelope");
-			this.doc.appendChild(rootElement);
-			Element bodyElement = this.doc.createElement("Body");
-			rootElement.appendChild(bodyElement);
+			doc = docBuilder.newDocument();
+			currentNode = doc;
+
+			Element rootElement = doc.createElement("Envelope");
+			Element bodyElement = doc.createElement("Body");
+			currentNode = addChildNode(rootElement, null);
+			currentNode = addChildNode(bodyElement, null);
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public AbstractCommand(OAuthClient oAuthClient) {
+		this.oAuthClient = oAuthClient;
 	}
 
 	public ResponseContainer<T> executeCommand(V options) {
 		System.out.println("Running Command with options " + options.getClass());
 
 		return new ResponseContainer<T>(null);
+	}
+
+	public void setoAuthClient(OAuthClient oAuthClient) {
+		this.oAuthClient = oAuthClient;
 	}
 
 	protected String getXML() {
@@ -61,8 +73,14 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 		return writer.toString();
 	}
 
-	public void setoAuthClient(OAuthClient oAuthClient) {
-		this.oAuthClient = oAuthClient;
+	protected Node addChildNode(Node childNode, Node parentNode) {
+		if (parentNode == null) {
+			this.currentNode.appendChild(childNode);
+		} else {
+			parentNode.appendChild(childNode);
+		}
+
+		return childNode;
 	}
 
 }
