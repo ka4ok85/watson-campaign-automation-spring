@@ -83,4 +83,18 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 		return childNode;
 	}
 
+	protected Node addParameter(Node parentNode, String name, boolean value) {
+		String apiValue;
+		if (true == value) {
+			apiValue = "TRUE";
+		} else {
+			apiValue = "FALSE";
+		}
+
+		Node node = doc.createElement(name);
+		node.setTextContent(apiValue);
+
+		return addChildNode(node, parentNode);
+	}
+
 }
