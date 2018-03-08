@@ -50,7 +50,21 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 			addParameter(currentNode, "DATE_END", lastModifiedRange.getFormattedEndDateTime());
 		}
 
-		// options.getExportColumns()
+		addBooleanParameter(methodElement, "ADD_TO_STORED_FILES", options.isAddToStoredFiles());
+		addBooleanParameter(methodElement, "INCLUDE_LEAD_SOURCE", options.isIncludeLeadSource());
+		addBooleanParameter(methodElement, "INCLUDE_LIST_ID_IN_FILE", options.isIncludeListId());
+		addBooleanParameter(methodElement, "INCLUDE_RECIPIENT_ID", options.isIncludeRecipientId());
+
+		if (options.getExportColumns() != null && options.getExportColumns().size() > 0) {
+			Element exportColumns = doc.createElement("EXPORT_COLUMNS");
+			addChildNode(exportColumns, currentNode);
+			Element columnElement;
+			for (String column : options.getExportColumns()) {
+				columnElement = doc.createElement("COLUMN");
+				columnElement.setTextContent(column);
+				addChildNode(columnElement, exportColumns);
+			}
+		}
 
 		String xml = getXML();
 		System.out.println(xml);
