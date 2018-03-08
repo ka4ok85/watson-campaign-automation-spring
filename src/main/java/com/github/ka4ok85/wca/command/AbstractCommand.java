@@ -83,7 +83,7 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 		return childNode;
 	}
 
-	protected Node addParameter(Node parentNode, String name, boolean value) {
+	protected Node addBooleanParameter(Node parentNode, String name, boolean value) {
 		String apiValue;
 		if (true == value) {
 			apiValue = "TRUE";
@@ -97,4 +97,10 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 		return addChildNode(node, parentNode);
 	}
 
+	protected Node addParameter(Node parentNode, String name, String value) {
+		Node node = doc.createElement(name);
+		node.setTextContent(value);
+
+		return addChildNode(node, parentNode);
+	}
 }
