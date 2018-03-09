@@ -68,11 +68,16 @@ public class OAuthClientImplementation implements OAuthClient {
 			log.debug("Refresh Access Token API Call Result: Status Code={}, Body={}", result.getStatusCodeValue(), result.getBody());
 
 			AccessTokenResponse accessTokenResponse = new AccessTokenResponse(result.getStatusCodeValue(), result.getBody());
-			accessTokenResponse.getAccessToken();
-			accessTokenResponse.getAccessTokenExpirationTime();
+			accessToken = accessTokenResponse.getAccessToken();
+			accessTokenExpirationTime = LocalDateTime.now().plusSeconds(Integer.parseInt(accessTokenResponse.getAccessTokenExpirationTime())); 
 		} catch (HttpStatusCodeException | FailedGetAccessTokenException e) {
 			log.error("Refresh Access Token API Call Error: {}" + e.getMessage());
 			throw new FailedGetAccessTokenException("Can not get Access Token");
 		}
 	}
+
+	public int getPodNumber() {
+		return podNumber;
+	}
+
 }

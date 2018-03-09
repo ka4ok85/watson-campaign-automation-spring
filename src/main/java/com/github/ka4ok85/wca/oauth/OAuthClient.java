@@ -4,4 +4,5 @@ import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
 
 public interface OAuthClient {
 	public String getAccessToken() throws FailedGetAccessTokenException;
+	public int getPodNumber();
 }
