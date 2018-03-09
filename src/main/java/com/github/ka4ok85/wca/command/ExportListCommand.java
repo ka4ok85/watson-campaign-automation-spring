@@ -5,6 +5,8 @@ import java.util.Objects;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
+import com.github.ka4ok85.wca.exceptions.FaultApiResult;
 import com.github.ka4ok85.wca.oauth.OAuthClient;
 import com.github.ka4ok85.wca.options.ExportListOptions;
 import com.github.ka4ok85.wca.response.ResponseContainer;
@@ -20,7 +22,7 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 	private static String apiMethodName = "ExportList";
 
 	@Override
-	public ResponseContainer<ExportListResponse> executeCommand(ExportListOptions options) {
+	public ResponseContainer<ExportListResponse> executeCommand(ExportListOptions options) throws FailedGetAccessTokenException, FaultApiResult {
 		System.out.println("Running ExportListCommand with options " + options.getClass());
 
 		Objects.requireNonNull(options, "ExportListOptions must not be null");
@@ -33,15 +35,15 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 		addChildNode(listID, currentNode);
 
 		Element exportType = doc.createElement("EXPORT_TYPE");
-		exportType.setTextContent(options.getExportType().name());
+		exportType.setTextContent(options.getExportType().value());
 		addChildNode(exportType, currentNode);
 
 		Element exportFormat = doc.createElement("EXPORT_FORMAT");
-		exportFormat.setTextContent(options.getExportFormat().name());
+		exportFormat.setTextContent(options.getExportFormat().value());
 		addChildNode(exportFormat, currentNode);
 
 		Element fileEncoding = doc.createElement("FILE_ENCODING");
-		fileEncoding.setTextContent(options.getFileEncoding().name());
+		fileEncoding.setTextContent(options.getFileEncoding().value());
 		addChildNode(fileEncoding, currentNode);
 
 		DateTimeRange lastModifiedRange = options.getLastModifiedRange();
@@ -68,6 +70,10 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 
 		String xml = getXML();
 		System.out.println(xml);
+
+		Node resultNode = runApi(xml);
+		System.out.println(resultNode);
+
 		ExportListResponse exportListResponse = new ExportListResponse(0, "");
 		ResponseContainer<ExportListResponse> response = new ResponseContainer<ExportListResponse>(exportListResponse);
 
@@ -75,5 +81,7 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 
 		return response;
 	}
+
+
 
 }
