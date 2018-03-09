@@ -1,15 +1,15 @@
 package com.github.ka4ok85.wca.constants;
 
 public enum ListExportType {
-	ALL(0), OPTIN(1), OPTOUT(2), UNDELIVERABLE(3);
+	ALL("ALL"), OPTIN("OPT_IN"), OPTOUT("OPT_OUT"), UNDELIVERABLE("UNDELIVERABLE");
 
-	private int value;
+	private String value;
 
-	private ListExportType(int value) {
+	private ListExportType(String value) {
 		this.value = value;
 	}
 
-	public int value() {
+	public String value() {
 		return value;
 	}
 }
