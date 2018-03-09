@@ -1,5 +1,7 @@
 package com.github.ka4ok85.wca.command;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -10,13 +12,30 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
+import com.github.ka4ok85.wca.exceptions.FaultApiResult;
 import com.github.ka4ok85.wca.oauth.OAuthClient;
 import com.github.ka4ok85.wca.options.AbstractOptions;
+import com.github.ka4ok85.wca.pod.Pod;
 import com.github.ka4ok85.wca.response.AbstractResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
@@ -46,7 +65,7 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 		this.oAuthClient = oAuthClient;
 	}
 
-	public ResponseContainer<T> executeCommand(V options) {
+	public ResponseContainer<T> executeCommand(V options) throws FailedGetAccessTokenException, FaultApiResult {
 		System.out.println("Running Command with options " + options.getClass());
 
 		return new ResponseContainer<T>(null);
@@ -102,5 +121,59 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 		node.setTextContent(value);
 
 		return addChildNode(node, parentNode);
+	}
+
+	protected Node runApi(String xml) throws FailedGetAccessTokenException, FaultApiResult {
+		// TODO UTF8 check
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.set("Authorization", "Bearer " + oAuthClient.getAccessToken());
+        headers.setContentType(MediaType.TEXT_XML);
+        headers.setContentLength(xml.length());
+        HttpEntity<String> entity = new HttpEntity<String>(xml, headers);
+        Node resultNode = null;
+
+        try {
+        	RestTemplate restTemplate = new RestTemplate();
+        	ResponseEntity<String> result = restTemplate.exchange(Pod.getXMLAPIEndpoint(oAuthClient.getPodNumber()), HttpMethod.POST, entity, String.class);
+        
+        	System.out.println(result);
+        	System.out.println(result.getStatusCodeValue());
+        	System.out.println(result.getBody());
+        	
+        	try {
+	        	DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+	        	InputSource is = new InputSource();
+	        	is.setCharacterStream(new StringReader(result.getBody()));
+
+	        	Document doc = db.parse(is);
+
+	        	XPathFactory factory = XPathFactory.newInstance();
+	        	XPath xpath = factory.newXPath();
+
+	        	Node successNode = (Node) xpath.evaluate("/Envelope/Body/RESULT/SUCCESS", doc, XPathConstants.NODE);
+	        	
+	        	boolean apiResult = Boolean.parseBoolean(successNode.getTextContent());
+	        	System.out.println(apiResult);
+	        	
+       	
+	        	System.out.println(successNode.getTextContent());
+	        	System.out.println(successNode);
+
+	        	if (apiResult == false) {
+	        		Node faultStringNode = (Node) xpath.evaluate("/Envelope/Body/Fault/FaultString", doc, XPathConstants.NODE);
+	        		throw new FaultApiResult(faultStringNode.getTextContent());
+	        	}
+	        	
+	        	resultNode = (Node) xpath.evaluate("/Envelope/Body/RESULT", doc, XPathConstants.NODE);
+        	} catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException e) {
+        		System.out.println(e.getMessage());
+        	}
+        	
+        } catch (HttpClientErrorException e) {
+        	System.out.println(e.getMessage());
+        }
+
+        return resultNode;
 	}
 }
