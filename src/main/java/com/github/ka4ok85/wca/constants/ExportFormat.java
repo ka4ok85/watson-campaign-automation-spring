@@ -1,15 +1,15 @@
 package com.github.ka4ok85.wca.constants;
 
 public enum ExportFormat {
-	CSV(0), TAB(1), PIPE(2);
+	CSV("CSV"), TAB("TAB"), PIPE("PIPE");
 
-	private int value;
+	private String value;
 
-	private ExportFormat(int value) {
+	private ExportFormat(String value) {
 		this.value = value;
 	}
 
-	public int value() {
+	public String value() {
 		return value;
 	}
 }
