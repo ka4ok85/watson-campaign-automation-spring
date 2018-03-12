@@ -31,12 +31,16 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.github.ka4ok85.wca.Engage;
+import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResult;
+import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.oauth.OAuthClient;
 import com.github.ka4ok85.wca.options.AbstractOptions;
+import com.github.ka4ok85.wca.options.JobOptions;
 import com.github.ka4ok85.wca.pod.Pod;
 import com.github.ka4ok85.wca.response.AbstractResponse;
+import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
 public abstract class AbstractCommand<T extends AbstractResponse, V extends AbstractOptions> {
@@ -65,7 +69,7 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 		this.oAuthClient = oAuthClient;
 	}
 
-	public ResponseContainer<T> executeCommand(V options) throws FailedGetAccessTokenException, FaultApiResult {
+	public ResponseContainer<T> executeCommand(V options) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
 		System.out.println("Running Command with options " + options.getClass());
 
 		return new ResponseContainer<T>(null);
@@ -123,7 +127,7 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 		return addChildNode(node, parentNode);
 	}
 
-	protected Node runApi(String xml) throws FailedGetAccessTokenException, FaultApiResult {
+	protected Node runApi(String xml) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
 		// TODO UTF8 check
         HttpHeaders headers = new HttpHeaders();
 
@@ -162,18 +166,27 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 
 	        	if (apiResult == false) {
 	        		Node faultStringNode = (Node) xpath.evaluate("/Envelope/Body/Fault/FaultString", doc, XPathConstants.NODE);
-	        		throw new FaultApiResult(faultStringNode.getTextContent());
+	        		throw new FaultApiResultException(faultStringNode.getTextContent());
 	        	}
 	        	
 	        	resultNode = (Node) xpath.evaluate("/Envelope/Body/RESULT", doc, XPathConstants.NODE);
         	} catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException e) {
-        		System.out.println(e.getMessage());
+        		throw new BadApiResultException(e.getMessage());
         	}
         	
         } catch (HttpClientErrorException e) {
-        	System.out.println(e.getMessage());
+        	throw new BadApiResultException(e.getMessage());
         }
 
         return resultNode;
+	}
+	
+	protected void waitUntilJobIsCompleted(int jobId) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+		WaitForJobCommand command = new WaitForJobCommand(this.oAuthClient); 
+		JobOptions options = new JobOptions(jobId);
+		ResponseContainer<JobResponse> result = command.executeCommand(options);
+		
+		JobResponse response = result.getResposne();
+		System.out.println(response);
 	}
 }
