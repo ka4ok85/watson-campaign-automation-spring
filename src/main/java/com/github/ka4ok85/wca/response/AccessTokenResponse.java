@@ -12,15 +12,14 @@ public class AccessTokenResponse extends AbstractResponse {
 	private String accessToken;
 	private String accessTokenExpirationTime;
 
-	public AccessTokenResponse(int responseCode, String output) throws FailedGetAccessTokenException {
-		super(responseCode, output);
+	public AccessTokenResponse(String rawOutput) throws FailedGetAccessTokenException {
 		ObjectMapper mapper = new ObjectMapper();
 		TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {
 		};
 
 		HashMap<String, String> map;
 		try {
-			map = mapper.readValue(output, typeRef);
+			map = mapper.readValue(rawOutput, typeRef);
 			if (false == map.containsKey("access_token")) {
 				throw new Exception("No 'access_token' field was returned during Get Access Token Call");
 			}

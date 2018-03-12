@@ -67,7 +67,7 @@ public class OAuthClientImplementation implements OAuthClient {
 
 			log.debug("Refresh Access Token API Call Result: Status Code={}, Body={}", result.getStatusCodeValue(), result.getBody());
 
-			AccessTokenResponse accessTokenResponse = new AccessTokenResponse(result.getStatusCodeValue(), result.getBody());
+			AccessTokenResponse accessTokenResponse = new AccessTokenResponse(result.getBody());
 			accessToken = accessTokenResponse.getAccessToken();
 			accessTokenExpirationTime = LocalDateTime.now().plusSeconds(Integer.parseInt(accessTokenResponse.getAccessTokenExpirationTime())); 
 		} catch (HttpStatusCodeException | FailedGetAccessTokenException e) {
