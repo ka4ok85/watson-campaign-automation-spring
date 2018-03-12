@@ -6,8 +6,8 @@ public class JobResponse extends AbstractResponse {
 	private String jobStatus;
 	private String jobDescription;
 
-	public JobResponse(int responseCode, String output) {
-		super(responseCode, output);
+	public JobResponse() {
+
 	}
 
 	public int getJobId() {
