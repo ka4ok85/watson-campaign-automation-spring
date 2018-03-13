@@ -3,6 +3,10 @@ package com.github.ka4ok85.wca.command;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -17,6 +21,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -47,6 +53,8 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 	protected OAuthClient oAuthClient;
 	protected Document doc;
 	protected Node currentNode;
+	
+	private static final Logger log = LoggerFactory.getLogger(AbstractCommand.class);
 
 	{
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -158,11 +166,11 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 	        	Node successNode = (Node) xpath.evaluate("/Envelope/Body/RESULT/SUCCESS", doc, XPathConstants.NODE);
 	        	
 	        	boolean apiResult = Boolean.parseBoolean(successNode.getTextContent());
-	        	System.out.println(apiResult);
+	        	//System.out.println(apiResult);
 	        	
        	
-	        	System.out.println(successNode.getTextContent());
-	        	System.out.println(successNode);
+	        	//System.out.println(successNode.getTextContent());
+	        	//System.out.println(successNode);
 
 	        	if (apiResult == false) {
 	        		Node faultStringNode = (Node) xpath.evaluate("/Envelope/Body/Fault/FaultString", doc, XPathConstants.NODE);
@@ -181,12 +189,86 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
         return resultNode;
 	}
 	
-	protected void waitUntilJobIsCompleted(int jobId) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
-		WaitForJobCommand command = new WaitForJobCommand(this.oAuthClient); 
-		JobOptions options = new JobOptions(jobId);
+	protected JobResponse waitUntilJobIsCompleted(int jobId) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+		final WaitForJobCommand command = new WaitForJobCommand(this.oAuthClient); 
+		final JobOptions options = new JobOptions(jobId);
+
+		int i = 0;
+		while (true) {
+			ResponseContainer<JobResponse> result = command.executeCommand(options);
+			JobResponse response = result.getResposne();
+			
+			log.warn("jobId: " + jobId);
+			log.warn("i: " + i);
+			System.out.println("isRunning? " + response.isRunning());
+			System.out.println("isComplete? " + response.isComplete());
+			System.out.println("isCanceled? " + response.isCanceled());
+			System.out.println("isWaiting? " + response.isWaiting());
+			System.out.println("isError? " + response.isError());
+			
+			if (response.isRunning() || response.isWaiting()) {
+				try {
+					Thread.sleep(10000L);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				return response;
+			}
+
+			
+			if (i > 5) {
+				break;
+			}
+			i++;
+
+		}
+		return null;
+
+		/*
+		ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+		ScheduledFuture<?> x = service.scheduleAtFixedRate(new Runnable() {
+		    @Override
+		    public void run() {
+				ResponseContainer<JobResponse> result;
+				try {
+					result = command.executeCommand(options);
+					JobResponse response = result.getResposne();
+					
+					System.out.println("isRunning? " + response.isRunning());
+					System.out.println("isComplete? " + response.isComplete());
+					System.out.println("isCanceled? " + response.isCanceled());
+					System.out.println("isWaiting? " + response.isWaiting());
+					System.out.println("isError? " + response.isError());
+				} catch (FailedGetAccessTokenException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (FaultApiResultException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (BadApiResultException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				//throw new Exception("dd");
+
+		    }
+		}, 0, 10, TimeUnit.SECONDS);
+		*/
+		
+		/*
 		ResponseContainer<JobResponse> result = command.executeCommand(options);
 		
 		JobResponse response = result.getResposne();
+		
+		System.out.println("isRunning? " + response.isRunning());
+		System.out.println("isComplete? " + response.isComplete());
+		System.out.println("isCanceled? " + response.isCanceled());
+		System.out.println("isWaiting? " + response.isWaiting());
+		System.out.println("isError? " + response.isError());
 		System.out.println(response);
+		*/
 	}
 }
