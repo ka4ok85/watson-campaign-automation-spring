@@ -1,9 +1,11 @@
 package com.github.ka4ok85.wca.response;
 
+import com.github.ka4ok85.wca.constants.JobStatus;
+
 public class JobResponse extends AbstractResponse {
 
 	private int jobId;
-	private String jobStatus;
+	private JobStatus jobStatus;
 	private String jobDescription;
 
 	public JobResponse() {
@@ -18,11 +20,11 @@ public class JobResponse extends AbstractResponse {
 		this.jobId = jobId;
 	}
 
-	public String getJobStatus() {
+	public JobStatus getJobStatus() {
 		return jobStatus;
 	}
 
-	public void setJobStatus(String jobStatus) {
+	public void setJobStatus(JobStatus jobStatus) {
 		this.jobStatus = jobStatus;
 	}
 
@@ -39,4 +41,23 @@ public class JobResponse extends AbstractResponse {
 		return "JobResponse [jobId=" + jobId + ", jobStatus=" + jobStatus + ", jobDescription=" + jobDescription + "]";
 	}
 
+	public boolean isRunning() {
+		return (jobStatus == JobStatus.RUNNING);
+	}
+
+	public boolean isComplete() {
+		return (jobStatus == JobStatus.COMPLETE);
+	}
+
+	public boolean isWaiting() {
+		return (jobStatus == JobStatus.WAITING);
+	}
+
+	public boolean isCanceled() {
+		return (jobStatus == JobStatus.CANCELED);
+	}
+
+	public boolean isError() {
+		return (jobStatus == JobStatus.ERROR);
+	}
 }
