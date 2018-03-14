@@ -54,6 +54,9 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 	protected OAuthClient oAuthClient;
 	protected Document doc;
 	protected Node currentNode;
+
+	private final int maxExecutionTime = 86400;
+	private final int jobCheckInterval = 10;
 	
 	private static final Logger log = LoggerFactory.getLogger(AbstractCommand.class);
 
@@ -150,9 +153,9 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
         	RestTemplate restTemplate = new RestTemplate();
         	ResponseEntity<String> result = restTemplate.exchange(Pod.getXMLAPIEndpoint(oAuthClient.getPodNumber()), HttpMethod.POST, entity, String.class);
         
-        	System.out.println(result);
-        	System.out.println(result.getStatusCodeValue());
-        	System.out.println(result.getBody());
+        	//System.out.println(result);
+        	//System.out.println(result.getStatusCodeValue());
+        	//System.out.println(result.getBody());
         	
         	try {
 	        	DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -195,12 +198,13 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 		final JobOptions options = new JobOptions(jobId);
 
 		int i = 0;
+		int currentApiExecutionTime = 0;
 		while (true) {
 			ResponseContainer<JobResponse> result = command.executeCommand(options);
 			JobResponse response = result.getResposne();
 			
 			log.warn("jobId: " + jobId);
-			log.warn("i: " + i);
+			log.warn("currentApiExecutionTime: " + currentApiExecutionTime);
 			System.out.println("isRunning? " + response.isRunning());
 			System.out.println("isComplete? " + response.isComplete());
 			System.out.println("isCanceled? " + response.isCanceled());
@@ -218,7 +222,7 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 
 			if (response.isRunning() || response.isWaiting()) {
 				try {
-					Thread.sleep(10000L);
+					Thread.sleep(jobCheckInterval*1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -227,13 +231,12 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 				return response;
 			}
 
-			
-			if (i > 5) {
+			currentApiExecutionTime = currentApiExecutionTime + jobCheckInterval;			
+			if (currentApiExecutionTime > maxExecutionTime) {
 				break;
 			}
-			i++;
-
 		}
+
 		return null;
 
 		/*
