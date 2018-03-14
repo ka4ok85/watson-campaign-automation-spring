@@ -41,6 +41,7 @@ import com.github.ka4ok85.wca.Engage;
 import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
 import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
+import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.oauth.OAuthClient;
 import com.github.ka4ok85.wca.options.AbstractOptions;
 import com.github.ka4ok85.wca.options.JobOptions;
@@ -189,7 +190,7 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
         return resultNode;
 	}
 	
-	protected JobResponse waitUntilJobIsCompleted(int jobId) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	protected JobResponse waitUntilJobIsCompleted(int jobId) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException, JobBadStateException {
 		final WaitForJobCommand command = new WaitForJobCommand(this.oAuthClient); 
 		final JobOptions options = new JobOptions(jobId);
 
@@ -206,6 +207,15 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 			System.out.println("isWaiting? " + response.isWaiting());
 			System.out.println("isError? " + response.isError());
 			
+			if (response.isError()) {
+				// TODO: access error file
+				throw new JobBadStateException("WaitForJobCommand failure");
+			}
+
+			if (response.isCanceled()) {
+				throw new JobBadStateException("Job was canceled!");
+			}
+
 			if (response.isRunning() || response.isWaiting()) {
 				try {
 					Thread.sleep(10000L);
