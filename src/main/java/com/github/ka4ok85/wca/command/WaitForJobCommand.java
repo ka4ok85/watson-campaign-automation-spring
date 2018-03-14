@@ -7,9 +7,12 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.github.ka4ok85.wca.constants.JobStatus;
 import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
 import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
@@ -23,6 +26,8 @@ public class WaitForJobCommand extends AbstractCommand<JobResponse, JobOptions> 
 
 	private static String apiMethodName = "GetJobStatus";
 
+	private static final Logger log = LoggerFactory.getLogger(WaitForJobCommand.class);
+
 	public WaitForJobCommand(OAuthClient oAuthClient) {
 		super(oAuthClient);
 	}
@@ -30,8 +35,6 @@ public class WaitForJobCommand extends AbstractCommand<JobResponse, JobOptions> 
 	@Override
 	public ResponseContainer<JobResponse> executeCommand(JobOptions options)
 			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
-		System.out.println("Running WaitForJobCommand with options " + options.getClass());
-
 		Objects.requireNonNull(options, "JobOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -42,16 +45,17 @@ public class WaitForJobCommand extends AbstractCommand<JobResponse, JobOptions> 
 		addChildNode(jobID, currentNode);
 
 		String xml = getXML();
-		System.out.println(xml);
+		log.trace("Sending request to {} API. XML: {}", apiMethodName, xml);
 
+		log.debug("Running {} API for Job ID {}", apiMethodName, options.getJobId());
 		Node resultNode = runApi(xml);
 
-		System.out.println(resultNode.getTextContent());
-		
-    	XPathFactory factory = XPathFactory.newInstance();
+		log.trace("Received response from {} API. Result Node XML: {}", apiMethodName, resultNode.getTextContent());
+
+		XPathFactory factory = XPathFactory.newInstance();
     	XPath xpath = factory.newXPath();
 
-    	JobResponse jobResponse = new JobResponse(0, "");
+    	JobResponse jobResponse = new JobResponse();
 		try {
 			Node jobIdNode = (Node) xpath.evaluate("JOB_ID", resultNode, XPathConstants.NODE);
 			Node jobStatusNode = (Node) xpath.evaluate("JOB_STATUS", resultNode, XPathConstants.NODE);
@@ -63,7 +67,7 @@ public class WaitForJobCommand extends AbstractCommand<JobResponse, JobOptions> 
 
 			jobResponse.setJobId(options.getJobId());
 			jobResponse.setJobDescription(jobDescriptionNode.getTextContent());
-			jobResponse.setJobStatus(jobStatusNode.getTextContent());
+			jobResponse.setJobStatus(JobStatus.valueOf(jobStatusNode.getTextContent()));
 		} catch (XPathExpressionException | InternalApiMismatchException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -71,9 +75,6 @@ public class WaitForJobCommand extends AbstractCommand<JobResponse, JobOptions> 
 		
 		ResponseContainer<JobResponse> response = new ResponseContainer<JobResponse>(jobResponse);
 
-		System.out.println("End WaitForJobCommand");
-
 		return response;
-
 	}
 }
