@@ -40,9 +40,9 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.pastdev</groupId>
-			<artifactId>jsch-nio</artifactId>
-			<version>1.0.8</version>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.1.54</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
