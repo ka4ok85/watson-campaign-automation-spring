@@ -19,6 +19,7 @@ public class ExportListOptions extends AbstractOptions {
 	private DateTimeRange lastModifiedRange;
 	private List<String> exportColumns;
 	private final Long ListId;
+	private String localAbsoluteFilePath;
 
 	public ExportListOptions(Long listId) {
 		super();
@@ -105,13 +106,21 @@ public class ExportListOptions extends AbstractOptions {
 		this.exportColumns = exportColumns;
 	}
 
+	public String getLocalAbsoluteFilePath() {
+		return localAbsoluteFilePath;
+	}
+
+	public void setLocalAbsoluteFilePath(String localAbsoluteFilePath) {
+		this.localAbsoluteFilePath = localAbsoluteFilePath;
+	}
+
 	@Override
 	public String toString() {
 		return "ExportListOptions [exportType=" + exportType + ", exportFormat=" + exportFormat + ", fileEncoding="
 				+ fileEncoding + ", includeRecipientId=" + includeRecipientId + ", includeListId=" + includeListId
 				+ ", includeLeadSource=" + includeLeadSource + ", addToStoredFiles=" + addToStoredFiles
 				+ ", lastModifiedRange=" + lastModifiedRange + ", exportColumns=" + exportColumns + ", ListId=" + ListId
-				+ "]";
+				+ ", localAbsoluteFilePath=" + localAbsoluteFilePath + "]";
 	}
 
 }
