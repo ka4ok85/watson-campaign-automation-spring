@@ -30,12 +30,19 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
+		<start-class>com.github.ka4ok85.main.Test</start-class>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 			<version>2.0.0.RC2</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.pastdev</groupId>
+			<artifactId>jsch-nio</artifactId>
+			<version>1.0.8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -61,4 +68,5 @@
 			</snapshots>
 		</repository>
 	</repositories>
+
 </project>
