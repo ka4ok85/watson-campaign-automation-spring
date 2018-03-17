@@ -16,6 +16,7 @@ import com.github.ka4ok85.wca.options.AbstractOptions;
 import com.github.ka4ok85.wca.options.ExportListOptions;
 import com.github.ka4ok85.wca.pod.Pod;
 import com.github.ka4ok85.wca.response.ResponseContainer;
+import com.github.ka4ok85.wca.sftp.SFTP;
 import com.github.ka4ok85.wca.response.AbstractResponse;
 import com.github.ka4ok85.wca.response.ExportListResponse;
 import com.github.ka4ok85.wca.command.AbstractCommand;
@@ -36,6 +37,7 @@ public class Engage {
 	private String accessUrl;
 	private String accessToken;
 	private OAuthClient oAuthClient;
+	private SFTP sftp;
 
 	private static final Logger log = LoggerFactory.getLogger(Engage.class);
 
@@ -45,6 +47,7 @@ public class Engage {
 		this.clientSecret = clientSecret;
 		this.refreshToken = refreshToken;
 		this.oAuthClient = new OAuthClientImplementation(podNumber, clientId, clientSecret, refreshToken);
+		this.sftp = new SFTP(this.oAuthClient);
 	}
 /*
 	public ResponseContainer<AbstractResponse> run(Class<?> clazz, AbstractOptions options) throws FailedGetAccessTokenException {
@@ -75,7 +78,7 @@ public class Engage {
 	public ResponseContainer<ExportListResponse> exportList(ExportListOptions options) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
 		//ResponseContainer<AbstractResponse> res = run(ExportListCommand.class, options);
 		//ResponseContainer<ExportListResponse> result = new ResponseContainer<ExportListResponse>((ExportListResponse) res.getResposne());
-		ExportListCommand command = new ExportListCommand(this.oAuthClient); 
+		ExportListCommand command = new ExportListCommand(this.oAuthClient, this.sftp); 
 		ResponseContainer<ExportListResponse> result = command.executeCommand(options);
 
 		
