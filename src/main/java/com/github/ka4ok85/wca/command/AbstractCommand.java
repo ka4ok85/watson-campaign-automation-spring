@@ -49,9 +49,11 @@ import com.github.ka4ok85.wca.pod.Pod;
 import com.github.ka4ok85.wca.response.AbstractResponse;
 import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
+import com.github.ka4ok85.wca.sftp.SFTP;
 
 public abstract class AbstractCommand<T extends AbstractResponse, V extends AbstractOptions> {
 	protected OAuthClient oAuthClient;
+	protected SFTP sftp;
 	protected Document doc;
 	protected Node currentNode;
 
@@ -77,8 +79,9 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 		}
 	}
 
-	public AbstractCommand(OAuthClient oAuthClient) {
+	public AbstractCommand(OAuthClient oAuthClient, SFTP sftp) {
 		this.oAuthClient = oAuthClient;
+		this.sftp = sftp;
 	}
 
 	public ResponseContainer<T> executeCommand(V options) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
@@ -194,7 +197,7 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 	}
 	
 	protected JobResponse waitUntilJobIsCompleted(int jobId) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException, JobBadStateException {
-		final WaitForJobCommand command = new WaitForJobCommand(this.oAuthClient); 
+		final WaitForJobCommand command = new WaitForJobCommand(this.oAuthClient, this.sftp); 
 		final JobOptions options = new JobOptions(jobId);
 
 		int i = 0;

@@ -21,6 +21,7 @@ import com.github.ka4ok85.wca.oauth.OAuthClient;
 import com.github.ka4ok85.wca.options.JobOptions;
 import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
+import com.github.ka4ok85.wca.sftp.SFTP;
 
 public class WaitForJobCommand extends AbstractCommand<JobResponse, JobOptions> {
 
@@ -28,8 +29,8 @@ public class WaitForJobCommand extends AbstractCommand<JobResponse, JobOptions> 
 
 	private static final Logger log = LoggerFactory.getLogger(WaitForJobCommand.class);
 
-	public WaitForJobCommand(OAuthClient oAuthClient) {
-		super(oAuthClient);
+	public WaitForJobCommand(OAuthClient oAuthClient, SFTP sftp) {
+		super(oAuthClient, sftp);
 	}
 
 	@Override
