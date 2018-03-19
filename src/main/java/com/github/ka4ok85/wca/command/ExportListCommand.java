@@ -13,6 +13,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.github.ka4ok85.wca.exceptions.BadApiResultException;
+import com.github.ka4ok85.wca.exceptions.EngageApiException;
 import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
 import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
@@ -32,7 +33,6 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 	public ExportListCommand(OAuthClient oAuthClient, SFTP sftp) {
 		super(oAuthClient, sftp);
 	}
-
 
 	@Override
 	public ResponseContainer<ExportListResponse> executeCommand(ExportListOptions options) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
@@ -89,7 +89,7 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 			Node jobIdNode = (Node) xpath.evaluate("JOB_ID", resultNode, XPathConstants.NODE);
 			Node filePathNode = (Node) xpath.evaluate("FILE_PATH", resultNode, XPathConstants.NODE);
 
-			int jobId = Integer.parseInt(jobIdNode.getTextContent());
+			final int jobId = Integer.parseInt(jobIdNode.getTextContent());
 			log.debug("Job ID {} is being excuted", jobId);
 			
 			final JobResponse jobResponse = waitUntilJobIsCompleted(jobId);
@@ -105,8 +105,7 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 				throw new JobBadStateException("Job ID " + jobId + " was reported as Completed, but actual State is " + jobResponse.getJobStatus());
 			}
 		} catch (XPathExpressionException | JobBadStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new EngageApiException(e.getMessage());
 		}
 		
 		ExportListResponse exportListResponse = new ExportListResponse();
