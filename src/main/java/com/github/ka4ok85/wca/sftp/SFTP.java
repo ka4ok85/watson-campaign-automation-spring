@@ -17,8 +17,10 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
 public class SFTP {
-	private static int port = 22;
-	private static String username = "oauth";
+	private static final int port = 22;
+	private static final String username = "oauth";
+	private static final String downloadDirectory = "download";
+	private static final String uploadDirectory = "upload";
 	private static final Logger log = LoggerFactory.getLogger(SFTP.class);
 
 	private OAuthClient oAuthClient;
@@ -42,8 +44,8 @@ public class SFTP {
 			channel.connect();
 			ChannelSftp channelSftp = (ChannelSftp) channel;
 
-			log.debug("Changing SFTP directory to {}", "download");
-			channelSftp.cd("download");
+			log.debug("Changing SFTP directory to {}", downloadDirectory);
+			channelSftp.cd(downloadDirectory);
 
 			log.debug("Downloading remote file {} into local file {}", filePath, localAbsoluteFilePath);
 			channelSftp.get(filePath, localAbsoluteFilePath);
