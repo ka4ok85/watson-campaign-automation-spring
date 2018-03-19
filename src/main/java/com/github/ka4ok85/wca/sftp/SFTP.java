@@ -5,7 +5,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.ka4ok85.wca.Engage;
+import com.github.ka4ok85.wca.exceptions.EngageSftpException;
 import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
 import com.github.ka4ok85.wca.oauth.OAuthClient;
 import com.github.ka4ok85.wca.pod.Pod;
@@ -42,21 +42,21 @@ public class SFTP {
 			channel.connect();
 			ChannelSftp channelSftp = (ChannelSftp) channel;
 
-			log.debug("Changing SFTP directory to {}", "download"); 
+			log.debug("Changing SFTP directory to {}", "download");
 			channelSftp.cd("download");
-			
+
 			log.debug("Downloading remote file {} into local file {}", filePath, localAbsoluteFilePath);
 			channelSftp.get(filePath, localAbsoluteFilePath);
-			
+
 			log.debug("Disconnecting from SFTP");
 			channelSftp.exit();
 			session.disconnect();
 		} catch (JSchException | SftpException e) {
 			log.warn("SFTP Error is {}", e.getMessage());
-			e.printStackTrace();
+			throw new EngageSftpException(e.getMessage());
 		} catch (FailedGetAccessTokenException e) {
 			log.warn("Can not get Access Token for SFTP. Error is {}", e.getMessage());
-			e.printStackTrace();
+			throw new EngageSftpException(e.getMessage());
 		}
 	}
 }
