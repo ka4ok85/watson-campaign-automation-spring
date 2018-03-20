@@ -85,6 +85,7 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 		
     	XPathFactory factory = XPathFactory.newInstance();
     	XPath xpath = factory.newXPath();
+    	String filePath;
 		try {
 			Node jobIdNode = (Node) xpath.evaluate("JOB_ID", resultNode, XPathConstants.NODE);
 			Node filePathNode = (Node) xpath.evaluate("FILE_PATH", resultNode, XPathConstants.NODE);
@@ -95,7 +96,7 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 			final JobResponse jobResponse = waitUntilJobIsCompleted(jobId);
 			log.debug("Job Response is {}", jobResponse);
 			if (jobResponse.isComplete()) {
-				String filePath = filePathNode.getTextContent();
+				filePath = filePathNode.getTextContent();
 				log.debug("Generated Export File {} on SFTP", filePath);
 				if (options.getLocalAbsoluteFilePath() != null) {
 					sftp.download(filePath, options.getLocalAbsoluteFilePath());
@@ -109,6 +110,7 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 		}
 		
 		ExportListResponse exportListResponse = new ExportListResponse();
+		exportListResponse.setRemoteFileName(filePath);
 		ResponseContainer<ExportListResponse> response = new ResponseContainer<ExportListResponse>(exportListResponse);
 
 		return response;
