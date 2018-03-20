@@ -3,10 +3,6 @@ package com.github.ka4ok85.wca.command;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -28,17 +24,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.github.ka4ok85.wca.Engage;
 import com.github.ka4ok85.wca.exceptions.BadApiResultException;
+import com.github.ka4ok85.wca.exceptions.EngageApiException;
 import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
 import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
@@ -51,6 +47,7 @@ import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.sftp.SFTP;
 
+@Service
 public abstract class AbstractCommand<T extends AbstractResponse, V extends AbstractOptions> {
 	protected OAuthClient oAuthClient;
 	protected SFTP sftp;
@@ -195,25 +192,17 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 
         return resultNode;
 	}
-	
+
 	protected JobResponse waitUntilJobIsCompleted(int jobId) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException, JobBadStateException {
 		final WaitForJobCommand command = new WaitForJobCommand(this.oAuthClient, this.sftp); 
 		final JobOptions options = new JobOptions(jobId);
 
-		int i = 0;
 		int currentApiExecutionTime = 0;
 		while (true) {
 			ResponseContainer<JobResponse> result = command.executeCommand(options);
 			JobResponse response = result.getResposne();
-			
-			log.warn("jobId: " + jobId);
-			log.warn("currentApiExecutionTime: " + currentApiExecutionTime);
-			System.out.println("isRunning? " + response.isRunning());
-			System.out.println("isComplete? " + response.isComplete());
-			System.out.println("isCanceled? " + response.isCanceled());
-			System.out.println("isWaiting? " + response.isWaiting());
-			System.out.println("isError? " + response.isError());
-			
+
+			log.debug("Current Execution Time for JOB ID {} is {} seconds", jobId, currentApiExecutionTime);
 			if (response.isError()) {
 				// TODO: access error file
 				throw new JobBadStateException("WaitForJobCommand failure");
@@ -227,8 +216,7 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 				try {
 					Thread.sleep(jobCheckInterval*1000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					throw new EngageApiException(e.getMessage());
 				}
 			} else {
 				return response;
@@ -241,50 +229,5 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 		}
 
 		return null;
-
-		/*
-		ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-		ScheduledFuture<?> x = service.scheduleAtFixedRate(new Runnable() {
-		    @Override
-		    public void run() {
-				ResponseContainer<JobResponse> result;
-				try {
-					result = command.executeCommand(options);
-					JobResponse response = result.getResposne();
-					
-					System.out.println("isRunning? " + response.isRunning());
-					System.out.println("isComplete? " + response.isComplete());
-					System.out.println("isCanceled? " + response.isCanceled());
-					System.out.println("isWaiting? " + response.isWaiting());
-					System.out.println("isError? " + response.isError());
-				} catch (FailedGetAccessTokenException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (FaultApiResultException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (BadApiResultException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				//throw new Exception("dd");
-
-		    }
-		}, 0, 10, TimeUnit.SECONDS);
-		*/
-		
-		/*
-		ResponseContainer<JobResponse> result = command.executeCommand(options);
-		
-		JobResponse response = result.getResposne();
-		
-		System.out.println("isRunning? " + response.isRunning());
-		System.out.println("isComplete? " + response.isComplete());
-		System.out.println("isCanceled? " + response.isCanceled());
-		System.out.println("isWaiting? " + response.isWaiting());
-		System.out.println("isError? " + response.isError());
-		System.out.println(response);
-		*/
 	}
 }
