@@ -18,7 +18,7 @@ public class ExportListOptions extends AbstractOptions {
 	private boolean addToStoredFiles = false;
 	private DateTimeRange lastModifiedRange;
 	private List<String> exportColumns;
-	private final Long ListId;
+	private final Long listId;
 	private String localAbsoluteFilePath;
 
 	public ExportListOptions(Long listId) {
@@ -27,11 +27,11 @@ public class ExportListOptions extends AbstractOptions {
 			throw new RuntimeException("List ID must be greater than zero. Provided List ID = " + listId);
 		}
 
-		ListId = listId;
+		this.listId = listId;
 	}
 
 	public Long getListId() {
-		return ListId;
+		return listId;
 	}
 
 	public ListExportType getExportType() {
@@ -119,7 +119,7 @@ public class ExportListOptions extends AbstractOptions {
 		return "ExportListOptions [exportType=" + exportType + ", exportFormat=" + exportFormat + ", fileEncoding="
 				+ fileEncoding + ", includeRecipientId=" + includeRecipientId + ", includeListId=" + includeListId
 				+ ", includeLeadSource=" + includeLeadSource + ", addToStoredFiles=" + addToStoredFiles
-				+ ", lastModifiedRange=" + lastModifiedRange + ", exportColumns=" + exportColumns + ", ListId=" + ListId
+				+ ", lastModifiedRange=" + lastModifiedRange + ", exportColumns=" + exportColumns + ", listId=" + listId
 				+ ", localAbsoluteFilePath=" + localAbsoluteFilePath + "]";
 	}
 
