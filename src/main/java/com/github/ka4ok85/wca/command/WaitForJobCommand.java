@@ -17,21 +17,15 @@ import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
 import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.exceptions.InternalApiMismatchException;
-import com.github.ka4ok85.wca.oauth.OAuthClient;
 import com.github.ka4ok85.wca.options.JobOptions;
 import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
-import com.github.ka4ok85.wca.sftp.SFTP;
 
 public class WaitForJobCommand extends AbstractCommand<JobResponse, JobOptions> {
 
 	private static String apiMethodName = "GetJobStatus";
 
 	private static final Logger log = LoggerFactory.getLogger(WaitForJobCommand.class);
-
-	public WaitForJobCommand(OAuthClient oAuthClient, SFTP sftp) {
-		super(oAuthClient, sftp);
-	}
 
 	@Override
 	public ResponseContainer<JobResponse> executeCommand(JobOptions options)
