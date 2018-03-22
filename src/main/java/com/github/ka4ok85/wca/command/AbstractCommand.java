@@ -76,8 +76,15 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 		}
 	}
 
-	public AbstractCommand(OAuthClient oAuthClient, SFTP sftp) {
+	public AbstractCommand() {
+
+	}	
+
+	public void setoAuthClient(OAuthClient oAuthClient) {
 		this.oAuthClient = oAuthClient;
+	}
+
+	public void setSftp(SFTP sftp) {
 		this.sftp = sftp;
 	}
 
@@ -85,10 +92,6 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 		System.out.println("Running Command with options " + options.getClass());
 
 		return new ResponseContainer<T>(null);
-	}
-
-	public void setoAuthClient(OAuthClient oAuthClient) {
-		this.oAuthClient = oAuthClient;
 	}
 
 	protected String getXML() {
@@ -153,10 +156,6 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
         	RestTemplate restTemplate = new RestTemplate();
         	ResponseEntity<String> result = restTemplate.exchange(Pod.getXMLAPIEndpoint(oAuthClient.getPodNumber()), HttpMethod.POST, entity, String.class);
         
-        	//System.out.println(result);
-        	//System.out.println(result.getStatusCodeValue());
-        	//System.out.println(result.getBody());
-        	
         	try {
 	        	DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 	        	InputSource is = new InputSource();
@@ -170,12 +169,6 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 	        	Node successNode = (Node) xpath.evaluate("/Envelope/Body/RESULT/SUCCESS", doc, XPathConstants.NODE);
 	        	
 	        	boolean apiResult = Boolean.parseBoolean(successNode.getTextContent());
-	        	//System.out.println(apiResult);
-	        	
-       	
-	        	//System.out.println(successNode.getTextContent());
-	        	//System.out.println(successNode);
-
 	        	if (apiResult == false) {
 	        		Node faultStringNode = (Node) xpath.evaluate("/Envelope/Body/Fault/FaultString", doc, XPathConstants.NODE);
 	        		throw new FaultApiResultException(faultStringNode.getTextContent());
@@ -194,7 +187,9 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 	}
 
 	protected JobResponse waitUntilJobIsCompleted(int jobId) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException, JobBadStateException {
-		final WaitForJobCommand command = new WaitForJobCommand(this.oAuthClient, this.sftp); 
+		final WaitForJobCommand command = new WaitForJobCommand();
+		command.setoAuthClient(oAuthClient);
+		command.setSftp(sftp);
 		final JobOptions options = new JobOptions(jobId);
 
 		int currentApiExecutionTime = 0;
