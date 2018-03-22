@@ -9,6 +9,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -17,22 +18,17 @@ import com.github.ka4ok85.wca.exceptions.EngageApiException;
 import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
 import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
-import com.github.ka4ok85.wca.oauth.OAuthClient;
 import com.github.ka4ok85.wca.options.ExportListOptions;
 import com.github.ka4ok85.wca.response.ExportListResponse;
 import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
-import com.github.ka4ok85.wca.sftp.SFTP;
 import com.github.ka4ok85.wca.utils.DateTimeRange;
 
+@Service
 public class ExportListCommand extends AbstractCommand<ExportListResponse, ExportListOptions> {
 
 	private static final String apiMethodName = "ExportList";
 	private static final Logger log = LoggerFactory.getLogger(ExportListCommand.class);
-
-	public ExportListCommand(OAuthClient oAuthClient, SFTP sftp) {
-		super(oAuthClient, sftp);
-	}
 
 	@Override
 	public ResponseContainer<ExportListResponse> executeCommand(ExportListOptions options) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
