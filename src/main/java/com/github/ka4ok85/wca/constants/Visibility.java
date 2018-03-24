@@ -5,11 +5,11 @@ public enum Visibility {
 
 	private int value;
 
-	private Visibility(int value) {
+	private Visibility(Integer value) {
 		this.value = value;
 	}
 
-	public int value() {
+	public Integer value() {
 		return value;
 	}
 }

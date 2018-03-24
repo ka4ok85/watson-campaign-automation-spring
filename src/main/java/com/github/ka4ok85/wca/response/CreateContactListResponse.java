@@ -2,13 +2,13 @@ package com.github.ka4ok85.wca.response;
 
 public class CreateContactListResponse extends AbstractResponse {
 
-	private int contactListId;
+	private Long contactListId;
 
-	public int getContactListId() {
+	public Long getContactListId() {
 		return contactListId;
 	}
 
-	public void setContactListId(int contactListId) {
+	public void setContactListId(Long contactListId) {
 		this.contactListId = contactListId;
 	}
 
