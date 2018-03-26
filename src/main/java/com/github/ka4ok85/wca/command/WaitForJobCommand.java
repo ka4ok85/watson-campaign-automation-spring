@@ -56,7 +56,7 @@ public class WaitForJobCommand extends AbstractCommand<JobResponse, JobOptions> 
 			Node jobStatusNode = (Node) xpath.evaluate("JOB_STATUS", resultNode, XPathConstants.NODE);
 			Node jobDescriptionNode = (Node) xpath.evaluate("JOB_DESCRIPTION", resultNode, XPathConstants.NODE);
 
-			if (options.getJobId() != Integer.valueOf(jobIdNode.getTextContent())) {
+			if (!options.getJobId().equals(Long.valueOf(jobIdNode.getTextContent()))) {
 				throw new InternalApiMismatchException("Bad Job ID received from GetJobStatus API. Should have been " + options.getJobId() + ", but received " + jobIdNode.getTextContent());
 			}
 

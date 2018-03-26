@@ -1,9 +1,9 @@
 package com.github.ka4ok85.wca.options;
 
 public class JobOptions extends AbstractOptions {
-	private int jobId;
+	private Long jobId;
 
-	public JobOptions(int jobId) {
+	public JobOptions(Long jobId) {
 		if (jobId < 1) {
 			throw new RuntimeException("Job ID must be greater than zero. Provided Job ID = " + jobId);
 		}
@@ -11,7 +11,7 @@ public class JobOptions extends AbstractOptions {
 		this.jobId = jobId;
 	}
 
-	public int getJobId() {
+	public Long getJobId() {
 		return jobId;
 	}
 

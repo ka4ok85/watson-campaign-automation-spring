@@ -70,7 +70,7 @@ public class ExportTableCommand extends AbstractCommand<ExportTableResponse, Exp
 			Node jobIdNode = (Node) xpath.evaluate("JOB_ID", resultNode, XPathConstants.NODE);
 			Node filePathNode = (Node) xpath.evaluate("FILE_PATH", resultNode, XPathConstants.NODE);
 
-			final int jobId = Integer.parseInt(jobIdNode.getTextContent());
+			final Long jobId = Long.parseLong(jobIdNode.getTextContent());
 			log.debug("Job ID {} is being excuted", jobId);
 
 			final JobResponse jobResponse = waitUntilJobIsCompleted(jobId);

@@ -4,7 +4,7 @@ import com.github.ka4ok85.wca.constants.JobStatus;
 
 public class JobResponse extends AbstractResponse {
 
-	private int jobId;
+	private Long jobId;
 	private JobStatus jobStatus;
 	private String jobDescription;
 
@@ -12,11 +12,11 @@ public class JobResponse extends AbstractResponse {
 
 	}
 
-	public int getJobId() {
+	public Long getJobId() {
 		return jobId;
 	}
 
-	public void setJobId(int jobId) {
+	public void setJobId(Long jobId) {
 		this.jobId = jobId;
 	}
 

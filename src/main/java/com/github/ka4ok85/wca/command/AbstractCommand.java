@@ -155,7 +155,7 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
         try {
         	RestTemplate restTemplate = new RestTemplate();
         	ResponseEntity<String> result = restTemplate.exchange(Pod.getXMLAPIEndpoint(oAuthClient.getPodNumber()), HttpMethod.POST, entity, String.class);
-        
+
         	try {
 	        	DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 	        	InputSource is = new InputSource();
@@ -186,7 +186,7 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
         return resultNode;
 	}
 
-	protected JobResponse waitUntilJobIsCompleted(int jobId) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException, JobBadStateException {
+	protected JobResponse waitUntilJobIsCompleted(Long jobId) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException, JobBadStateException {
 		final WaitForJobCommand command = new WaitForJobCommand();
 		command.setoAuthClient(oAuthClient);
 		command.setSftp(sftp);
