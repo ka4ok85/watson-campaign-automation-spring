@@ -4,7 +4,7 @@ public class DeleteListOptions extends AbstractOptions {
 
 	private Long listId;
 	private String listName;
-	private boolean keepListDetails;
+	private boolean keepListDetails = true;
 	private boolean isRecursive;
 
 	public DeleteListOptions(Long listId) {
@@ -17,8 +17,7 @@ public class DeleteListOptions extends AbstractOptions {
 
 	public DeleteListOptions(String listName) {
 		super();
-		if (listName != null && !listName.trim()
-				.isEmpty()) {
+		if (listName != null && !listName.trim().isEmpty()) {
 			throw new RuntimeException("List Name must be non-empty String. Provided List Name = " + listName);
 		}
 		this.listName = listName;
