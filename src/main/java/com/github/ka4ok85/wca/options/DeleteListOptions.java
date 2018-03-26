@@ -1,11 +1,14 @@
 package com.github.ka4ok85.wca.options;
 
+import com.github.ka4ok85.wca.constants.Visibility;
+
 public class DeleteListOptions extends AbstractOptions {
 
 	private Long listId;
 	private String listName;
 	private boolean keepListDetails = true;
 	private boolean isRecursive;
+	private Visibility visiblity;
 
 	public DeleteListOptions(Long listId) {
 		super();
@@ -15,12 +18,13 @@ public class DeleteListOptions extends AbstractOptions {
 		this.listId = listId;
 	}
 
-	public DeleteListOptions(String listName) {
+	public DeleteListOptions(String listName, Visibility visibility) {
 		super();
-		if (listName != null && !listName.trim().isEmpty()) {
+		if (listName == null || listName.trim().isEmpty()) {
 			throw new RuntimeException("List Name must be non-empty String. Provided List Name = " + listName);
 		}
 		this.listName = listName;
+		this.visiblity = visibility;
 	}
 
 	public boolean isKeepListDetails() {
@@ -47,10 +51,14 @@ public class DeleteListOptions extends AbstractOptions {
 		return listName;
 	}
 
+	public Visibility getVisiblity() {
+		return visiblity;
+	}
+
 	@Override
 	public String toString() {
 		return "DeleteListOptions [listId=" + listId + ", listName=" + listName + ", keepListDetails=" + keepListDetails
-				+ ", isRecursive=" + isRecursive + "]";
+				+ ", isRecursive=" + isRecursive + ", visiblity=" + visiblity + "]";
 	}
 
 }
