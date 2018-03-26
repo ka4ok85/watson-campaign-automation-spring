@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 import com.github.ka4ok85.wca.command.CreateContactListCommand;
+import com.github.ka4ok85.wca.command.DeleteListCommand;
 import com.github.ka4ok85.wca.command.ExportListCommand;
 import com.github.ka4ok85.wca.command.ExportTableCommand;
 import com.github.ka4ok85.wca.command.WaitForJobCommand;
@@ -27,6 +28,12 @@ public class SpringConfig {
 	@Scope("prototype")
 	public CreateContactListCommand createContactList() {
 		return new CreateContactListCommand();
+	}
+
+	@Bean
+	@Scope("prototype")
+	public DeleteListCommand deleteList() {
+		return new DeleteListCommand();
 	}
 
 	@Bean
