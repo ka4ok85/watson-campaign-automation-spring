@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
@@ -25,13 +26,15 @@ import com.github.ka4ok85.wca.options.SelectRecipientDataOptions;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.SelectRecipientDataResponse;
 
-public class SelectRecipientDataCommand extends AbstractCommand<SelectRecipientDataResponse, SelectRecipientDataOptions> {
+public class SelectRecipientDataCommand
+		extends AbstractCommand<SelectRecipientDataResponse, SelectRecipientDataOptions> {
 
 	private static final String apiMethodName = "SelectRecipientData";
 	private static final Logger log = LoggerFactory.getLogger(SelectRecipientDataCommand.class);
 
 	@Override
-	public ResponseContainer<SelectRecipientDataResponse> executeCommand(final SelectRecipientDataOptions options) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<SelectRecipientDataResponse> executeCommand(final SelectRecipientDataOptions options)
+			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
 		Objects.requireNonNull(options, "SelectRecipientDataOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -44,22 +47,22 @@ public class SelectRecipientDataCommand extends AbstractCommand<SelectRecipientD
 			Element email = doc.createElement("EMAIL");
 			email.setTextContent(options.getEmail());
 			addChildNode(email, currentNode);
-		} else if(options.getRecipientId() != 0) {
+		} else if (options.getRecipientId() != 0) {
 			Element recipientId = doc.createElement("RECIPIENT_ID");
 			recipientId.setTextContent(options.getRecipientId().toString());
 			addChildNode(recipientId, currentNode);
-		} else if(options.getEncodedRecipientId() != null) {
-				Element encodedRecipientId = doc.createElement("ENCODED_RECIPIENT_ID");
-				encodedRecipientId.setTextContent(options.getEncodedRecipientId());
-				addChildNode(encodedRecipientId, currentNode);
-		} else if(options.getVisitorKey() != null) {
+		} else if (options.getEncodedRecipientId() != null) {
+			Element encodedRecipientId = doc.createElement("ENCODED_RECIPIENT_ID");
+			encodedRecipientId.setTextContent(options.getEncodedRecipientId());
+			addChildNode(encodedRecipientId, currentNode);
+		} else if (options.getVisitorKey() != null) {
 			Element visitorKey = doc.createElement("VISITOR_KEY");
 			visitorKey.setTextContent(options.getVisitorKey());
 			addChildNode(visitorKey, currentNode);
 		}
 
 		addBooleanParameter(methodElement, "RETURN_CONTACT_LISTS", options.isReturnContactLists());
-		
+
 		for (Entry<String, String> entry : options.getKeyColumns().entrySet()) {
 			Element column = doc.createElement("COLUMN");
 			addChildNode(column, currentNode);
@@ -74,7 +77,7 @@ public class SelectRecipientDataCommand extends AbstractCommand<SelectRecipientD
 		String xml = getXML();
 		log.debug("XML Request is {}", xml);
 		Node resultNode = runApi(xml);
-		
+
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 		String email;
@@ -117,10 +120,21 @@ public class SelectRecipientDataCommand extends AbstractCommand<SelectRecipientD
 
 			organiztionId = ((Node) xpath.evaluate("ORGANIZATION_ID", resultNode, XPathConstants.NODE)).getTextContent();
 			crmLeadSource = ((Node) xpath.evaluate("CRMLeadSource", resultNode, XPathConstants.NODE)).getTextContent();
+
+			NodeList columnsNode = (NodeList) xpath.evaluate("COLUMNS/COLUMN", resultNode, XPathConstants.NODESET);
+			Node column;
+			String name;
+			String value;
+			for (int i = 0; i < columnsNode.getLength(); i++) {
+				column = columnsNode.item(i);
+				name = crmLeadSource = ((Node) xpath.evaluate("NAME", column, XPathConstants.NODE)).getTextContent();
+				value = crmLeadSource = ((Node) xpath.evaluate("VALUE", column, XPathConstants.NODE)).getTextContent();
+				columns.put(name, value);
+			}
 		} catch (XPathExpressionException e) {
 			throw new EngageApiException(e.getMessage());
 		}
-		
+
 		SelectRecipientDataResponse selectRecipientDataResponse = new SelectRecipientDataResponse();
 		selectRecipientDataResponse.setEmail(email);
 		selectRecipientDataResponse.setRecipientId(recipientId);
@@ -132,9 +146,8 @@ public class SelectRecipientDataCommand extends AbstractCommand<SelectRecipientD
 		selectRecipientDataResponse.setResumeSendDate(resumeSendDate);
 		selectRecipientDataResponse.setOrganiztionId(organiztionId);
 		selectRecipientDataResponse.setCrmLeadSource(crmLeadSource);
+		selectRecipientDataResponse.setColumns(columns);
 
-		
-System.out.println(selectRecipientDataResponse);
 		ResponseContainer<SelectRecipientDataResponse> response = new ResponseContainer<SelectRecipientDataResponse>(selectRecipientDataResponse);
 
 		return response;
