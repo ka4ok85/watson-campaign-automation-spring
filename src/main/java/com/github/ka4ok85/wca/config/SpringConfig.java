@@ -8,6 +8,7 @@ import com.github.ka4ok85.wca.command.CreateContactListCommand;
 import com.github.ka4ok85.wca.command.DeleteListCommand;
 import com.github.ka4ok85.wca.command.ExportListCommand;
 import com.github.ka4ok85.wca.command.ExportTableCommand;
+import com.github.ka4ok85.wca.command.SelectRecipientDataCommand;
 import com.github.ka4ok85.wca.command.WaitForJobCommand;
 
 @Configuration
@@ -35,7 +36,13 @@ public class SpringConfig {
 	public DeleteListCommand deleteList() {
 		return new DeleteListCommand();
 	}
-
+	
+	@Bean
+	@Scope("prototype")
+	public SelectRecipientDataCommand selectRecipientData() {
+		return new SelectRecipientDataCommand();
+	}
+	
 	@Bean
 	@Scope("prototype")
 	public WaitForJobCommand waitForJobCommand() {
