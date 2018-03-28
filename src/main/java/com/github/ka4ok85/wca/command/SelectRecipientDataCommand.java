@@ -16,6 +16,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -65,11 +66,15 @@ public class SelectRecipientDataCommand
 			for (Entry<String, String> entry : options.getKeyColumns().entrySet()) {
 				Element column = doc.createElement("COLUMN");
 				addChildNode(column, currentNode);
+
 				Element columnName = doc.createElement("NAME");
-				columnName.setTextContent(entry.getKey());
+				CDATASection cdata = doc.createCDATASection(entry.getKey());
+				columnName.appendChild(cdata);
 				addChildNode(columnName, column);
+
 				Element columnValue = doc.createElement("VALUE");
-				columnValue.setTextContent(entry.getValue());
+				cdata = doc.createCDATASection(entry.getValue());
+				columnValue.appendChild(cdata);
 				addChildNode(columnValue, column);
 			}			
 		} else {
