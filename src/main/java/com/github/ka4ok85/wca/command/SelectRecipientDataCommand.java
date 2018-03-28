@@ -2,7 +2,9 @@ package com.github.ka4ok85.wca.command;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -47,7 +49,7 @@ public class SelectRecipientDataCommand
 			Element email = doc.createElement("EMAIL");
 			email.setTextContent(options.getEmail());
 			addChildNode(email, currentNode);
-		} else if (options.getRecipientId() != 0) {
+		} else if (options.getRecipientId() != null) {
 			Element recipientId = doc.createElement("RECIPIENT_ID");
 			recipientId.setTextContent(options.getRecipientId().toString());
 			addChildNode(recipientId, currentNode);
@@ -59,20 +61,22 @@ public class SelectRecipientDataCommand
 			Element visitorKey = doc.createElement("VISITOR_KEY");
 			visitorKey.setTextContent(options.getVisitorKey());
 			addChildNode(visitorKey, currentNode);
+		} else if (!options.getKeyColumns().isEmpty()) {
+			for (Entry<String, String> entry : options.getKeyColumns().entrySet()) {
+				Element column = doc.createElement("COLUMN");
+				addChildNode(column, currentNode);
+				Element columnName = doc.createElement("NAME");
+				columnName.setTextContent(entry.getKey());
+				addChildNode(columnName, column);
+				Element columnValue = doc.createElement("VALUE");
+				columnValue.setTextContent(entry.getValue());
+				addChildNode(columnValue, column);
+			}			
+		} else {
+			throw new RuntimeException("Unique key columns must be part of the submission with column names and values");
 		}
 
 		addBooleanParameter(methodElement, "RETURN_CONTACT_LISTS", options.isReturnContactLists());
-
-		for (Entry<String, String> entry : options.getKeyColumns().entrySet()) {
-			Element column = doc.createElement("COLUMN");
-			addChildNode(column, currentNode);
-			Element columnName = doc.createElement("NAME");
-			columnName.setTextContent(entry.getKey());
-			addChildNode(columnName, column);
-			Element columnValue = doc.createElement("VALUE");
-			columnValue.setTextContent(entry.getValue());
-			addChildNode(columnValue, column);
-		}
 
 		String xml = getXML();
 		log.debug("XML Request is {}", xml);
@@ -91,6 +95,7 @@ public class SelectRecipientDataCommand
 		String organiztionId;
 		String crmLeadSource;
 		Map<String, String> columns = new HashMap<String, String>();
+		List<Long> contactLists = new ArrayList<Long>();
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy K:mm a");
 		try {
@@ -131,6 +136,13 @@ public class SelectRecipientDataCommand
 				value = crmLeadSource = ((Node) xpath.evaluate("VALUE", column, XPathConstants.NODE)).getTextContent();
 				columns.put(name, value);
 			}
+			
+			NodeList contactListsNode = (NodeList) xpath.evaluate("CONTACT_LISTS/CONTACT_LIST_ID", resultNode, XPathConstants.NODESET);
+			String contactListId;
+			for (int i = 0; i < contactListsNode.getLength(); i++) {
+				contactListId = contactListsNode.item(i).getTextContent();
+				contactLists.add(Long.parseLong(contactListId));
+			}
 		} catch (XPathExpressionException e) {
 			throw new EngageApiException(e.getMessage());
 		}
@@ -147,6 +159,7 @@ public class SelectRecipientDataCommand
 		selectRecipientDataResponse.setOrganiztionId(organiztionId);
 		selectRecipientDataResponse.setCrmLeadSource(crmLeadSource);
 		selectRecipientDataResponse.setColumns(columns);
+		selectRecipientDataResponse.setContactLists(contactLists);
 
 		ResponseContainer<SelectRecipientDataResponse> response = new ResponseContainer<SelectRecipientDataResponse>(selectRecipientDataResponse);
 
