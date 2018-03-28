@@ -1,7 +1,9 @@
 package com.github.ka4ok85.wca.response;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SelectRecipientDataResponse extends AbstractResponse {
@@ -16,6 +18,7 @@ public class SelectRecipientDataResponse extends AbstractResponse {
 	private String organiztionId;
 	private String crmLeadSource;
 	private Map<String, String> columns = new HashMap<String, String>();
+	private List<Long> contactLists = new ArrayList<Long>();
 
 	public String getEmail() {
 		return email;
@@ -105,12 +108,20 @@ public class SelectRecipientDataResponse extends AbstractResponse {
 		this.columns = columns;
 	}
 
+	public List<Long> getContactLists() {
+		return contactLists;
+	}
+
+	public void setContactLists(List<Long> contactLists) {
+		this.contactLists = contactLists;
+	}
+
 	@Override
 	public String toString() {
 		return "SelectRecipientDataResponse [email=" + email + ", recipientId=" + recipientId + ", emailType="
 				+ emailType + ", lastModified=" + lastModified + ", createdFrom=" + createdFrom + ", optedIn=" + optedIn
 				+ ", optedOut=" + optedOut + ", resumeSendDate=" + resumeSendDate + ", organiztionId=" + organiztionId
-				+ ", crmLeadSource=" + crmLeadSource + ", columns=" + columns + "]";
+				+ ", crmLeadSource=" + crmLeadSource + ", columns=" + columns + ", contactLists=" + contactLists + "]";
 	}
 
 }
