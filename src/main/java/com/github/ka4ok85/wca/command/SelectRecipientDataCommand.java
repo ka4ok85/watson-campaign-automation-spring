@@ -29,6 +29,9 @@ import com.github.ka4ok85.wca.options.SelectRecipientDataOptions;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.SelectRecipientDataResponse;
 
+/*
+ * Be aware: SelectRecipientData API does not work for Restricted Databases with Compound non-String key columns
+ */
 public class SelectRecipientDataCommand
 		extends AbstractCommand<SelectRecipientDataResponse, SelectRecipientDataOptions> {
 
