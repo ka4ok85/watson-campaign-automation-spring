@@ -10,6 +10,7 @@ import javax.xml.xpath.XPathFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -41,7 +42,8 @@ public class CreateContactListCommand extends AbstractCommand<CreateContactListR
 		addChildNode(databaseID, currentNode);
 
 		Element contactListName = doc.createElement("CONTACT_LIST_NAME");
-		contactListName.setTextContent(options.getContactListName());
+		CDATASection cdata = doc.createCDATASection(options.getContactListName());
+		contactListName.appendChild(cdata);
 		addChildNode(contactListName, currentNode);
 
 		Element visibility = doc.createElement("VISIBILITY");
