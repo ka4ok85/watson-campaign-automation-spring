@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+import com.github.ka4ok85.wca.command.AddRecipientCommand;
 import com.github.ka4ok85.wca.command.CreateContactListCommand;
 import com.github.ka4ok85.wca.command.DeleteListCommand;
 import com.github.ka4ok85.wca.command.ExportListCommand;
@@ -36,13 +37,19 @@ public class SpringConfig {
 	public DeleteListCommand deleteList() {
 		return new DeleteListCommand();
 	}
-	
+
 	@Bean
 	@Scope("prototype")
 	public SelectRecipientDataCommand selectRecipientData() {
 		return new SelectRecipientDataCommand();
 	}
-	
+
+	@Bean
+	@Scope("prototype")
+	public AddRecipientCommand addRecipient() {
+		return new AddRecipientCommand();
+	}
+
 	@Bean
 	@Scope("prototype")
 	public WaitForJobCommand waitForJobCommand() {
