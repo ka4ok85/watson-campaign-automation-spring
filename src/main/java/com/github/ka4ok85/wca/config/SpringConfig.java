@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Scope;
 import com.github.ka4ok85.wca.command.AddRecipientCommand;
 import com.github.ka4ok85.wca.command.CreateContactListCommand;
 import com.github.ka4ok85.wca.command.DeleteListCommand;
+import com.github.ka4ok85.wca.command.DoubleOptInRecipientCommand;
 import com.github.ka4ok85.wca.command.ExportListCommand;
 import com.github.ka4ok85.wca.command.ExportTableCommand;
 import com.github.ka4ok85.wca.command.SelectRecipientDataCommand;
@@ -48,6 +49,12 @@ public class SpringConfig {
 	@Scope("prototype")
 	public AddRecipientCommand addRecipient() {
 		return new AddRecipientCommand();
+	}
+
+	@Bean
+	@Scope("prototype")
+	public DoubleOptInRecipientCommand doubleOptInRecipient() {
+		return new DoubleOptInRecipientCommand();
 	}
 
 	@Bean
