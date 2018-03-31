@@ -3,7 +3,7 @@ package com.github.ka4ok85.wca.response;
 public class AddRecipientResponse extends AbstractResponse {
 
 	private Long recipientId;
-	private boolean visitorAssocation;
+	private boolean visitorAssociation;
 
 	public Long getRecipientId() {
 		return recipientId;
@@ -13,17 +13,17 @@ public class AddRecipientResponse extends AbstractResponse {
 		this.recipientId = recipientId;
 	}
 
-	public boolean isVisitorAssocation() {
-		return visitorAssocation;
+	public boolean isVisitorAssociation() {
+		return visitorAssociation;
 	}
 
-	public void setVisitorAssocation(boolean visitorAssocation) {
-		this.visitorAssocation = visitorAssocation;
+	public void setVisitorAssociation(boolean visitorAssociation) {
+		this.visitorAssociation = visitorAssociation;
 	}
 
 	@Override
 	public String toString() {
-		return "AddRecipientResponse [recipientId=" + recipientId + ", visitorAssocation=" + visitorAssocation + "]";
+		return "AddRecipientResponse [recipientId=" + recipientId + ", visitorAssociation=" + visitorAssociation + "]";
 	}
 
 }
