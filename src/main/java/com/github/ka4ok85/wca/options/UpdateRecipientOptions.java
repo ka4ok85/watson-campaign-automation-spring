@@ -1,11 +1,8 @@
 package com.github.ka4ok85.wca.options;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import com.github.ka4ok85.wca.constants.CreatedFrom;
 
 public class UpdateRecipientOptions extends AbstractOptions {
 	private final Long listId;
@@ -15,6 +12,9 @@ public class UpdateRecipientOptions extends AbstractOptions {
 	private boolean sendAutoReply = false;
 	private boolean allowHtml = true;
 	private String visitorKey;
+	private boolean isSnoozed = false;
+	private LocalDate snoozeResumeSendDate;
+	private Integer snoozeDaysToSnooze;
 	private Map<String, String> syncFields = new HashMap<String, String>();
 	private Map<String, String> columns = new HashMap<String, String>();
 
@@ -93,6 +93,38 @@ public class UpdateRecipientOptions extends AbstractOptions {
 	public Long getListId() {
 		return listId;
 	}
-	
-	
+
+	public boolean isSnoozed() {
+		return isSnoozed;
+	}
+
+	public void setSnoozed(boolean isSnoozed) {
+		this.isSnoozed = isSnoozed;
+	}
+
+	public LocalDate getSnoozeResumeSendDate() {
+		return snoozeResumeSendDate;
+	}
+
+	public void setSnoozeResumeSendDate(LocalDate snoozeResumeSendDate) {
+		this.snoozeResumeSendDate = snoozeResumeSendDate;
+	}
+
+	public Integer getSnoozeDaysToSnooze() {
+		return snoozeDaysToSnooze;
+	}
+
+	public void setSnoozeDaysToSnooze(Integer snoozeDaysToSnooze) {
+		this.snoozeDaysToSnooze = snoozeDaysToSnooze;
+	}
+
+	@Override
+	public String toString() {
+		return "UpdateRecipientOptions [listId=" + listId + ", oldEmail=" + oldEmail + ", recipientId=" + recipientId
+				+ ", encodedRecipientId=" + encodedRecipientId + ", sendAutoReply=" + sendAutoReply + ", allowHtml="
+				+ allowHtml + ", visitorKey=" + visitorKey + ", isSnoozed=" + isSnoozed + ", snoozeResumeSendDate="
+				+ snoozeResumeSendDate + ", snoozeDaysToSnooze=" + snoozeDaysToSnooze + ", syncFields=" + syncFields
+				+ ", columns=" + columns + "]";
+	}
+
 }
