@@ -10,6 +10,7 @@ import com.github.ka4ok85.wca.command.DeleteListCommand;
 import com.github.ka4ok85.wca.command.DoubleOptInRecipientCommand;
 import com.github.ka4ok85.wca.command.ExportListCommand;
 import com.github.ka4ok85.wca.command.ExportTableCommand;
+import com.github.ka4ok85.wca.command.OptOutRecipientCommand;
 import com.github.ka4ok85.wca.command.SelectRecipientDataCommand;
 import com.github.ka4ok85.wca.command.UpdateRecipientCommand;
 import com.github.ka4ok85.wca.command.WaitForJobCommand;
@@ -63,7 +64,13 @@ public class SpringConfig {
 	public UpdateRecipientCommand updateRecipient() {
 		return new UpdateRecipientCommand();
 	}
-	
+
+	@Bean
+	@Scope("prototype")
+	public OptOutRecipientCommand optOutRecipient() {
+		return new OptOutRecipientCommand();
+	}
+
 	@Bean
 	@Scope("prototype")
 	public WaitForJobCommand waitForJobCommand() {
