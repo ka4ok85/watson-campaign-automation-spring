@@ -117,6 +117,10 @@ public class UpdateRecipientOptions extends AbstractOptions {
 	}
 
 	public void setSnoozeResumeSendDate(LocalDate snoozeResumeSendDate) {
+		if (snoozeResumeSendDate.isBefore(LocalDate.now())) {
+			throw new RuntimeException("ResumeSendDate is before current date");
+		}
+
 		this.snoozeResumeSendDate = snoozeResumeSendDate;
 	}
 
@@ -125,6 +129,10 @@ public class UpdateRecipientOptions extends AbstractOptions {
 	}
 
 	public void setSnoozeDaysToSnooze(Integer snoozeDaysToSnooze) {
+		if (snoozeDaysToSnooze < 1) {
+			throw new RuntimeException("DaysToSnooze must be greater than zero, but provided value is: " + snoozeDaysToSnooze);
+		}
+
 		this.snoozeDaysToSnooze = snoozeDaysToSnooze;
 	}
 
