@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 public class UpdateRecipientOptions extends AbstractOptions {
 	private final Long listId;
 	private String oldEmail;
@@ -31,6 +34,13 @@ public class UpdateRecipientOptions extends AbstractOptions {
 	}
 
 	public void setOldEmail(String oldEmail) {
+		try {
+			InternetAddress emailAddr = new InternetAddress(oldEmail);
+			emailAddr.validate();
+		} catch (AddressException ex) {
+			throw new RuntimeException("Bad Old Email Address: " + oldEmail);
+		}
+
 		this.oldEmail = oldEmail;
 	}
 
