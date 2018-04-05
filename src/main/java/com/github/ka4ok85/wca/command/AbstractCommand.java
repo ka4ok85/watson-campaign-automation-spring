@@ -172,7 +172,7 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 	        	Node successNode = (Node) xpath.evaluate("/Envelope/Body/RESULT/SUCCESS", doc, XPathConstants.NODE);
 	        	
 	        	boolean apiResult = Boolean.parseBoolean(successNode.getTextContent());
-	        	if (apiResult == false) {
+	        	if (apiResult == false && !successNode.getTextContent().equals("SUCCESS")) {
 	        		Node faultStringNode = (Node) xpath.evaluate("/Envelope/Body/Fault/FaultString", doc, XPathConstants.NODE);
 	        		throw new FaultApiResultException(faultStringNode.getTextContent());
 	        	}
