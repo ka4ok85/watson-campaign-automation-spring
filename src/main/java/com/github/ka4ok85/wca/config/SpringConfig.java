@@ -10,6 +10,7 @@ import com.github.ka4ok85.wca.command.DeleteListCommand;
 import com.github.ka4ok85.wca.command.DoubleOptInRecipientCommand;
 import com.github.ka4ok85.wca.command.ExportListCommand;
 import com.github.ka4ok85.wca.command.ExportTableCommand;
+import com.github.ka4ok85.wca.command.GetListsCommand;
 import com.github.ka4ok85.wca.command.OptOutRecipientCommand;
 import com.github.ka4ok85.wca.command.RemoveRecipientCommand;
 import com.github.ka4ok85.wca.command.SelectRecipientDataCommand;
@@ -76,6 +77,12 @@ public class SpringConfig {
 	@Scope("prototype")
 	public RemoveRecipientCommand removeRecipient() {
 		return new RemoveRecipientCommand();
+	}
+
+	@Bean
+	@Scope("prototype")
+	public GetListsCommand getLists() {
+		return new GetListsCommand();
 	}
 
 	@Bean
