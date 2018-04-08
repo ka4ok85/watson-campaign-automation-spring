@@ -32,6 +32,10 @@ public class GetListsOptions extends AbstractOptions {
 	}
 
 	public void setFolderId(Long folderId) {
+		if (folderId < 1) {
+			throw new RuntimeException("Folder ID must be greater than zero. Provided Folder ID = " + folderId);
+		}
+
 		this.folderId = folderId;
 	}
 
