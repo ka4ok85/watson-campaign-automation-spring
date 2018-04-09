@@ -20,14 +20,10 @@ import com.github.ka4ok85.wca.exceptions.EngageApiException;
 import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
 import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
-import com.github.ka4ok85.wca.options.ExportListOptions;
 import com.github.ka4ok85.wca.options.GetListsOptions;
-import com.github.ka4ok85.wca.response.ExportListResponse;
 import com.github.ka4ok85.wca.response.GetListsResponse;
-import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.EngageList;
-import com.github.ka4ok85.wca.utils.DateTimeRange;
 
 public class GetListsCommand extends AbstractCommand<GetListsResponse, GetListsOptions> {
 
@@ -68,20 +64,48 @@ public class GetListsCommand extends AbstractCommand<GetListsResponse, GetListsO
 		List<EngageList> lists = new ArrayList<EngageList>();
 		try {
 			NodeList listsNode = (NodeList) xpath.evaluate("LIST", resultNode, XPathConstants.NODESET);
-			Node column;
+			Node listNode;
 			
 			for (int i = 0; i < listsNode.getLength(); i++) {
 				EngageList engageList = new EngageList();
-				column = listsNode.item(i);
-				engageList.setId(Long.parseLong(((Node) xpath.evaluate("ID", column, XPathConstants.NODE)).getTextContent()));
-				engageList.setName(((Node) xpath.evaluate("NAME", column, XPathConstants.NODE)).getTextContent());
-				engageList.setType(Integer.parseInt(((Node) xpath.evaluate("TYPE", column, XPathConstants.NODE)).getTextContent()));
-				engageList.setSize(Long.parseLong(((Node) xpath.evaluate("SIZE", column, XPathConstants.NODE)).getTextContent()));
-				engageList.setNumberOptOuts(Long.parseLong(((Node) xpath.evaluate("NUM_OPT_OUTS", column, XPathConstants.NODE)).getTextContent()));
-				engageList.setNumberUndeliverables(Long.parseLong(((Node) xpath.evaluate("NUM_UNDELIVERABLE", column, XPathConstants.NODE)).getTextContent()));
+				listNode = listsNode.item(i);
+				engageList.setId(Long.parseLong(((Node) xpath.evaluate("ID", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setName(((Node) xpath.evaluate("NAME", listNode, XPathConstants.NODE)).getTextContent());
+				engageList.setType(Integer.parseInt(((Node) xpath.evaluate("TYPE", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setSize(Long.parseLong(((Node) xpath.evaluate("SIZE", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setNumberOptOuts(Long.parseLong(((Node) xpath.evaluate("NUM_OPT_OUTS", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setNumberUndeliverables(Long.parseLong(((Node) xpath.evaluate("NUM_UNDELIVERABLE", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setLastModifiedDate(((Node) xpath.evaluate("LAST_MODIFIED", listNode, XPathConstants.NODE)).getTextContent());
+				engageList.setVisibility(Integer.parseInt(((Node) xpath.evaluate("VISIBILITY", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setParentName(((Node) xpath.evaluate("PARENT_NAME", listNode, XPathConstants.NODE)).getTextContent());
+				engageList.setUserId(((Node) xpath.evaluate("USER_ID", listNode, XPathConstants.NODE)).getTextContent());
+				engageList.setFolderId(Long.parseLong(((Node) xpath.evaluate("PARENT_FOLDER_ID", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setIsFolder(Boolean.parseBoolean(((Node) xpath.evaluate("IS_FOLDER", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setFlaggedForBackup(Boolean.parseBoolean(((Node) xpath.evaluate("FLAGGED_FOR_BACKUP", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setSuppressionList(Long.parseLong(((Node) xpath.evaluate("SUPPRESSION_LIST_ID", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setIsDatabaseTemplate(Boolean.parseBoolean(((Node) xpath.evaluate("IS_DATABASE_TEMPLATE", listNode, XPathConstants.NODE)).getTextContent()));
+
+				NodeList tagsNode = (NodeList) xpath.evaluate("TAGS/TAG", listNode, XPathConstants.NODESET);
+				//if (tagsNode.getLength() > 0) {
+					//Node tagNode;
+					List<String> tagsList = new ArrayList<String>();
+	
+					for (int j = 0; j < tagsNode.getLength(); j++) {
+						tagsList.add(tagsNode.item(j).getTextContent());
+						/*
+						tagNode = tagsNode.item(j);
+						
+						
+						Node tag = (Node) xpath.evaluate("TAG", tagNode, XPathConstants.NODE);
+						if (tag != null) {
+							tagsList.add(tag.getTextContent());
+						}
+						*/
+					}
+					
+					engageList.setTags(tagsList);
+				//}
 				
-
-
 				lists.add(engageList);
 			}
 
