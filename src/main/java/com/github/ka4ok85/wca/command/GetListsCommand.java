@@ -31,7 +31,8 @@ public class GetListsCommand extends AbstractCommand<GetListsResponse, GetListsO
 	private static final Logger log = LoggerFactory.getLogger(GetListsCommand.class);
 
 	@Override
-	public ResponseContainer<GetListsResponse> executeCommand(GetListsOptions options) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<GetListsResponse> executeCommand(GetListsOptions options)
+			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
 		Objects.requireNonNull(options, "GetListsOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -52,20 +53,22 @@ public class GetListsCommand extends AbstractCommand<GetListsResponse, GetListsO
 			folderId.setTextContent(options.getFolderId().toString());
 			addChildNode(folderId, currentNode);
 		}
-		
-		addBooleanParameter(methodElement, "INCLUDE_TAGS", options.isIncludeTags());
+
+		if (options.isIncludeTags() == true) {
+			addBooleanParameter(methodElement, "INCLUDE_TAGS", options.isIncludeTags());
+		}
 
 		String xml = getXML();
 		log.debug("XML Request is {}", xml);
 		Node resultNode = runApi(xml);
-		
-    	XPathFactory factory = XPathFactory.newInstance();
-    	XPath xpath = factory.newXPath();
+
+		XPathFactory factory = XPathFactory.newInstance();
+		XPath xpath = factory.newXPath();
 		List<EngageList> lists = new ArrayList<EngageList>();
 		try {
 			NodeList listsNode = (NodeList) xpath.evaluate("LIST", resultNode, XPathConstants.NODESET);
 			Node listNode;
-			
+
 			for (int i = 0; i < listsNode.getLength(); i++) {
 				EngageList engageList = new EngageList();
 				listNode = listsNode.item(i);
@@ -86,37 +89,20 @@ public class GetListsCommand extends AbstractCommand<GetListsResponse, GetListsO
 				engageList.setIsDatabaseTemplate(Boolean.parseBoolean(((Node) xpath.evaluate("IS_DATABASE_TEMPLATE", listNode, XPathConstants.NODE)).getTextContent()));
 
 				NodeList tagsNode = (NodeList) xpath.evaluate("TAGS/TAG", listNode, XPathConstants.NODESET);
-				//if (tagsNode.getLength() > 0) {
-					//Node tagNode;
-					List<String> tagsList = new ArrayList<String>();
-	
-					for (int j = 0; j < tagsNode.getLength(); j++) {
-						tagsList.add(tagsNode.item(j).getTextContent());
-						/*
-						tagNode = tagsNode.item(j);
-						
-						
-						Node tag = (Node) xpath.evaluate("TAG", tagNode, XPathConstants.NODE);
-						if (tag != null) {
-							tagsList.add(tag.getTextContent());
-						}
-						*/
-					}
-					
-					engageList.setTags(tagsList);
-				//}
-				
+				List<String> tagsList = new ArrayList<String>();
+				for (int j = 0; j < tagsNode.getLength(); j++) {
+					tagsList.add(tagsNode.item(j).getTextContent());
+				}
+
+				engageList.setTags(tagsList);
 				lists.add(engageList);
 			}
-
 		} catch (XPathExpressionException | JobBadStateException e) {
 			throw new EngageApiException(e.getMessage());
 		}
-		
-		GetListsResponse getListsResponse = new GetListsResponse();
 
+		GetListsResponse getListsResponse = new GetListsResponse();
 		getListsResponse.setLists(lists);
-		
 		ResponseContainer<GetListsResponse> response = new ResponseContainer<GetListsResponse>(getListsResponse);
 
 		return response;
