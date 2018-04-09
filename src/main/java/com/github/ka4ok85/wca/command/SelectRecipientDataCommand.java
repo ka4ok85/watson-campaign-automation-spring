@@ -140,8 +140,8 @@ public class SelectRecipientDataCommand
 			String value;
 			for (int i = 0; i < columnsNode.getLength(); i++) {
 				column = columnsNode.item(i);
-				name = crmLeadSource = ((Node) xpath.evaluate("NAME", column, XPathConstants.NODE)).getTextContent();
-				value = crmLeadSource = ((Node) xpath.evaluate("VALUE", column, XPathConstants.NODE)).getTextContent();
+				name = ((Node) xpath.evaluate("NAME", column, XPathConstants.NODE)).getTextContent();
+				value = ((Node) xpath.evaluate("VALUE", column, XPathConstants.NODE)).getTextContent();
 				columns.put(name, value);
 			}
 			
