@@ -1,6 +1,7 @@
 package com.github.ka4ok85.wca.response.containers;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import com.github.ka4ok85.wca.constants.ListType;
@@ -22,6 +23,7 @@ public class EngageList {
 	private boolean isFolder;
 	private boolean flaggedForBackup;
 	private Long suppressionList;
+	private boolean isDatabaseTemplate;
 	private List<String> tags;
 
 	public Long getId() {
@@ -46,6 +48,10 @@ public class EngageList {
 
 	public void setType(ListType type) {
 		this.type = type;
+	}
+
+	public void setType(int type) {
+		this.type = ListType.getListType(type);
 	}
 
 	public Long getSize() {
@@ -80,12 +86,21 @@ public class EngageList {
 		this.lastModifiedDate = lastModifiedDate;
 	}
 
+	public void setLastModifiedDate(String lastModifiedText) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy K:mm a");
+		this.lastModifiedDate = LocalDateTime.parse(lastModifiedText, formatter);
+	}
+
 	public Visibility getVisibility() {
 		return visibility;
 	}
 
 	public void setVisibility(Visibility visibility) {
 		this.visibility = visibility;
+	}
+
+	public void setVisibility(int visibility) {
+		this.visibility = Visibility.getVisibility(visibility);
 	}
 
 	public String getParentName() {
@@ -116,7 +131,7 @@ public class EngageList {
 		return isFolder;
 	}
 
-	public void setFolder(boolean isFolder) {
+	public void setIsFolder(boolean isFolder) {
 		this.isFolder = isFolder;
 	}
 
@@ -144,13 +159,22 @@ public class EngageList {
 		this.tags = tags;
 	}
 
+	public boolean isDatabaseTemplate() {
+		return isDatabaseTemplate;
+	}
+
+	public void setIsDatabaseTemplate(boolean isDatabaseTemplate) {
+		this.isDatabaseTemplate = isDatabaseTemplate;
+	}
+
 	@Override
 	public String toString() {
 		return "EngageList [id=" + id + ", name=" + name + ", type=" + type + ", size=" + size + ", numberOptOuts="
 				+ numberOptOuts + ", numberUndeliverables=" + numberUndeliverables + ", lastModifiedDate="
 				+ lastModifiedDate + ", visibility=" + visibility + ", parentName=" + parentName + ", userId=" + userId
 				+ ", folderId=" + folderId + ", isFolder=" + isFolder + ", flaggedForBackup=" + flaggedForBackup
-				+ ", suppressionList=" + suppressionList + ", tags=" + tags + "]";
+				+ ", suppressionList=" + suppressionList + ", isDatabaseTemplate=" + isDatabaseTemplate + ", tags="
+				+ tags + "]";
 	}
 
 }
