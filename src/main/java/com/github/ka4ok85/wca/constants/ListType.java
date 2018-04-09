@@ -1,8 +1,8 @@
 package com.github.ka4ok85.wca.constants;
 
 public enum ListType {
-	DATABASES(0), QUERIES(1), DATABASES_CONTACT_LISTS_QUERIES(2), TEST_LISTS(5), SEED_LISTS(6),
-	SUPPRESSION_LISTS(13), RELATIONAL_TABLES(15), CONTACT_LISTS(18);
+	DATABASES(0), QUERIES(1), DATABASES_CONTACT_LISTS_QUERIES(2), TEST_LISTS(5), SEED_LISTS(6), SUPPRESSION_LISTS(
+			13), RELATIONAL_TABLES(15), CONTACT_LISTS(18);
 
 	private int value;
 
@@ -12,5 +12,15 @@ public enum ListType {
 
 	public Integer value() {
 		return value;
+	}
+
+	public static ListType getListType(int value) {
+		for (ListType listType : ListType.values()) {
+			if (listType.value == value) {
+				return listType;
+			}
+		}
+
+		throw new IllegalArgumentException("ListType not found. Provided value is: " + value);
 	}
 }
