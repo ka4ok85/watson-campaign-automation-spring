@@ -18,7 +18,7 @@ public class RelationalTableColumn {
 		if (name == null || name.isEmpty()) {
 			throw new RuntimeException("Column Name must be non-empty String");
 		}
-		
+
 		if (type == null) {
 			throw new RuntimeException("Column Type must not be null");
 		}
