@@ -13,12 +13,12 @@ public class JoinTableOptions extends AbstractOptions {
 	private Long listId;
 	private String listName;
 	private Visibility listVisibility;
-	private boolean removeRelationship;
+	private boolean removeRelationship = false;
 	private Map<String, String> mapFields = new HashMap<String, String>();
 
 	public JoinTableOptions(Map<String, String> mapFields) {
 		super();
-		if (mapFields.isEmpty()) {
+		if (mapFields == null || mapFields.isEmpty()) {
 			throw new RuntimeException("Map Fields can not be empty");
 		}
 
@@ -30,6 +30,10 @@ public class JoinTableOptions extends AbstractOptions {
 	}
 
 	public void setTableId(Long tableId) {
+		if (tableId < 1) {
+			throw new RuntimeException("Table ID must be greater than zero. Provided Table ID = " + tableId);
+		}
+
 		this.tableId = tableId;
 	}
 
@@ -38,6 +42,10 @@ public class JoinTableOptions extends AbstractOptions {
 	}
 
 	public void setTableName(String tableName) {
+		if (tableName == null || tableName.isEmpty()) {
+			throw new RuntimeException("Table Name must be non-empty String");
+		}
+
 		this.tableName = tableName;
 	}
 
@@ -54,6 +62,10 @@ public class JoinTableOptions extends AbstractOptions {
 	}
 
 	public void setListId(Long listId) {
+		if (listId < 1) {
+			throw new RuntimeException("List ID must be greater than zero. Provided List ID = " + listId);
+		}
+
 		this.listId = listId;
 	}
 
@@ -62,6 +74,10 @@ public class JoinTableOptions extends AbstractOptions {
 	}
 
 	public void setListName(String listName) {
+		if (listName == null || listName.isEmpty()) {
+			throw new RuntimeException("List Name must be non-empty String");
+		}
+
 		this.listName = listName;
 	}
 
@@ -73,11 +89,11 @@ public class JoinTableOptions extends AbstractOptions {
 		this.listVisibility = listVisibility;
 	}
 
-	public boolean isRemoveRelationship() {
+	public boolean getIsRemoveRelationship() {
 		return removeRelationship;
 	}
 
-	public void setRemoveRelationship(boolean removeRelationship) {
+	public void setIsRemoveRelationship(boolean removeRelationship) {
 		this.removeRelationship = removeRelationship;
 	}
 
