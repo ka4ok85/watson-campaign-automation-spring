@@ -203,7 +203,7 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 			log.debug("Current Execution Time for JOB ID {} is {} seconds", jobId, currentApiExecutionTime);
 			if (response.isError()) {
 				// TODO: access error file
-				throw new JobBadStateException("WaitForJobCommand failure");
+				throw new JobBadStateException("WaitForJobCommand failure: " + response.getJobDescription());
 			}
 
 			if (response.isCanceled()) {
