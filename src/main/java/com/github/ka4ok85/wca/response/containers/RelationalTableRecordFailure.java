@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class InsertUpdateRelationalTableFailure {
+public class RelationalTableRecordFailure {
 
 	private String failureType;
 	private String description;
@@ -36,7 +36,7 @@ public class InsertUpdateRelationalTableFailure {
 
 	@Override
 	public String toString() {
-		return "InsertUpdateRelationalTableFailure [failureType=" + failureType + ", description=" + description
+		return "RelationalTableRecordFailure [failureType=" + failureType + ", description=" + description
 				+ ", columns=" + columns + "]";
 	}
 

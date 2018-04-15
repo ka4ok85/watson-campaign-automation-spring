@@ -27,7 +27,7 @@ import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.options.InsertUpdateRelationalTableOptions;
 import com.github.ka4ok85.wca.response.InsertUpdateRelationalTableResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
-import com.github.ka4ok85.wca.response.containers.InsertUpdateRelationalTableFailure;
+import com.github.ka4ok85.wca.response.containers.RelationalTableRecordFailure;
 
 public class InsertUpdateRelationalTableCommand
 		extends AbstractCommand<InsertUpdateRelationalTableResponse, InsertUpdateRelationalTableOptions> {
@@ -83,21 +83,21 @@ public class InsertUpdateRelationalTableCommand
 
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
-		List<InsertUpdateRelationalTableFailure> failures = new ArrayList<InsertUpdateRelationalTableFailure>();
+		List<RelationalTableRecordFailure> failures = new ArrayList<RelationalTableRecordFailure>();
 		try {
 			NodeList failuresNode = (NodeList) xpath.evaluate("FAILURES/FAILURE", resultNode, XPathConstants.NODESET);
 			Node failureNode;
 
 			for (int i = 0; i < failuresNode.getLength(); i++) {
-				InsertUpdateRelationalTableFailure insertUpdateRelationalTableFailure = new InsertUpdateRelationalTableFailure();
+				RelationalTableRecordFailure relationalTableRecordFailure = new RelationalTableRecordFailure();
 				failureNode = failuresNode.item(i);
 
 				NamedNodeMap attributes = failureNode.getAttributes();
 				String failureType = attributes.getNamedItem("failure_type").getTextContent();
 				String description = attributes.getNamedItem("description").getTextContent();
 
-				insertUpdateRelationalTableFailure.setFailureType(failureType);
-				insertUpdateRelationalTableFailure.setDescription(description);
+				relationalTableRecordFailure.setFailureType(failureType);
+				relationalTableRecordFailure.setDescription(description);
 
 				NodeList columnsNode = (NodeList) xpath.evaluate("COLUMN", failureNode, XPathConstants.NODESET);
 				List<Map<String, String>> failedColumns = new ArrayList<Map<String, String>>();
@@ -110,8 +110,8 @@ public class InsertUpdateRelationalTableCommand
 					failedColumns.add(columnValues);
 				}
 
-				insertUpdateRelationalTableFailure.setColumns(failedColumns);
-				failures.add(insertUpdateRelationalTableFailure);
+				relationalTableRecordFailure.setColumns(failedColumns);
+				failures.add(relationalTableRecordFailure);
 			}
 		} catch (XPathExpressionException e) {
 			throw new EngageApiException(e.getMessage());
