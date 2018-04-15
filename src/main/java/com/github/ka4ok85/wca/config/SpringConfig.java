@@ -8,6 +8,7 @@ import com.github.ka4ok85.wca.command.AddRecipientCommand;
 import com.github.ka4ok85.wca.command.CreateContactListCommand;
 import com.github.ka4ok85.wca.command.CreateTableCommand;
 import com.github.ka4ok85.wca.command.DeleteListCommand;
+import com.github.ka4ok85.wca.command.DeleteRelationalTableDataCommand;
 import com.github.ka4ok85.wca.command.DoubleOptInRecipientCommand;
 import com.github.ka4ok85.wca.command.ExportListCommand;
 import com.github.ka4ok85.wca.command.ExportTableCommand;
@@ -104,6 +105,12 @@ public class SpringConfig {
 	@Scope("prototype")
 	public InsertUpdateRelationalTableCommand insertUpdateRelationalTable() {
 		return new InsertUpdateRelationalTableCommand();
+	}
+
+	@Bean
+	@Scope("prototype")
+	public DeleteRelationalTableDataCommand deleteRelationalTableData() {
+		return new DeleteRelationalTableDataCommand();
 	}
 
 	@Bean
