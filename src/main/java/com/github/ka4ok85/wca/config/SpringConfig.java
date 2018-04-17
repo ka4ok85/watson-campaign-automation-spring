@@ -9,6 +9,7 @@ import com.github.ka4ok85.wca.command.CreateContactListCommand;
 import com.github.ka4ok85.wca.command.CreateTableCommand;
 import com.github.ka4ok85.wca.command.DeleteListCommand;
 import com.github.ka4ok85.wca.command.DeleteRelationalTableDataCommand;
+import com.github.ka4ok85.wca.command.DeleteTableCommand;
 import com.github.ka4ok85.wca.command.DoubleOptInRecipientCommand;
 import com.github.ka4ok85.wca.command.ExportListCommand;
 import com.github.ka4ok85.wca.command.ExportTableCommand;
@@ -16,6 +17,7 @@ import com.github.ka4ok85.wca.command.GetListsCommand;
 import com.github.ka4ok85.wca.command.InsertUpdateRelationalTableCommand;
 import com.github.ka4ok85.wca.command.JoinTableCommand;
 import com.github.ka4ok85.wca.command.OptOutRecipientCommand;
+import com.github.ka4ok85.wca.command.PurgeTableCommand;
 import com.github.ka4ok85.wca.command.RemoveRecipientCommand;
 import com.github.ka4ok85.wca.command.SelectRecipientDataCommand;
 import com.github.ka4ok85.wca.command.UpdateRecipientCommand;
@@ -111,6 +113,18 @@ public class SpringConfig {
 	@Scope("prototype")
 	public DeleteRelationalTableDataCommand deleteRelationalTableData() {
 		return new DeleteRelationalTableDataCommand();
+	}
+
+	@Bean
+	@Scope("prototype")
+	public PurgeTableCommand purgeTable() {
+		return new PurgeTableCommand();
+	}
+
+	@Bean
+	@Scope("prototype")
+	public DeleteTableCommand deleteTable() {
+		return new DeleteTableCommand();
 	}
 
 	@Bean
