@@ -98,10 +98,11 @@ public class JoinTableCommand extends AbstractCommand<JoinTableResponse, JoinTab
 
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
+		Long jobId;
 		try {
 			Node jobIdNode = (Node) xpath.evaluate("JOB_ID", resultNode, XPathConstants.NODE);
 
-			final Long jobId = Long.parseLong(jobIdNode.getTextContent());
+			jobId = Long.parseLong(jobIdNode.getTextContent());
 			log.debug("Job ID {} is being excuted", jobId);
 
 			final JobResponse jobResponse = waitUntilJobIsCompleted(jobId);
@@ -118,6 +119,7 @@ public class JoinTableCommand extends AbstractCommand<JoinTableResponse, JoinTab
 		}
 
 		JoinTableResponse joinTableResponse = new JoinTableResponse();
+		joinTableResponse.setJobId(jobId);
 		ResponseContainer<JoinTableResponse> response = new ResponseContainer<JoinTableResponse>(joinTableResponse);
 
 		return response;
