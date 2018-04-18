@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 import com.github.ka4ok85.wca.command.AddRecipientCommand;
+import com.github.ka4ok85.wca.command.CalculateQueryCommand;
 import com.github.ka4ok85.wca.command.CreateContactListCommand;
 import com.github.ka4ok85.wca.command.CreateTableCommand;
 import com.github.ka4ok85.wca.command.DeleteListCommand;
@@ -125,6 +126,12 @@ public class SpringConfig {
 	@Scope("prototype")
 	public DeleteTableCommand deleteTable() {
 		return new DeleteTableCommand();
+	}
+
+	@Bean
+	@Scope("prototype")
+	public CalculateQueryCommand calculateQuery() {
+		return new CalculateQueryCommand();
 	}
 
 	@Bean
