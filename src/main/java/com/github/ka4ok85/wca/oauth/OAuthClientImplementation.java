@@ -13,7 +13,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
-import com.github.ka4ok85.wca.Engage;
 import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
 import com.github.ka4ok85.wca.pod.Pod;
 import com.github.ka4ok85.wca.response.AccessTokenResponse;
@@ -30,7 +29,7 @@ public class OAuthClientImplementation implements OAuthClient {
 	private String accessToken = "";
 	private LocalDateTime accessTokenExpirationTime = LocalDateTime.MIN;
 
-	private static final Logger log = LoggerFactory.getLogger(Engage.class);
+	private static final Logger log = LoggerFactory.getLogger(OAuthClientImplementation.class);
 
 	public OAuthClientImplementation(int podNumber, String clientId, String clientSecret, String refreshToken) {
 		this.podNumber = podNumber;
