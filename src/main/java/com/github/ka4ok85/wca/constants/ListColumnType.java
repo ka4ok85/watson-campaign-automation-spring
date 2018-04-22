@@ -14,4 +14,13 @@ public enum ListColumnType {
 		return value;
 	}
 
+	public static ListColumnType getListColumnType(int value) {
+		for (ListColumnType listColumnType : ListColumnType.values()) {
+			if (listColumnType.value == value) {
+				return listColumnType;
+			}
+		}
+
+		throw new IllegalArgumentException("ListColumnType not found. Provided value is: " + value);
+	}
 }
