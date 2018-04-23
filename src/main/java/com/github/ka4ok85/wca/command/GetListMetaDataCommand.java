@@ -26,9 +26,7 @@ import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.options.GetListMetaDataOptions;
 import com.github.ka4ok85.wca.response.GetListMetaDataResponse;
-import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
-import com.github.ka4ok85.wca.response.containers.EngageList;
 import com.github.ka4ok85.wca.response.containers.ListColumnLimited;
 
 public class GetListMetaDataCommand extends AbstractCommand<GetListMetaDataResponse, GetListMetaDataOptions> {
@@ -73,69 +71,105 @@ public class GetListMetaDataCommand extends AbstractCommand<GetListMetaDataRespo
 		boolean optInAutoreplyDefined;
 		boolean profileAutoreplyDefined;
 		List<ListColumnLimited> columns = new ArrayList<ListColumnLimited>();
-		
+		List<String> keyColumns = new ArrayList<String>();
+
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy K:mm a");
 		try {
 			id = Long.parseLong(((Node) xpath.evaluate("ID", resultNode, XPathConstants.NODE)).getTextContent());
 			name = ((Node) xpath.evaluate("NAME", resultNode, XPathConstants.NODE)).getTextContent();
 			type = Integer.parseInt(((Node) xpath.evaluate("TYPE", resultNode, XPathConstants.NODE)).getTextContent());
 			size = Long.parseLong(((Node) xpath.evaluate("SIZE", resultNode, XPathConstants.NODE)).getTextContent());
-			numOptOuts = Long.parseLong(((Node) xpath.evaluate("NUM_OPT_OUTS", resultNode, XPathConstants.NODE)).getTextContent());
-			numUndeliverables = Long.parseLong(((Node) xpath.evaluate("NUM_UNDELIVERABLE", resultNode, XPathConstants.NODE)).getTextContent());
+			numOptOuts = Long.parseLong(
+					((Node) xpath.evaluate("NUM_OPT_OUTS", resultNode, XPathConstants.NODE)).getTextContent());
+			numUndeliverables = Long.parseLong(
+					((Node) xpath.evaluate("NUM_UNDELIVERABLE", resultNode, XPathConstants.NODE)).getTextContent());
 			String lastModifiedText = ((Node) xpath.evaluate("LAST_MODIFIED", resultNode, XPathConstants.NODE)).getTextContent();
 			if (lastModifiedText != "") {
 				lastModified = LocalDateTime.parse(lastModifiedText, formatter);
-			}			
+			}
 
-			String lastConfiguredText = ((Node) xpath.evaluate("LAST_CONFIGURED", resultNode, XPathConstants.NODE)).getTextContent();
+			String lastConfiguredText = ((Node) xpath.evaluate("LAST_CONFIGURED", resultNode, XPathConstants.NODE))
+					.getTextContent();
 			if (lastConfiguredText != "") {
 				lastConfigured = LocalDateTime.parse(lastConfiguredText, formatter);
 			}
-			
+
 			String createdText = ((Node) xpath.evaluate("CREATED", resultNode, XPathConstants.NODE)).getTextContent();
 			if (createdText != "") {
 				created = LocalDateTime.parse(createdText, formatter);
 			}
-			
-			visibility = Visibility.getVisibility(Integer.parseInt(((Node) xpath.evaluate("VISIBILITY", resultNode, XPathConstants.NODE)).getTextContent()));
+
+			visibility = Visibility.getVisibility(Integer
+					.parseInt(((Node) xpath.evaluate("VISIBILITY", resultNode, XPathConstants.NODE)).getTextContent()));
 			userId = ((Node) xpath.evaluate("USER_ID", resultNode, XPathConstants.NODE)).getTextContent();
-			organizationId = ((Node) xpath.evaluate("ORGANIZATION_ID", resultNode, XPathConstants.NODE)).getTextContent();
-			
-			String parentDatabaseIdText = ((Node) xpath.evaluate("PARENT_DATABASE_ID", resultNode, XPathConstants.NODE)).getTextContent();
+			organizationId = ((Node) xpath.evaluate("ORGANIZATION_ID", resultNode, XPathConstants.NODE))
+					.getTextContent();
+
+			String parentDatabaseIdText = ((Node) xpath.evaluate("PARENT_DATABASE_ID", resultNode, XPathConstants.NODE))
+					.getTextContent();
 			if (false == parentDatabaseIdText.isEmpty()) {
 				parentDatabaseId = Long.parseLong(parentDatabaseIdText);
 			}
 
-			optInFormDefined = Boolean.parseBoolean(((Node) xpath.evaluate("OPT_IN_FORM_DEFINED", resultNode, XPathConstants.NODE)).getTextContent());
-			optOutFormDefined = Boolean.parseBoolean(((Node) xpath.evaluate("OPT_OUT_FORM_DEFINED", resultNode, XPathConstants.NODE)).getTextContent());
-			profileFormDefined = Boolean.parseBoolean(((Node) xpath.evaluate("PROFILE_FORM_DEFINED", resultNode, XPathConstants.NODE)).getTextContent());
-			optInAutoreplyDefined = Boolean.parseBoolean(((Node) xpath.evaluate("OPT_IN_AUTOREPLY_DEFINED", resultNode, XPathConstants.NODE)).getTextContent());
-			profileAutoreplyDefined = Boolean.parseBoolean(((Node) xpath.evaluate("PROFILE_AUTOREPLY_DEFINED", resultNode, XPathConstants.NODE)).getTextContent());
-			
+			optInFormDefined = Boolean.parseBoolean(
+					((Node) xpath.evaluate("OPT_IN_FORM_DEFINED", resultNode, XPathConstants.NODE)).getTextContent());
+			optOutFormDefined = Boolean.parseBoolean(
+					((Node) xpath.evaluate("OPT_OUT_FORM_DEFINED", resultNode, XPathConstants.NODE)).getTextContent());
+			profileFormDefined = Boolean.parseBoolean(
+					((Node) xpath.evaluate("PROFILE_FORM_DEFINED", resultNode, XPathConstants.NODE)).getTextContent());
+			optInAutoreplyDefined = Boolean
+					.parseBoolean(((Node) xpath.evaluate("OPT_IN_AUTOREPLY_DEFINED", resultNode, XPathConstants.NODE))
+							.getTextContent());
+			profileAutoreplyDefined = Boolean
+					.parseBoolean(((Node) xpath.evaluate("PROFILE_AUTOREPLY_DEFINED", resultNode, XPathConstants.NODE))
+							.getTextContent());
+
 			NodeList columnsNode = (NodeList) xpath.evaluate("COLUMNS/COLUMN", resultNode, XPathConstants.NODESET);
 			Node columnNode;
 
 			for (int i = 0; i < columnsNode.getLength(); i++) {
 				ListColumnLimited listColumnLimited = new ListColumnLimited();
 				columnNode = columnsNode.item(i);
-				listColumnLimited.setName(((Node) xpath.evaluate("NAME", columnNode, XPathConstants.NODE)).getTextContent());
+				listColumnLimited
+						.setName(((Node) xpath.evaluate("NAME", columnNode, XPathConstants.NODE)).getTextContent());
 
-				int columnType = Integer.parseInt(((Node) xpath.evaluate("TYPE", columnNode, XPathConstants.NODE)).getTextContent());
-				listColumnLimited.setType(ListColumnType.getListColumnType(columnType));
+				Node columnTypeNode = (Node) xpath.evaluate("TYPE", columnNode, XPathConstants.NODE);
+				if (columnTypeNode != null) {
+					listColumnLimited.setType(
+							ListColumnType.getListColumnType(Integer.parseInt(columnTypeNode.getTextContent())));
+				}
 
-				String columnDefaultValue = ((Node) xpath.evaluate("DEFAULT_VALUE", columnNode, XPathConstants.NODE)).getTextContent();
-				listColumnLimited.setDefaultValue(columnDefaultValue);
-				
-				//listColumnLimited.setSelectionValues(selectionValues);
-				
-				
-				
-				
-				//engageList.setId(Long.parseLong(((Node) xpath.evaluate("ID", listNode, XPathConstants.NODE)).getTextContent()));
-				
-				
+				Node columnDefaultNode = (Node) xpath.evaluate("DEFAULT_VALUE", columnNode, XPathConstants.NODE);
+				if (columnDefaultNode != null) {
+					listColumnLimited.setDefaultValue(columnDefaultNode.getTextContent());
+				}
+
+				Node selectionValuesNode = (Node) xpath.evaluate("SELECTION_VALUES", columnNode, XPathConstants.NODE);
+				if (selectionValuesNode != null) {
+					List<String> selectionValues = new ArrayList<String>();
+					NodeList selectionsNode = (NodeList) xpath.evaluate("SELECTION_VALUES/VALUE", columnNode,
+							XPathConstants.NODESET);
+					Node selectionNode;
+					for (int j = 0; j < selectionsNode.getLength(); j++) {
+						selectionNode = selectionsNode.item(j);
+						selectionValues.add(selectionNode.getTextContent());
+					}
+
+					listColumnLimited.setSelectionValues(selectionValues);
+				}
+
 				columns.add(listColumnLimited);
 			}
+
+			NodeList keyColumnsNode = (NodeList) xpath.evaluate("KEY_COLUMNS/COLUMN", resultNode,
+					XPathConstants.NODESET);
+			Node keyColumnNode;
+
+			for (int i = 0; i < keyColumnsNode.getLength(); i++) {
+				keyColumnNode = keyColumnsNode.item(i);
+				keyColumns.add(keyColumnNode.getTextContent());
+			}
+
 		} catch (XPathExpressionException | JobBadStateException e) {
 			throw new EngageApiException(e.getMessage());
 		}
@@ -159,10 +193,9 @@ public class GetListMetaDataCommand extends AbstractCommand<GetListMetaDataRespo
 		getListMetaDataResponse.setProfileFormDefined(profileFormDefined);
 		getListMetaDataResponse.setOptInAutoreplyDefined(optInAutoreplyDefined);
 		getListMetaDataResponse.setProfileAutoreplyDefined(profileAutoreplyDefined);
-
 		getListMetaDataResponse.setColumns(columns);
-		
-		
+		getListMetaDataResponse.setKeyColumns(keyColumns);
+
 		ResponseContainer<GetListMetaDataResponse> response = new ResponseContainer<GetListMetaDataResponse>(
 				getListMetaDataResponse);
 
