@@ -12,6 +12,8 @@ public class MailingTemplate {
 	private LocalDateTime lastModified;
 	private Visibility visibility;
 	private String userId;
+	private boolean flaggedForBackup;
+	private boolean allowCrmBlock;
 
 	public Long getMailingId() {
 		return mailingId;
@@ -61,10 +63,27 @@ public class MailingTemplate {
 		this.userId = userId;
 	}
 
+	public boolean isFlaggedForBackup() {
+		return flaggedForBackup;
+	}
+
+	public void setFlaggedForBackup(boolean flaggedForBackup) {
+		this.flaggedForBackup = flaggedForBackup;
+	}
+
+	public boolean isAllowCrmBlock() {
+		return allowCrmBlock;
+	}
+
+	public void setAllowCrmBlock(boolean allowCrmBlock) {
+		this.allowCrmBlock = allowCrmBlock;
+	}
+
 	@Override
 	public String toString() {
 		return "MailingTemplate [mailingId=" + mailingId + ", mailingName=" + mailingName + ", subject=" + subject
-				+ ", lastModified=" + lastModified + ", visibility=" + visibility + ", userId=" + userId + "]";
+				+ ", lastModified=" + lastModified + ", visibility=" + visibility + ", userId=" + userId
+				+ ", flaggedForBackup=" + flaggedForBackup + ", allowCrmBlock=" + allowCrmBlock + "]";
 	}
 
 }

@@ -42,9 +42,9 @@ public class GetListMetaDataCommand extends AbstractCommand<GetListMetaDataRespo
 		Element methodElement = doc.createElement(apiMethodName);
 		currentNode = addChildNode(methodElement, null);
 
-		Element queryId = doc.createElement("LIST_ID");
-		queryId.setTextContent(options.getListId().toString());
-		addChildNode(queryId, currentNode);
+		Element listId = doc.createElement("LIST_ID");
+		listId.setTextContent(options.getListId().toString());
+		addChildNode(listId, currentNode);
 
 		String xml = getXML();
 		log.debug("XML Request is {}", xml);
