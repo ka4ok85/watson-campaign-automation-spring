@@ -83,7 +83,8 @@ public class GetListMetaDataCommand extends AbstractCommand<GetListMetaDataRespo
 					((Node) xpath.evaluate("NUM_OPT_OUTS", resultNode, XPathConstants.NODE)).getTextContent());
 			numUndeliverables = Long.parseLong(
 					((Node) xpath.evaluate("NUM_UNDELIVERABLE", resultNode, XPathConstants.NODE)).getTextContent());
-			String lastModifiedText = ((Node) xpath.evaluate("LAST_MODIFIED", resultNode, XPathConstants.NODE)).getTextContent();
+			String lastModifiedText = ((Node) xpath.evaluate("LAST_MODIFIED", resultNode, XPathConstants.NODE))
+					.getTextContent();
 			if (lastModifiedText != "") {
 				lastModified = LocalDateTime.parse(lastModifiedText, formatter);
 			}
