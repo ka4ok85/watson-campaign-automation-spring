@@ -1,5 +1,7 @@
 package com.github.ka4ok85.wca.command;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.xml.xpath.XPath;
@@ -11,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import com.github.ka4ok85.wca.constants.JobStatus;
 import com.github.ka4ok85.wca.exceptions.BadApiResultException;
@@ -51,6 +54,7 @@ public class WaitForJobCommand extends AbstractCommand<JobResponse, JobOptions> 
     	XPath xpath = factory.newXPath();
 
     	JobResponse jobResponse = new JobResponse();
+    	Map<String, String> parameters = new HashMap<String, String>(); 
 		try {
 			Node jobIdNode = (Node) xpath.evaluate("JOB_ID", resultNode, XPathConstants.NODE);
 			Node jobStatusNode = (Node) xpath.evaluate("JOB_STATUS", resultNode, XPathConstants.NODE);
@@ -60,9 +64,19 @@ public class WaitForJobCommand extends AbstractCommand<JobResponse, JobOptions> 
 				throw new InternalApiMismatchException("Bad Job ID received from GetJobStatus API. Should have been " + options.getJobId() + ", but received " + jobIdNode.getTextContent());
 			}
 
+			NodeList parametersNode = (NodeList) xpath.evaluate("PARAMETERS/PARAMETER", resultNode, XPathConstants.NODESET);
+			Node parameterNode;
+
+			for (int i = 0; i < parametersNode.getLength(); i++) {
+				parameterNode = parametersNode.item(i);
+				parameters.put(((Node) xpath.evaluate("NAME", parameterNode, XPathConstants.NODE)).getTextContent(), ((Node) xpath.evaluate("VALUE", parameterNode, XPathConstants.NODE)).getTextContent());
+			}
+
 			jobResponse.setJobId(options.getJobId());
 			jobResponse.setJobDescription(jobDescriptionNode.getTextContent());
 			jobResponse.setJobStatus(JobStatus.valueOf(jobStatusNode.getTextContent()));
+			
+			jobResponse.setParameters(parameters);
 		} catch (XPathExpressionException | InternalApiMismatchException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
