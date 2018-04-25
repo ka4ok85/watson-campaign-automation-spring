@@ -9,6 +9,8 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -25,13 +27,18 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.utils.DateTimeRange;
 
 @Service
+@Scope("prototype")
 public class ExportListCommand extends AbstractCommand<ExportListResponse, ExportListOptions> {
 
 	private static final String apiMethodName = "ExportList";
 	private static final Logger log = LoggerFactory.getLogger(ExportListCommand.class);
 
+	@Autowired
+	private ExportListResponse exportListResponse;
+
 	@Override
-	public ResponseContainer<ExportListResponse> executeCommand(ExportListOptions options) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<ExportListResponse> executeCommand(ExportListOptions options)
+			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
 		Objects.requireNonNull(options, "ExportListOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -78,17 +85,17 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 		String xml = getXML();
 		log.debug("XML Request is {}", xml);
 		Node resultNode = runApi(xml);
-		
-    	XPathFactory factory = XPathFactory.newInstance();
-    	XPath xpath = factory.newXPath();
-    	String filePath;
+
+		XPathFactory factory = XPathFactory.newInstance();
+		XPath xpath = factory.newXPath();
+		String filePath;
 		try {
 			Node jobIdNode = (Node) xpath.evaluate("JOB_ID", resultNode, XPathConstants.NODE);
 			Node filePathNode = (Node) xpath.evaluate("FILE_PATH", resultNode, XPathConstants.NODE);
 
 			final Long jobId = Long.parseLong(jobIdNode.getTextContent());
 			log.debug("Job ID {} is being excuted", jobId);
-			
+
 			final JobResponse jobResponse = waitUntilJobIsCompleted(jobId);
 			log.debug("Job Response is {}", jobResponse);
 			if (jobResponse.isComplete()) {
@@ -99,13 +106,13 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 				}
 			} else {
 				log.error("State inconsistency for Job ID {}", jobId);
-				throw new JobBadStateException("Job ID " + jobId + " was reported as Completed, but actual State is " + jobResponse.getJobStatus());
+				throw new JobBadStateException("Job ID " + jobId + " was reported as Completed, but actual State is "
+						+ jobResponse.getJobStatus());
 			}
 		} catch (XPathExpressionException | JobBadStateException e) {
 			throw new EngageApiException(e.getMessage());
 		}
-		
-		ExportListResponse exportListResponse = new ExportListResponse();
+
 		exportListResponse.setRemoteFileName(filePath);
 		ResponseContainer<ExportListResponse> response = new ResponseContainer<ExportListResponse>(exportListResponse);
 
