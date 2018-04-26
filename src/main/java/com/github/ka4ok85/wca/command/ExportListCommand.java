@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.github.ka4ok85.wca.constants.FileEncoding;
 import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
 import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
@@ -89,6 +90,11 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 		String filePath;
+		String description;
+		String listName;
+		Boolean keepInStoredFiles;
+		Boolean keepInFtpDownloadDirectory;
+		FileEncoding fileEncodingValue;
 		try {
 			Node jobIdNode = (Node) xpath.evaluate("JOB_ID", resultNode, XPathConstants.NODE);
 			Node filePathNode = (Node) xpath.evaluate("FILE_PATH", resultNode, XPathConstants.NODE);
@@ -100,6 +106,13 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 			log.debug("Job Response is {}", jobResponse);
 			if (jobResponse.isComplete()) {
 				filePath = filePathNode.getTextContent();
+				description = jobResponse.getJobDescription();
+				listName = jobResponse.getParameters().get("LIST_NAME");
+				keepInStoredFiles = Boolean.valueOf(jobResponse.getParameters().get("KEEP_IN_STORED_FILES"));
+				keepInFtpDownloadDirectory = Boolean
+						.valueOf(jobResponse.getParameters().get("KEEP_IN_FTP_DOWNLOAD_DIRECTORY"));
+				fileEncodingValue = FileEncoding.getFileEncoding(jobResponse.getParameters().get("FILE_ENCODING"));
+
 				log.debug("Generated Export File {} on SFTP", filePath);
 				if (options.getLocalAbsoluteFilePath() != null) {
 					sftp.download(filePath, options.getLocalAbsoluteFilePath());
@@ -114,6 +127,12 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 		}
 
 		exportListResponse.setRemoteFileName(filePath);
+		exportListResponse.setDescription(description);
+		exportListResponse.setFileEncoding(fileEncodingValue);
+		exportListResponse.setKeepInStoredFiles(keepInStoredFiles);
+		exportListResponse.setListName(listName);
+		exportListResponse.setKeepInFtpDownloadDirectory(keepInFtpDownloadDirectory);
+
 		ResponseContainer<ExportListResponse> response = new ResponseContainer<ExportListResponse>(exportListResponse);
 
 		return response;
