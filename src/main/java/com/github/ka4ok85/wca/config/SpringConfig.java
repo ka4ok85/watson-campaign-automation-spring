@@ -1,15 +1,11 @@
 package com.github.ka4ok85.wca.config;
 
-import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 
-import com.github.ka4ok85.wca.CommandFactory;
 import com.github.ka4ok85.wca.Engage;
 import com.github.ka4ok85.wca.command.AddRecipientCommand;
 import com.github.ka4ok85.wca.command.CalculateQueryCommand;
@@ -19,10 +15,10 @@ import com.github.ka4ok85.wca.command.DeleteListCommand;
 import com.github.ka4ok85.wca.command.DeleteRelationalTableDataCommand;
 import com.github.ka4ok85.wca.command.DeleteTableCommand;
 import com.github.ka4ok85.wca.command.DoubleOptInRecipientCommand;
-import com.github.ka4ok85.wca.command.ExportListCommand;
 import com.github.ka4ok85.wca.command.ExportTableCommand;
 import com.github.ka4ok85.wca.command.GetListMetaDataCommand;
 import com.github.ka4ok85.wca.command.GetListsCommand;
+import com.github.ka4ok85.wca.command.GetMailingTemplatesCommand;
 import com.github.ka4ok85.wca.command.InsertUpdateRelationalTableCommand;
 import com.github.ka4ok85.wca.command.JoinTableCommand;
 import com.github.ka4ok85.wca.command.OptOutRecipientCommand;
@@ -31,16 +27,15 @@ import com.github.ka4ok85.wca.command.RemoveRecipientCommand;
 import com.github.ka4ok85.wca.command.SelectRecipientDataCommand;
 import com.github.ka4ok85.wca.command.UpdateRecipientCommand;
 import com.github.ka4ok85.wca.command.WaitForJobCommand;
-import com.github.ka4ok85.wca.response.ExportListResponse;
 
 @Configuration
+@ComponentScan("com.github.ka4ok85.wca")
 public class SpringConfig {
-
-
+	
 	@Bean
 	@Scope("prototype")
-	public ExportListCommand exportList() {
-		return new ExportListCommand();
+	public Engage engage(@Value("${podNumber}") int podNumber, @Value("${clientId}") String clientId, @Value("${clientSecret}") String clientSecret, @Value("${refreshToken}") String refreshToken) {
+		return new Engage(podNumber, clientId, clientSecret, refreshToken);
 	}
 
 	@Bean
@@ -155,5 +150,11 @@ public class SpringConfig {
 	@Scope("prototype")
 	public GetListMetaDataCommand getListMetaData() {
 		return new GetListMetaDataCommand();
+	}
+
+	@Bean
+	@Scope("prototype")
+	public GetMailingTemplatesCommand getMailingTemplates() {
+		return new GetMailingTemplatesCommand();
 	}
 }
