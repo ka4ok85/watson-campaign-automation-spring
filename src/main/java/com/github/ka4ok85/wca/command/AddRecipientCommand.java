@@ -10,6 +10,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -22,10 +25,15 @@ import com.github.ka4ok85.wca.options.AddRecipientOptions;
 import com.github.ka4ok85.wca.response.AddRecipientResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
+@Service
+@Scope("prototype")
 public class AddRecipientCommand extends AbstractCommand<AddRecipientResponse, AddRecipientOptions> {
 
 	private static final String apiMethodName = "AddRecipient";
 	private static final Logger log = LoggerFactory.getLogger(AddRecipientCommand.class);
+	
+	@Autowired
+	private AddRecipientResponse addRecipientResponse;
 
 	@Override
 	public ResponseContainer<AddRecipientResponse> executeCommand(final AddRecipientOptions options)
@@ -118,7 +126,6 @@ public class AddRecipientCommand extends AbstractCommand<AddRecipientResponse, A
 			throw new EngageApiException(e.getMessage());
 		}
 
-		AddRecipientResponse addRecipientResponse = new AddRecipientResponse();
 		addRecipientResponse.setRecipientId(recipientId);
 		addRecipientResponse.setVisitorAssociation(visitorAssociation);
 
