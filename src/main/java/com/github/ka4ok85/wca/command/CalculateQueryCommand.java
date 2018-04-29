@@ -54,6 +54,13 @@ public class CalculateQueryCommand extends AbstractCommand<CalculateQueryRespons
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 		Long jobId;
+		String description;
+		String listName;
+		Long listSize;
+		Long parentListId;
+		String parentListName;
+		String parentListType;
+		Long queryExpressionId;
 		try {
 			Node jobIdNode = (Node) xpath.evaluate("JOB_ID", resultNode, XPathConstants.NODE);
 
@@ -64,6 +71,13 @@ public class CalculateQueryCommand extends AbstractCommand<CalculateQueryRespons
 			log.debug("Job Response is {}", jobResponse);
 			if (jobResponse.isComplete()) {
 				log.debug("Job is completed");
+				description = jobResponse.getJobDescription();
+				listName = jobResponse.getParameters().get("LIST_NAME");
+				listSize = Long.parseLong(jobResponse.getParameters().get("LIST_SIZE"));
+				parentListId = Long.parseLong(jobResponse.getParameters().get("PARENT_LIST_ID"));
+				parentListName = jobResponse.getParameters().get("PARENT_LIST_NAME");
+				parentListType = jobResponse.getParameters().get("PARENT_LIST_TYPE");
+				queryExpressionId = Long.parseLong(jobResponse.getParameters().get("QUERY_EXPRESSION_ID"));
 			} else {
 				log.error("State inconsistency for Job ID {}", jobId);
 				throw new JobBadStateException("Job ID " + jobId + " was reported as Completed, but actual State is "
@@ -74,6 +88,13 @@ public class CalculateQueryCommand extends AbstractCommand<CalculateQueryRespons
 		}
 
 		calculateQueryResponse.setJobId(jobId);
+		calculateQueryResponse.setDescription(description);
+		calculateQueryResponse.setListName(listName);
+		calculateQueryResponse.setListSize(listSize);
+		calculateQueryResponse.setParentListId(parentListId);
+		calculateQueryResponse.setParentListName(parentListName);
+		calculateQueryResponse.setParentListType(parentListType);
+		calculateQueryResponse.setQueryExpressionId(queryExpressionId);
 		ResponseContainer<CalculateQueryResponse> response = new ResponseContainer<CalculateQueryResponse>(
 				calculateQueryResponse);
 
