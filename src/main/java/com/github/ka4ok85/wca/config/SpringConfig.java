@@ -7,9 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 import com.github.ka4ok85.wca.Engage;
-import com.github.ka4ok85.wca.command.AddRecipientCommand;
-import com.github.ka4ok85.wca.command.CalculateQueryCommand;
-import com.github.ka4ok85.wca.command.CreateContactListCommand;
 import com.github.ka4ok85.wca.command.CreateTableCommand;
 import com.github.ka4ok85.wca.command.DeleteListCommand;
 import com.github.ka4ok85.wca.command.DeleteRelationalTableDataCommand;
@@ -42,12 +39,6 @@ public class SpringConfig {
 	@Scope("prototype")
 	public ExportTableCommand exportTable() {
 		return new ExportTableCommand();
-	}
-
-	@Bean
-	@Scope("prototype")
-	public CreateContactListCommand createContactList() {
-		return new CreateContactListCommand();
 	}
 
 	@Bean

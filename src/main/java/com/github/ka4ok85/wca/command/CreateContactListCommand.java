@@ -9,6 +9,8 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
@@ -23,10 +25,14 @@ import com.github.ka4ok85.wca.response.CreateContactListResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
 @Service
+@Scope("prototype")
 public class CreateContactListCommand extends AbstractCommand<CreateContactListResponse, CreateContactListOptions> {
 
 	private static final String apiMethodName = "CreateContactList";
 	private static final Logger log = LoggerFactory.getLogger(CreateContactListCommand.class);
+	
+	@Autowired
+	private CreateContactListResponse createContactListResponse;
 
 	@Override
 	public ResponseContainer<CreateContactListResponse> executeCommand(CreateContactListOptions options)
@@ -75,7 +81,6 @@ public class CreateContactListCommand extends AbstractCommand<CreateContactListR
 			throw new EngageApiException(e.getMessage());
 		}
 
-		CreateContactListResponse createContactListResponse = new CreateContactListResponse();
 		createContactListResponse.setContactListId(contactListId);
 		ResponseContainer<CreateContactListResponse> response = new ResponseContainer<CreateContactListResponse>(
 				createContactListResponse);
