@@ -9,6 +9,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -22,10 +25,15 @@ import com.github.ka4ok85.wca.response.CalculateQueryResponse;
 import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
+@Service
+@Scope("prototype")
 public class CalculateQueryCommand extends AbstractCommand<CalculateQueryResponse, CalculateQueryOptions> {
 
 	private static final String apiMethodName = "CalculateQuery";
 	private static final Logger log = LoggerFactory.getLogger(CalculateQueryCommand.class);
+
+	@Autowired
+	private CalculateQueryResponse calculateQueryResponse;
 
 	@Override
 	public ResponseContainer<CalculateQueryResponse> executeCommand(CalculateQueryOptions options)
@@ -65,7 +73,6 @@ public class CalculateQueryCommand extends AbstractCommand<CalculateQueryRespons
 			throw new EngageApiException(e.getMessage());
 		}
 
-		CalculateQueryResponse calculateQueryResponse = new CalculateQueryResponse();
 		calculateQueryResponse.setJobId(jobId);
 		ResponseContainer<CalculateQueryResponse> response = new ResponseContainer<CalculateQueryResponse>(
 				calculateQueryResponse);

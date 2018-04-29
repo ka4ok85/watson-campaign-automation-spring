@@ -64,12 +64,6 @@ public class SpringConfig {
 
 	@Bean
 	@Scope("prototype")
-	public AddRecipientCommand addRecipient() {
-		return new AddRecipientCommand();
-	}
-
-	@Bean
-	@Scope("prototype")
 	public DoubleOptInRecipientCommand doubleOptInRecipient() {
 		return new DoubleOptInRecipientCommand();
 	}
@@ -132,12 +126,6 @@ public class SpringConfig {
 	@Scope("prototype")
 	public DeleteTableCommand deleteTable() {
 		return new DeleteTableCommand();
-	}
-
-	@Bean
-	@Scope("prototype")
-	public CalculateQueryCommand calculateQuery() {
-		return new CalculateQueryCommand();
 	}
 
 	@Bean
