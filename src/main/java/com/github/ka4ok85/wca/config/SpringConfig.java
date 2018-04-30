@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 import com.github.ka4ok85.wca.Engage;
-import com.github.ka4ok85.wca.command.DeleteListCommand;
 import com.github.ka4ok85.wca.command.DeleteRelationalTableDataCommand;
 import com.github.ka4ok85.wca.command.DeleteTableCommand;
 import com.github.ka4ok85.wca.command.DoubleOptInRecipientCommand;
@@ -38,12 +37,6 @@ public class SpringConfig {
 	@Scope("prototype")
 	public ExportTableCommand exportTable() {
 		return new ExportTableCommand();
-	}
-
-	@Bean
-	@Scope("prototype")
-	public DeleteListCommand deleteList() {
-		return new DeleteListCommand();
 	}
 
 	@Bean
