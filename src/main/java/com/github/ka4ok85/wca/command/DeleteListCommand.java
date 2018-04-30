@@ -45,14 +45,13 @@ public class DeleteListCommand extends AbstractCommand<DeleteListResponse, Delet
 
 		if (options.getListId() != null && options.getListId() > 0) {
 			Element listID = doc.createElement("LIST_ID");
-			listID.setTextContent(options.getListId()
-					.toString());
+			listID.setTextContent(options.getListId().toString());
 			addChildNode(listID, currentNode);
 		} else if (options.getListName() != null && !options.getListName().isEmpty()) {
 			Element listName = doc.createElement("LIST_NAME");
 			listName.setTextContent(options.getListName());
 			addChildNode(listName, currentNode);
-			
+
 			Element visibility = doc.createElement("LIST_VISIBILITY");
 			visibility.setTextContent(options.getVisiblity().value().toString());
 			addChildNode(visibility, currentNode);
@@ -68,6 +67,11 @@ public class DeleteListCommand extends AbstractCommand<DeleteListResponse, Delet
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 		Long jobId;
+		String description;
+		Long listId;
+		String listName;
+		boolean ignoreDependentMailings;
+		Long numberRemoved;
 		try {
 			Node jobIdNode = (Node) xpath.evaluate("JOB_ID", resultNode, XPathConstants.NODE);
 
@@ -76,7 +80,14 @@ public class DeleteListCommand extends AbstractCommand<DeleteListResponse, Delet
 
 			final JobResponse jobResponse = waitUntilJobIsCompleted(jobId);
 			log.debug("Job Response is {}", jobResponse);
-			if (!jobResponse.isComplete()) {
+
+			if (jobResponse.isComplete()) {
+				description = jobResponse.getJobDescription();
+				ignoreDependentMailings = Boolean.valueOf(jobResponse.getParameters().get("IGNORE_DEPENDENT_MAILINGS"));
+				listId = Long.parseLong(jobResponse.getParameters().get("SOURCE_LIST_ID"));
+				numberRemoved = Long.parseLong(jobResponse.getParameters().get("NUM_REMOVED"));
+				listName = jobResponse.getParameters().get("LIST_NAME");
+			} else {
 				log.error("State inconsistency for Job ID {}", jobId);
 				throw new JobBadStateException("Job ID " + jobId + " was reported as Completed, but actual State is "
 						+ jobResponse.getJobStatus());
@@ -86,6 +97,11 @@ public class DeleteListCommand extends AbstractCommand<DeleteListResponse, Delet
 		}
 
 		deleteListResponse.setJobId(jobId);
+		deleteListResponse.setDescription(description);
+		deleteListResponse.setIgnoreDependentMailings(ignoreDependentMailings);
+		deleteListResponse.setListId(listId);
+		deleteListResponse.setListName(listName);
+		deleteListResponse.setNumberRemoved(numberRemoved);
 		ResponseContainer<DeleteListResponse> response = new ResponseContainer<DeleteListResponse>(deleteListResponse);
 
 		return response;
