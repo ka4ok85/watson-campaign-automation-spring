@@ -9,6 +9,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -26,10 +29,15 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
 /*
  * No way to specify Visibility. RTs is created in Shared Folder
  */
+@Service
+@Scope("prototype")
 public class CreateTableCommand extends AbstractCommand<CreateTableResponse, CreateTableOptions> {
 
 	private static final String apiMethodName = "CreateTable";
 	private static final Logger log = LoggerFactory.getLogger(CreateTableCommand.class);
+
+	@Autowired
+	private CreateTableResponse createTableResponse;
 
 	@Override
 	public ResponseContainer<CreateTableResponse> executeCommand(CreateTableOptions options)
@@ -108,7 +116,6 @@ public class CreateTableCommand extends AbstractCommand<CreateTableResponse, Cre
 			throw new EngageApiException(e.getMessage());
 		}
 
-		CreateTableResponse createTableResponse = new CreateTableResponse();
 		createTableResponse.setTableId(tableId);
 		ResponseContainer<CreateTableResponse> response = new ResponseContainer<CreateTableResponse>(
 				createTableResponse);
