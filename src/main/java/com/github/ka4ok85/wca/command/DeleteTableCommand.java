@@ -9,6 +9,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -22,10 +25,15 @@ import com.github.ka4ok85.wca.response.DeleteTableResponse;
 import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
+@Service
+@Scope("prototype")
 public class DeleteTableCommand extends AbstractCommand<DeleteTableResponse, DeleteTableOptions> {
 
 	private static final String apiMethodName = "DeleteTable";
 	private static final Logger log = LoggerFactory.getLogger(DeleteTableCommand.class);
+	
+	@Autowired
+	private DeleteTableResponse deleteTableResponse;
 
 	@Override
 	public ResponseContainer<DeleteTableResponse> executeCommand(DeleteTableOptions options)
@@ -79,7 +87,6 @@ public class DeleteTableCommand extends AbstractCommand<DeleteTableResponse, Del
 			throw new EngageApiException(e.getMessage());
 		}
 
-		DeleteTableResponse deleteTableResponse = new DeleteTableResponse();
 		deleteTableResponse.setJobId(jobId);
 		ResponseContainer<DeleteTableResponse> response = new ResponseContainer<DeleteTableResponse>(
 				deleteTableResponse);
