@@ -10,6 +10,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -24,10 +27,15 @@ import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.JoinTableResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
+@Service
+@Scope("prototype")
 public class JoinTableCommand extends AbstractCommand<JoinTableResponse, JoinTableOptions> {
 
 	private static final String apiMethodName = "JoinTable";
 	private static final Logger log = LoggerFactory.getLogger(JoinTableCommand.class);
+
+	@Autowired
+	private JoinTableResponse joinTableResponse;
 
 	@Override
 	public ResponseContainer<JoinTableResponse> executeCommand(JoinTableOptions options)
@@ -118,7 +126,6 @@ public class JoinTableCommand extends AbstractCommand<JoinTableResponse, JoinTab
 			throw new EngageApiException(e.getMessage());
 		}
 
-		JoinTableResponse joinTableResponse = new JoinTableResponse();
 		joinTableResponse.setJobId(jobId);
 		ResponseContainer<JoinTableResponse> response = new ResponseContainer<JoinTableResponse>(joinTableResponse);
 
