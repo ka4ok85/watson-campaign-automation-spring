@@ -7,10 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 import com.github.ka4ok85.wca.Engage;
-import com.github.ka4ok85.wca.command.DeleteRelationalTableDataCommand;
-import com.github.ka4ok85.wca.command.DeleteTableCommand;
-import com.github.ka4ok85.wca.command.DoubleOptInRecipientCommand;
-import com.github.ka4ok85.wca.command.ExportTableCommand;
 import com.github.ka4ok85.wca.command.GetListMetaDataCommand;
 import com.github.ka4ok85.wca.command.GetListsCommand;
 import com.github.ka4ok85.wca.command.GetMailingTemplatesCommand;
@@ -26,29 +22,18 @@ import com.github.ka4ok85.wca.command.WaitForJobCommand;
 @Configuration
 @ComponentScan("com.github.ka4ok85.wca")
 public class SpringConfig {
-	
-	@Bean
-	@Scope("prototype")
-	public Engage engage(@Value("${podNumber}") int podNumber, @Value("${clientId}") String clientId, @Value("${clientSecret}") String clientSecret, @Value("${refreshToken}") String refreshToken) {
-		return new Engage(podNumber, clientId, clientSecret, refreshToken);
-	}
 
 	@Bean
 	@Scope("prototype")
-	public ExportTableCommand exportTable() {
-		return new ExportTableCommand();
+	public Engage engage(@Value("${podNumber}") int podNumber, @Value("${clientId}") String clientId,
+			@Value("${clientSecret}") String clientSecret, @Value("${refreshToken}") String refreshToken) {
+		return new Engage(podNumber, clientId, clientSecret, refreshToken);
 	}
 
 	@Bean
 	@Scope("prototype")
 	public SelectRecipientDataCommand selectRecipientData() {
 		return new SelectRecipientDataCommand();
-	}
-
-	@Bean
-	@Scope("prototype")
-	public DoubleOptInRecipientCommand doubleOptInRecipient() {
-		return new DoubleOptInRecipientCommand();
 	}
 
 	@Bean
@@ -89,20 +74,8 @@ public class SpringConfig {
 
 	@Bean
 	@Scope("prototype")
-	public DeleteRelationalTableDataCommand deleteRelationalTableData() {
-		return new DeleteRelationalTableDataCommand();
-	}
-
-	@Bean
-	@Scope("prototype")
 	public PurgeTableCommand purgeTable() {
 		return new PurgeTableCommand();
-	}
-
-	@Bean
-	@Scope("prototype")
-	public DeleteTableCommand deleteTable() {
-		return new DeleteTableCommand();
 	}
 
 	@Bean
