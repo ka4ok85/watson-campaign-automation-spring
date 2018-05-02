@@ -14,6 +14,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -29,11 +32,16 @@ import com.github.ka4ok85.wca.response.DeleteRelationalTableDataResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.RelationalTableRecordFailure;
 
+@Service
+@Scope("prototype")
 public class DeleteRelationalTableDataCommand
 		extends AbstractCommand<DeleteRelationalTableDataResponse, DeleteRelationalTableDataOptions> {
 
 	private static final String apiMethodName = "DeleteRelationalTableData";
 	private static final Logger log = LoggerFactory.getLogger(DeleteRelationalTableDataCommand.class);
+
+	@Autowired
+	private DeleteRelationalTableDataResponse deleteRelationalTableDataResponse;
 
 	@Override
 	public ResponseContainer<DeleteRelationalTableDataResponse> executeCommand(DeleteRelationalTableDataOptions options)
@@ -110,7 +118,6 @@ public class DeleteRelationalTableDataCommand
 			throw new EngageApiException(e.getMessage());
 		}
 
-		DeleteRelationalTableDataResponse deleteRelationalTableDataResponse = new DeleteRelationalTableDataResponse();
 		deleteRelationalTableDataResponse.setFailures(failures);
 		ResponseContainer<DeleteRelationalTableDataResponse> response = new ResponseContainer<DeleteRelationalTableDataResponse>(
 				deleteRelationalTableDataResponse);
