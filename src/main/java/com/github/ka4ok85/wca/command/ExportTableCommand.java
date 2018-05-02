@@ -9,6 +9,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -23,10 +26,15 @@ import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.utils.DateTimeRange;
 
+@Service
+@Scope("prototype")
 public class ExportTableCommand extends AbstractCommand<ExportTableResponse, ExportTableOptions> {
 
 	private static final String apiMethodName = "ExportTable";
 	private static final Logger log = LoggerFactory.getLogger(ExportTableCommand.class);
+	
+	@Autowired
+	private ExportTableResponse exportTableResponse;
 
 	@Override
 	public ResponseContainer<ExportTableResponse> executeCommand(ExportTableOptions options)
@@ -90,7 +98,6 @@ public class ExportTableCommand extends AbstractCommand<ExportTableResponse, Exp
 			throw new EngageApiException(e.getMessage());
 		}
 
-		ExportTableResponse exportTableResponse = new ExportTableResponse();
 		exportTableResponse.setRemoteFileName(filePath);
 		ResponseContainer<ExportTableResponse> response = new ResponseContainer<ExportTableResponse>(
 				exportTableResponse);
