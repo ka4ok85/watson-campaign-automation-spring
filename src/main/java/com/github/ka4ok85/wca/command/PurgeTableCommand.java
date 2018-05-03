@@ -10,6 +10,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -23,10 +26,15 @@ import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.PurgeTableResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
+@Service
+@Scope("prototype")
 public class PurgeTableCommand extends AbstractCommand<PurgeTableResponse, PurgeTableOptions> {
 
 	private static final String apiMethodName = "PurgeTable";
 	private static final Logger log = LoggerFactory.getLogger(PurgeTableCommand.class);
+
+	@Autowired
+	private PurgeTableResponse purgeTableResponse;
 
 	@Override
 	public ResponseContainer<PurgeTableResponse> executeCommand(PurgeTableOptions options)
@@ -87,7 +95,6 @@ public class PurgeTableCommand extends AbstractCommand<PurgeTableResponse, Purge
 			throw new EngageApiException(e.getMessage());
 		}
 
-		PurgeTableResponse purgeTableResponse = new PurgeTableResponse();
 		purgeTableResponse.setJobId(jobId);
 		ResponseContainer<PurgeTableResponse> response = new ResponseContainer<PurgeTableResponse>(purgeTableResponse);
 
