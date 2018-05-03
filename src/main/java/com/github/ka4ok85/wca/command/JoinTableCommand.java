@@ -107,6 +107,7 @@ public class JoinTableCommand extends AbstractCommand<JoinTableResponse, JoinTab
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 		Long jobId;
+		String description;
 		try {
 			Node jobIdNode = (Node) xpath.evaluate("JOB_ID", resultNode, XPathConstants.NODE);
 
@@ -116,6 +117,7 @@ public class JoinTableCommand extends AbstractCommand<JoinTableResponse, JoinTab
 			final JobResponse jobResponse = waitUntilJobIsCompleted(jobId);
 			log.debug("Job Response is {}", jobResponse);
 			if (jobResponse.isComplete()) {
+				description = jobResponse.getJobDescription();
 				log.debug("Job is completed");
 			} else {
 				log.error("State inconsistency for Job ID {}", jobId);
@@ -127,6 +129,7 @@ public class JoinTableCommand extends AbstractCommand<JoinTableResponse, JoinTab
 		}
 
 		joinTableResponse.setJobId(jobId);
+		joinTableResponse.setDescription(description);
 		ResponseContainer<JoinTableResponse> response = new ResponseContainer<JoinTableResponse>(joinTableResponse);
 
 		return response;
