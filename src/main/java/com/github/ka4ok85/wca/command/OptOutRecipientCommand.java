@@ -5,6 +5,9 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 
@@ -15,10 +18,15 @@ import com.github.ka4ok85.wca.options.OptOutRecipientOptions;
 import com.github.ka4ok85.wca.response.OptOutRecipientResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
+@Service
+@Scope("prototype")
 public class OptOutRecipientCommand extends AbstractCommand<OptOutRecipientResponse, OptOutRecipientOptions> {
 
 	private static final String apiMethodName = "OptOutRecipient";
 	private static final Logger log = LoggerFactory.getLogger(OptOutRecipientCommand.class);
+
+	@Autowired
+	private OptOutRecipientResponse optOutRecipientResponse;
 
 	@Override
 	public ResponseContainer<OptOutRecipientResponse> executeCommand(final OptOutRecipientOptions options)
@@ -75,7 +83,7 @@ public class OptOutRecipientCommand extends AbstractCommand<OptOutRecipientRespo
 		runApi(xml);
 
 		ResponseContainer<OptOutRecipientResponse> response = new ResponseContainer<OptOutRecipientResponse>(
-				new OptOutRecipientResponse());
+				optOutRecipientResponse);
 
 		return response;
 	}
