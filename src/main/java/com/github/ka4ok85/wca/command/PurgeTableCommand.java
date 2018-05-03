@@ -76,6 +76,7 @@ public class PurgeTableCommand extends AbstractCommand<PurgeTableResponse, Purge
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 		Long jobId;
+		String description;
 		try {
 			Node jobIdNode = (Node) xpath.evaluate("JOB_ID", resultNode, XPathConstants.NODE);
 
@@ -85,6 +86,7 @@ public class PurgeTableCommand extends AbstractCommand<PurgeTableResponse, Purge
 			final JobResponse jobResponse = waitUntilJobIsCompleted(jobId);
 			log.debug("Job Response is {}", jobResponse);
 			if (jobResponse.isComplete()) {
+				description = jobResponse.getJobDescription();
 				log.debug("Job is completed");
 			} else {
 				log.error("State inconsistency for Job ID {}", jobId);
@@ -96,6 +98,7 @@ public class PurgeTableCommand extends AbstractCommand<PurgeTableResponse, Purge
 		}
 
 		purgeTableResponse.setJobId(jobId);
+		purgeTableResponse.setDescription(description);
 		ResponseContainer<PurgeTableResponse> response = new ResponseContainer<PurgeTableResponse>(purgeTableResponse);
 
 		return response;
