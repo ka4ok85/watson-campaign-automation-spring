@@ -5,6 +5,9 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 
@@ -15,10 +18,15 @@ import com.github.ka4ok85.wca.options.RemoveRecipientOptions;
 import com.github.ka4ok85.wca.response.RemoveRecipientResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
+@Service
+@Scope("prototype")
 public class RemoveRecipientCommand extends AbstractCommand<RemoveRecipientResponse, RemoveRecipientOptions> {
 
 	private static final String apiMethodName = "RemoveRecipient";
 	private static final Logger log = LoggerFactory.getLogger(RemoveRecipientCommand.class);
+
+	@Autowired
+	private RemoveRecipientResponse removeRecipientResponse;
 
 	@Override
 	public ResponseContainer<RemoveRecipientResponse> executeCommand(final RemoveRecipientOptions options)
@@ -62,7 +70,7 @@ public class RemoveRecipientCommand extends AbstractCommand<RemoveRecipientRespo
 		runApi(xml);
 
 		ResponseContainer<RemoveRecipientResponse> response = new ResponseContainer<RemoveRecipientResponse>(
-				new RemoveRecipientResponse());
+				removeRecipientResponse);
 
 		return response;
 	}
