@@ -11,6 +11,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -26,10 +29,15 @@ import com.github.ka4ok85.wca.response.UpdateRecipientResponse;
 /*
  * For Opt-in opted-out recipient again put in Columns "OPT_OUT" name with "false" value
  */
+@Service
+@Scope("prototype")
 public class UpdateRecipientCommand extends AbstractCommand<UpdateRecipientResponse, UpdateRecipientOptions> {
 
 	private static final String apiMethodName = "UpdateRecipient";
 	private static final Logger log = LoggerFactory.getLogger(UpdateRecipientCommand.class);
+
+	@Autowired
+	private UpdateRecipientResponse updateRecipientResponse;
 
 	@Override
 	public ResponseContainer<UpdateRecipientResponse> executeCommand(final UpdateRecipientOptions options)
@@ -49,8 +57,7 @@ public class UpdateRecipientCommand extends AbstractCommand<UpdateRecipientRespo
 			addChildNode(oldEmail, currentNode);
 		} else if (options.getRecipientId() != null) {
 			Element recipientId = doc.createElement("RECIPIENT_ID");
-			recipientId.setTextContent(options.getRecipientId()
-					.toString());
+			recipientId.setTextContent(options.getRecipientId().toString());
 			addChildNode(recipientId, currentNode);
 		} else if (options.getEncodedRecipientId() != null) {
 			Element encodedRecipientId = doc.createElement("ENCODED_RECIPIENT_ID");
@@ -136,7 +143,8 @@ public class UpdateRecipientCommand extends AbstractCommand<UpdateRecipientRespo
 		boolean visitorAssociation = false;
 		Long recipientId;
 		try {
-			recipientId = Long.parseLong(((Node) xpath.evaluate("RecipientId", resultNode, XPathConstants.NODE)).getTextContent());
+			recipientId = Long.parseLong(
+					((Node) xpath.evaluate("RecipientId", resultNode, XPathConstants.NODE)).getTextContent());
 			Node visitorAssociationNode = (Node) xpath.evaluate("VISITOR_ASSOCIATION", resultNode, XPathConstants.NODE);
 			if (visitorAssociationNode != null && visitorAssociationNode.getTextContent().equals("TRUE")) {
 				visitorAssociation = true;
@@ -145,11 +153,11 @@ public class UpdateRecipientCommand extends AbstractCommand<UpdateRecipientRespo
 			throw new EngageApiException(e.getMessage());
 		}
 
-		UpdateRecipientResponse updateRecipientResponse = new UpdateRecipientResponse();
 		updateRecipientResponse.setRecipientId(recipientId);
 		updateRecipientResponse.setVisitorAssociation(visitorAssociation);
 
-		ResponseContainer<UpdateRecipientResponse> response = new ResponseContainer<UpdateRecipientResponse>(updateRecipientResponse);
+		ResponseContainer<UpdateRecipientResponse> response = new ResponseContainer<UpdateRecipientResponse>(
+				updateRecipientResponse);
 
 		return response;
 	}
