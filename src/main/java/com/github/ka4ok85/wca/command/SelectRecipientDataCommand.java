@@ -16,6 +16,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -32,11 +35,16 @@ import com.github.ka4ok85.wca.response.SelectRecipientDataResponse;
 /*
  * Be aware: SelectRecipientData API does not work for Restricted Databases with Compound non-String key columns
  */
+@Service
+@Scope("prototype")
 public class SelectRecipientDataCommand
 		extends AbstractCommand<SelectRecipientDataResponse, SelectRecipientDataOptions> {
 
 	private static final String apiMethodName = "SelectRecipientData";
 	private static final Logger log = LoggerFactory.getLogger(SelectRecipientDataCommand.class);
+
+	@Autowired
+	private SelectRecipientDataResponse selectRecipientDataResponse;
 
 	@Override
 	public ResponseContainer<SelectRecipientDataResponse> executeCommand(final SelectRecipientDataOptions options)
@@ -79,9 +87,10 @@ public class SelectRecipientDataCommand
 				cdata = doc.createCDATASection(entry.getValue());
 				columnValue.appendChild(cdata);
 				addChildNode(columnValue, column);
-			}			
+			}
 		} else {
-			throw new RuntimeException("Unique key columns must be part of the submission with column names and values");
+			throw new RuntimeException(
+					"Unique key columns must be part of the submission with column names and values");
 		}
 
 		addBooleanParameter(methodElement, "RETURN_CONTACT_LISTS", options.isReturnContactLists());
@@ -108,14 +117,18 @@ public class SelectRecipientDataCommand
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy K:mm a");
 		try {
 			email = ((Node) xpath.evaluate("Email", resultNode, XPathConstants.NODE)).getTextContent();
-			recipientId = Long.parseLong(((Node) xpath.evaluate("RecipientId", resultNode, XPathConstants.NODE)).getTextContent());
-			emailType = Integer.parseInt(((Node) xpath.evaluate("EmailType", resultNode, XPathConstants.NODE)).getTextContent());
-			String lastModifiedText = ((Node) xpath.evaluate("LastModified", resultNode, XPathConstants.NODE)).getTextContent();
+			recipientId = Long.parseLong(
+					((Node) xpath.evaluate("RecipientId", resultNode, XPathConstants.NODE)).getTextContent());
+			emailType = Integer
+					.parseInt(((Node) xpath.evaluate("EmailType", resultNode, XPathConstants.NODE)).getTextContent());
+			String lastModifiedText = ((Node) xpath.evaluate("LastModified", resultNode, XPathConstants.NODE))
+					.getTextContent();
 			if (lastModifiedText != "") {
 				lastModified = LocalDateTime.parse(lastModifiedText, formatter);
 			}
 
-			createdFrom = Integer.parseInt(((Node) xpath.evaluate("CreatedFrom", resultNode, XPathConstants.NODE)).getTextContent());
+			createdFrom = Integer
+					.parseInt(((Node) xpath.evaluate("CreatedFrom", resultNode, XPathConstants.NODE)).getTextContent());
 			String optedInText = ((Node) xpath.evaluate("OptedIn", resultNode, XPathConstants.NODE)).getTextContent();
 			if (optedInText != "") {
 				optedIn = LocalDateTime.parse(optedInText, formatter);
@@ -126,12 +139,14 @@ public class SelectRecipientDataCommand
 				optedOut = LocalDateTime.parse(optedOutText, formatter);
 			}
 
-			String resumeSendDateText = ((Node) xpath.evaluate("ResumeSendDate", resultNode, XPathConstants.NODE)).getTextContent();
+			String resumeSendDateText = ((Node) xpath.evaluate("ResumeSendDate", resultNode, XPathConstants.NODE))
+					.getTextContent();
 			if (resumeSendDateText != "") {
 				resumeSendDate = LocalDateTime.parse(resumeSendDateText, formatter);
 			}
 
-			organiztionId = ((Node) xpath.evaluate("ORGANIZATION_ID", resultNode, XPathConstants.NODE)).getTextContent();
+			organiztionId = ((Node) xpath.evaluate("ORGANIZATION_ID", resultNode, XPathConstants.NODE))
+					.getTextContent();
 			crmLeadSource = ((Node) xpath.evaluate("CRMLeadSource", resultNode, XPathConstants.NODE)).getTextContent();
 
 			NodeList columnsNode = (NodeList) xpath.evaluate("COLUMNS/COLUMN", resultNode, XPathConstants.NODESET);
@@ -144,8 +159,9 @@ public class SelectRecipientDataCommand
 				value = ((Node) xpath.evaluate("VALUE", column, XPathConstants.NODE)).getTextContent();
 				columns.put(name, value);
 			}
-			
-			NodeList contactListsNode = (NodeList) xpath.evaluate("CONTACT_LISTS/CONTACT_LIST_ID", resultNode, XPathConstants.NODESET);
+
+			NodeList contactListsNode = (NodeList) xpath.evaluate("CONTACT_LISTS/CONTACT_LIST_ID", resultNode,
+					XPathConstants.NODESET);
 			String contactListId;
 			for (int i = 0; i < contactListsNode.getLength(); i++) {
 				contactListId = contactListsNode.item(i).getTextContent();
@@ -155,7 +171,6 @@ public class SelectRecipientDataCommand
 			throw new EngageApiException(e.getMessage());
 		}
 
-		SelectRecipientDataResponse selectRecipientDataResponse = new SelectRecipientDataResponse();
 		selectRecipientDataResponse.setEmail(email);
 		selectRecipientDataResponse.setRecipientId(recipientId);
 		selectRecipientDataResponse.setEmailType(emailType);
@@ -169,7 +184,8 @@ public class SelectRecipientDataCommand
 		selectRecipientDataResponse.setColumns(columns);
 		selectRecipientDataResponse.setContactLists(contactLists);
 
-		ResponseContainer<SelectRecipientDataResponse> response = new ResponseContainer<SelectRecipientDataResponse>(selectRecipientDataResponse);
+		ResponseContainer<SelectRecipientDataResponse> response = new ResponseContainer<SelectRecipientDataResponse>(
+				selectRecipientDataResponse);
 
 		return response;
 	}
