@@ -13,30 +13,34 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.github.ka4ok85.wca.constants.ListColumnType;
 import com.github.ka4ok85.wca.constants.Visibility;
 import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
 import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
 import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
-import com.github.ka4ok85.wca.options.GetListMetaDataOptions;
 import com.github.ka4ok85.wca.options.GetMailingTemplatesOptions;
-import com.github.ka4ok85.wca.response.GetListMetaDataResponse;
 import com.github.ka4ok85.wca.response.GetMailingTemplatesResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
-import com.github.ka4ok85.wca.response.containers.ListColumnLimited;
 import com.github.ka4ok85.wca.response.containers.MailingTemplate;
 
+@Service
+@Scope("prototype")
 public class GetMailingTemplatesCommand
 		extends AbstractCommand<GetMailingTemplatesResponse, GetMailingTemplatesOptions> {
 
 	private static final String apiMethodName = "GetMailingTemplates";
 	private static final Logger log = LoggerFactory.getLogger(GetMailingTemplatesCommand.class);
+
+	@Autowired
+	private GetMailingTemplatesResponse getMailingTemplatesResponse;
 
 	@Override
 	public ResponseContainer<GetMailingTemplatesResponse> executeCommand(GetMailingTemplatesOptions options)
@@ -121,7 +125,6 @@ public class GetMailingTemplatesCommand
 			throw new EngageApiException(e.getMessage());
 		}
 
-		GetMailingTemplatesResponse getMailingTemplatesResponse = new GetMailingTemplatesResponse();
 		getMailingTemplatesResponse.setMailingTempaltes(mailingTempaltes);
 
 		ResponseContainer<GetMailingTemplatesResponse> response = new ResponseContainer<GetMailingTemplatesResponse>(

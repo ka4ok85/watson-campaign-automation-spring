@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 import com.github.ka4ok85.wca.Engage;
-import com.github.ka4ok85.wca.command.GetMailingTemplatesCommand;
 import com.github.ka4ok85.wca.command.WaitForJobCommand;
 
 @Configuration
@@ -25,11 +24,5 @@ public class SpringConfig {
 	@Scope("prototype")
 	public WaitForJobCommand waitForJobCommand() {
 		return new WaitForJobCommand();
-	}
-
-	@Bean
-	@Scope("prototype")
-	public GetMailingTemplatesCommand getMailingTemplates() {
-		return new GetMailingTemplatesCommand();
 	}
 }
