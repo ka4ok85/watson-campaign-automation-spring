@@ -22,4 +22,14 @@ public enum Visibility {
 
 		throw new IllegalArgumentException("Visibility not found. Provided value is: " + value);
 	}
+
+	public static Visibility getVisibilityByAlias(String alias) {
+		for (Visibility visibility : Visibility.values()) {
+			if (visibility.name().equalsIgnoreCase(alias)) {
+				return visibility;
+			}
+		}
+
+		throw new IllegalArgumentException("Visibility not found. Provided alias is: " + alias);
+	}
 }
