@@ -17,6 +17,8 @@ import com.github.ka4ok85.wca.command.GetListMetaDataCommand;
 import com.github.ka4ok85.wca.command.GetListsCommand;
 import com.github.ka4ok85.wca.command.GetMailingTemplatesCommand;
 import com.github.ka4ok85.wca.command.GetReportIdByDateCommand;
+import com.github.ka4ok85.wca.command.GetSentMailingsForOrgCommand;
+import com.github.ka4ok85.wca.command.GetSentMailingsForUserCommand;
 import com.github.ka4ok85.wca.command.InsertUpdateRelationalTableCommand;
 import com.github.ka4ok85.wca.command.JoinTableCommand;
 import com.github.ka4ok85.wca.command.OptOutRecipientCommand;
@@ -45,6 +47,8 @@ import com.github.ka4ok85.wca.options.GetListMetaDataOptions;
 import com.github.ka4ok85.wca.options.GetListsOptions;
 import com.github.ka4ok85.wca.options.GetMailingTemplatesOptions;
 import com.github.ka4ok85.wca.options.GetReportIdByDateOptions;
+import com.github.ka4ok85.wca.options.GetSentMailingsForOrgOptions;
+import com.github.ka4ok85.wca.options.GetSentMailingsForUserOptions;
 import com.github.ka4ok85.wca.options.InsertUpdateRelationalTableOptions;
 import com.github.ka4ok85.wca.options.JoinTableOptions;
 import com.github.ka4ok85.wca.options.OptOutRecipientOptions;
@@ -67,6 +71,8 @@ import com.github.ka4ok85.wca.response.GetListMetaDataResponse;
 import com.github.ka4ok85.wca.response.GetListsResponse;
 import com.github.ka4ok85.wca.response.GetMailingTemplatesResponse;
 import com.github.ka4ok85.wca.response.GetReportIdByDateResponse;
+import com.github.ka4ok85.wca.response.GetSentMailingsForOrgResponse;
+import com.github.ka4ok85.wca.response.GetSentMailingsForUserResponse;
 import com.github.ka4ok85.wca.response.InsertUpdateRelationalTableResponse;
 import com.github.ka4ok85.wca.response.JoinTableResponse;
 import com.github.ka4ok85.wca.response.OptOutRecipientResponse;
@@ -77,6 +83,7 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.SelectRecipientDataResponse;
 import com.github.ka4ok85.wca.response.UpdateRecipientResponse;
 import com.github.ka4ok85.wca.sftp.SFTP;
+
 
 public class Engage {
 	private OAuthClient oAuthClient;
@@ -321,6 +328,26 @@ public class Engage {
 		return result;
 	}
 
+	public ResponseContainer<GetSentMailingsForOrgResponse> getSentMailingsForOrg(GetSentMailingsForOrgOptions options)
+			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+		GetSentMailingsForOrgCommand getSentMailingsForOrg = getApplicationContext().getBean(GetSentMailingsForOrgCommand.class);
+		getSentMailingsForOrg.setoAuthClient(oAuthClient);
+		getSentMailingsForOrg.setSftp(sftp);
+		ResponseContainer<GetSentMailingsForOrgResponse> result = getSentMailingsForOrg.executeCommand(options);
+
+		return result;
+	}
+
+	public ResponseContainer<GetSentMailingsForUserResponse> getSentMailingsForUser(GetSentMailingsForUserOptions options)
+			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+		GetSentMailingsForUserCommand getSentMailingsForUser = getApplicationContext().getBean(GetSentMailingsForUserCommand.class);
+		getSentMailingsForUser.setoAuthClient(oAuthClient);
+		getSentMailingsForUser.setSftp(sftp);
+		ResponseContainer<GetSentMailingsForUserResponse> result = getSentMailingsForUser.executeCommand(options);
+
+		return result;
+	}	
+	
 	private static ApplicationContext getApplicationContext() {
 		if (applicationContext == null) {
 			applicationContext = new AnnotationConfigApplicationContext(SpringConfig.class);
