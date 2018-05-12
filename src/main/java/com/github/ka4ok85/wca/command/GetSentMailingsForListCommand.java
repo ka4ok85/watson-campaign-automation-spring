@@ -1,13 +1,36 @@
 package com.github.ka4ok85.wca.command;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import com.github.ka4ok85.wca.constants.Visibility;
+import com.github.ka4ok85.wca.exceptions.BadApiResultException;
+import com.github.ka4ok85.wca.exceptions.EngageApiException;
+import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
+import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
+import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.options.GetSentMailingsForListOptions;
 import com.github.ka4ok85.wca.response.GetSentMailingsForListResponse;
+import com.github.ka4ok85.wca.response.ResponseContainer;
+import com.github.ka4ok85.wca.response.containers.SentMailing;
+import com.github.ka4ok85.wca.utils.DateTimeRange;
 
 @Service
 @Scope("prototype")
@@ -19,4 +42,162 @@ public class GetSentMailingsForListCommand
 
 	@Autowired
 	private GetSentMailingsForListResponse getSentMailingsForListResponse;
+
+	@Override
+	public ResponseContainer<GetSentMailingsForListResponse> executeCommand(GetSentMailingsForListOptions options)
+			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+		Objects.requireNonNull(options, "GetSentMailingsForListOptions must not be null");
+
+		Element methodElement = doc.createElement(apiMethodName);
+		currentNode = addChildNode(methodElement, null);
+
+		addParameter(currentNode, "LIST_ID", options.getListId().toString());
+		DateTimeRange dateTimeRange = options.getDateTimeRange();
+		addParameter(currentNode, "DATE_START", dateTimeRange.getFormattedStartDateTime());
+		addParameter(currentNode, "DATE_END", dateTimeRange.getFormattedEndDateTime());
+
+		if (options.isIncludeChildren()) {
+			addBooleanParameter(currentNode, "INCLUDE_CHILDREN", true);
+		}
+
+		if (options.getVisibility() == Visibility.SHARED) {
+			addBooleanParameter(currentNode, "SHARED", true);
+		} else if (options.getVisibility() == Visibility.PRIVATE) {
+			addBooleanParameter(currentNode, "PRIVATE", true);
+		}
+
+		if (options.isMailingCountOnly()) {
+			addBooleanParameter(currentNode, "MAILING_COUNT_ONLY", true);
+		}
+
+		if (options.isAutomated()) {
+			addBooleanParameter(currentNode, "AUTOMATED", true);
+		}
+
+		if (options.isCampaignActive()) {
+			addBooleanParameter(currentNode, "CAMPAIGN_ACTIVE", true);
+		}
+
+		if (options.isCampaignCancelled()) {
+			addBooleanParameter(currentNode, "CAMPAIGN_CANCELLED", true);
+		}
+
+		if (options.isCampaignCompleted()) {
+			addBooleanParameter(currentNode, "CAMPAIGN_COMPLETED", true);
+		}
+
+		if (options.isCampaignScrapeTemplate()) {
+			addBooleanParameter(currentNode, "CAMPAIGN_SCRAPE_TEMPLATE", true);
+		}
+
+		if (options.isExcludeTestMailings()) {
+			addBooleanParameter(currentNode, "EXCLUDE_TEST_MAILINGS", true);
+		}
+
+		if (options.isExcludeZeroSent()) {
+			addBooleanParameter(currentNode, "EXCLUDE_ZERO_SENT", true);
+		}
+
+		if (options.isIncludeTags()) {
+			addBooleanParameter(currentNode, "INCLUDE_TAGS", true);
+		}
+
+		if (options.isOptinConfirmation()) {
+			addBooleanParameter(currentNode, "OPTIN_CONFIRMATION", true);
+		}
+
+		if (options.isProfileConfirmation()) {
+			addBooleanParameter(currentNode, "PROFILE_CONFIRMATION", true);
+		}
+
+		if (options.isScheduled()) {
+			addBooleanParameter(currentNode, "SCHEDULED", true);
+		}
+
+		if (options.isSend()) {
+			addBooleanParameter(currentNode, "SENT", true);
+		}
+
+		if (options.isSending()) {
+			addBooleanParameter(currentNode, "SENDING", true);
+		}
+
+		String xml = getXML();
+		log.debug("XML Request is {}", xml);
+		Node resultNode = runApi(xml);
+
+		XPathFactory factory = XPathFactory.newInstance();
+		XPath xpath = factory.newXPath();
+
+		List<SentMailing> sentMailings = new ArrayList<SentMailing>();
+		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.0");
+		try {
+
+			if (options.isMailingCountOnly()) {
+				getSentMailingsForListResponse.setSentMailingsCount(
+						Long.parseLong(((Node) xpath.evaluate("SentMailingsCount", resultNode, XPathConstants.NODE))
+								.getTextContent()));
+			} else {
+				NodeList mailingsNode = (NodeList) xpath.evaluate("Mailing", resultNode, XPathConstants.NODESET);
+				Node mailingNode;
+
+				for (int i = 0; i < mailingsNode.getLength(); i++) {
+					SentMailing mailing = new SentMailing();
+					mailingNode = mailingsNode.item(i);
+
+					mailing.setListId(Long.parseLong(
+							((Node) xpath.evaluate("ListId", mailingNode, XPathConstants.NODE)).getTextContent()));
+					mailing.setListName(
+							((Node) xpath.evaluate("ListName", mailingNode, XPathConstants.NODE)).getTextContent());
+					mailing.setMailingId(Long.parseLong(
+							((Node) xpath.evaluate("MailingId", mailingNode, XPathConstants.NODE)).getTextContent()));
+					mailing.setMailingName(
+							((Node) xpath.evaluate("MailingName", mailingNode, XPathConstants.NODE)).getTextContent());
+					mailing.setNumSent(Long.parseLong(
+							((Node) xpath.evaluate("NumSent", mailingNode, XPathConstants.NODE)).getTextContent()));
+					Node parentListIdNode = (Node) xpath.evaluate("ParentListId", mailingNode, XPathConstants.NODE);
+					if (parentListIdNode != null) {
+						mailing.setParentListId(Long.parseLong(parentListIdNode.getTextContent()));
+					}
+
+					mailing.setParentTemplateId(
+							Long.parseLong(((Node) xpath.evaluate("ParentTemplateId", mailingNode, XPathConstants.NODE))
+									.getTextContent()));
+					mailing.setReportId(Long.parseLong(
+							((Node) xpath.evaluate("ReportId", mailingNode, XPathConstants.NODE)).getTextContent()));
+					mailing.setScheduledDateTime(LocalDateTime.parse(
+							((Node) xpath.evaluate("ScheduledTS", mailingNode, XPathConstants.NODE)).getTextContent(),
+							formatter));
+					mailing.setSentDateTime(LocalDateTime.parse(
+							((Node) xpath.evaluate("SentTS", mailingNode, XPathConstants.NODE)).getTextContent(),
+							formatter));
+					mailing.setSubject(
+							((Node) xpath.evaluate("Subject", mailingNode, XPathConstants.NODE)).getTextContent());
+					mailing.setUserName(
+							((Node) xpath.evaluate("UserName", mailingNode, XPathConstants.NODE)).getTextContent());
+					mailing.setVisibility(Visibility.getVisibilityByAlias(
+							((Node) xpath.evaluate("Visibility", mailingNode, XPathConstants.NODE)).getTextContent()));
+
+					NodeList tagsNode = (NodeList) xpath.evaluate("Tags/Tag", mailingNode, XPathConstants.NODESET);
+					List<String> tagsList = new ArrayList<String>();
+					for (int j = 0; j < tagsNode.getLength(); j++) {
+						tagsList.add(tagsNode.item(j).getTextContent());
+					}
+
+					mailing.setTags(tagsList);
+
+					sentMailings.add(mailing);
+				}
+
+				getSentMailingsForListResponse.setSentMailings(sentMailings);
+			}
+		} catch (XPathExpressionException | JobBadStateException e) {
+			throw new EngageApiException(e.getMessage());
+		}
+
+		ResponseContainer<GetSentMailingsForListResponse> response = new ResponseContainer<GetSentMailingsForListResponse>(
+				getSentMailingsForListResponse);
+
+		return response;
+	}
 }
