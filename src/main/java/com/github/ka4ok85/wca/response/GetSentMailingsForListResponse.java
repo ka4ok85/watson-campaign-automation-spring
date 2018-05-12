@@ -10,7 +10,7 @@ import com.github.ka4ok85.wca.response.containers.SentMailing;
 
 @Component
 @Scope("prototype")
-public class GetSentMailingsForListResponse {
+public class GetSentMailingsForListResponse extends AbstractResponse {
 	private Long sentMailingsCount;
 	private List<SentMailing> sentMailings = new ArrayList<SentMailing>();
 

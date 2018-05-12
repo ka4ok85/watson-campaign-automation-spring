@@ -25,7 +25,7 @@ public class GetSentMailingsForListOptions extends AbstractOptions {
 
 	public GetSentMailingsForListOptions(Long listId, DateTimeRange dateTimeRange) {
 		super();
-		if (listId < 0) {
+		if (listId == null || listId < 0) {
 			throw new RuntimeException("List ID must be greater than zero. Provided List ID = " + listId);
 		}
 
