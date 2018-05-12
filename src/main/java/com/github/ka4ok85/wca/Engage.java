@@ -17,6 +17,7 @@ import com.github.ka4ok85.wca.command.GetListMetaDataCommand;
 import com.github.ka4ok85.wca.command.GetListsCommand;
 import com.github.ka4ok85.wca.command.GetMailingTemplatesCommand;
 import com.github.ka4ok85.wca.command.GetReportIdByDateCommand;
+import com.github.ka4ok85.wca.command.GetSentMailingsForListCommand;
 import com.github.ka4ok85.wca.command.GetSentMailingsForOrgCommand;
 import com.github.ka4ok85.wca.command.GetSentMailingsForUserCommand;
 import com.github.ka4ok85.wca.command.InsertUpdateRelationalTableCommand;
@@ -47,6 +48,7 @@ import com.github.ka4ok85.wca.options.GetListMetaDataOptions;
 import com.github.ka4ok85.wca.options.GetListsOptions;
 import com.github.ka4ok85.wca.options.GetMailingTemplatesOptions;
 import com.github.ka4ok85.wca.options.GetReportIdByDateOptions;
+import com.github.ka4ok85.wca.options.GetSentMailingsForListOptions;
 import com.github.ka4ok85.wca.options.GetSentMailingsForOrgOptions;
 import com.github.ka4ok85.wca.options.GetSentMailingsForUserOptions;
 import com.github.ka4ok85.wca.options.InsertUpdateRelationalTableOptions;
@@ -71,6 +73,7 @@ import com.github.ka4ok85.wca.response.GetListMetaDataResponse;
 import com.github.ka4ok85.wca.response.GetListsResponse;
 import com.github.ka4ok85.wca.response.GetMailingTemplatesResponse;
 import com.github.ka4ok85.wca.response.GetReportIdByDateResponse;
+import com.github.ka4ok85.wca.response.GetSentMailingsForListResponse;
 import com.github.ka4ok85.wca.response.GetSentMailingsForOrgResponse;
 import com.github.ka4ok85.wca.response.GetSentMailingsForUserResponse;
 import com.github.ka4ok85.wca.response.InsertUpdateRelationalTableResponse;
@@ -83,7 +86,6 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.SelectRecipientDataResponse;
 import com.github.ka4ok85.wca.response.UpdateRecipientResponse;
 import com.github.ka4ok85.wca.sftp.SFTP;
-
 
 public class Engage {
 	private OAuthClient oAuthClient;
@@ -330,7 +332,8 @@ public class Engage {
 
 	public ResponseContainer<GetSentMailingsForOrgResponse> getSentMailingsForOrg(GetSentMailingsForOrgOptions options)
 			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
-		GetSentMailingsForOrgCommand getSentMailingsForOrg = getApplicationContext().getBean(GetSentMailingsForOrgCommand.class);
+		GetSentMailingsForOrgCommand getSentMailingsForOrg = getApplicationContext()
+				.getBean(GetSentMailingsForOrgCommand.class);
 		getSentMailingsForOrg.setoAuthClient(oAuthClient);
 		getSentMailingsForOrg.setSftp(sftp);
 		ResponseContainer<GetSentMailingsForOrgResponse> result = getSentMailingsForOrg.executeCommand(options);
@@ -338,16 +341,30 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<GetSentMailingsForUserResponse> getSentMailingsForUser(GetSentMailingsForUserOptions options)
+	public ResponseContainer<GetSentMailingsForUserResponse> getSentMailingsForUser(
+			GetSentMailingsForUserOptions options)
 			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
-		GetSentMailingsForUserCommand getSentMailingsForUser = getApplicationContext().getBean(GetSentMailingsForUserCommand.class);
+		GetSentMailingsForUserCommand getSentMailingsForUser = getApplicationContext()
+				.getBean(GetSentMailingsForUserCommand.class);
 		getSentMailingsForUser.setoAuthClient(oAuthClient);
 		getSentMailingsForUser.setSftp(sftp);
 		ResponseContainer<GetSentMailingsForUserResponse> result = getSentMailingsForUser.executeCommand(options);
 
 		return result;
-	}	
-	
+	}
+
+	public ResponseContainer<GetSentMailingsForListResponse> getSentMailingsForList(
+			GetSentMailingsForListOptions options)
+			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+		GetSentMailingsForListCommand getSentMailingsForList = getApplicationContext()
+				.getBean(GetSentMailingsForListCommand.class);
+		getSentMailingsForList.setoAuthClient(oAuthClient);
+		getSentMailingsForList.setSftp(sftp);
+		ResponseContainer<GetSentMailingsForListResponse> result = getSentMailingsForList.executeCommand(options);
+
+		return result;
+	}
+
 	private static ApplicationContext getApplicationContext() {
 		if (applicationContext == null) {
 			applicationContext = new AnnotationConfigApplicationContext(SpringConfig.class);
