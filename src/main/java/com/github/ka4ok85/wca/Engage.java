@@ -3,6 +3,7 @@ package com.github.ka4ok85.wca;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.github.ka4ok85.wca.command.AddContactToContactListCommand;
 import com.github.ka4ok85.wca.command.AddRecipientCommand;
 import com.github.ka4ok85.wca.command.CalculateQueryCommand;
 import com.github.ka4ok85.wca.command.CreateContactListCommand;
@@ -12,6 +13,7 @@ import com.github.ka4ok85.wca.command.DeleteRelationalTableDataCommand;
 import com.github.ka4ok85.wca.command.DeleteTableCommand;
 import com.github.ka4ok85.wca.command.DoubleOptInRecipientCommand;
 import com.github.ka4ok85.wca.command.ExportListCommand;
+import com.github.ka4ok85.wca.command.ExportMailingTemplateCommand;
 import com.github.ka4ok85.wca.command.ExportTableCommand;
 import com.github.ka4ok85.wca.command.GetListMetaDataCommand;
 import com.github.ka4ok85.wca.command.GetListsCommand;
@@ -34,6 +36,7 @@ import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
 import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.oauth.OAuthClient;
 import com.github.ka4ok85.wca.oauth.OAuthClientImplementation;
+import com.github.ka4ok85.wca.options.AddContactToContactListOptions;
 import com.github.ka4ok85.wca.options.AddRecipientOptions;
 import com.github.ka4ok85.wca.options.CalculateQueryOptions;
 import com.github.ka4ok85.wca.options.CreateContactListOptions;
@@ -43,6 +46,7 @@ import com.github.ka4ok85.wca.options.DeleteRelationalTableDataOptions;
 import com.github.ka4ok85.wca.options.DeleteTableOptions;
 import com.github.ka4ok85.wca.options.DoubleOptInRecipientOptions;
 import com.github.ka4ok85.wca.options.ExportListOptions;
+import com.github.ka4ok85.wca.options.ExportMailingTemplateOptions;
 import com.github.ka4ok85.wca.options.ExportTableOptions;
 import com.github.ka4ok85.wca.options.GetListMetaDataOptions;
 import com.github.ka4ok85.wca.options.GetListsOptions;
@@ -59,6 +63,7 @@ import com.github.ka4ok85.wca.options.PurgeTableOptions;
 import com.github.ka4ok85.wca.options.RemoveRecipientOptions;
 import com.github.ka4ok85.wca.options.SelectRecipientDataOptions;
 import com.github.ka4ok85.wca.options.UpdateRecipientOptions;
+import com.github.ka4ok85.wca.response.AddContactToContactListResponse;
 import com.github.ka4ok85.wca.response.AddRecipientResponse;
 import com.github.ka4ok85.wca.response.CalculateQueryResponse;
 import com.github.ka4ok85.wca.response.CreateContactListResponse;
@@ -68,6 +73,7 @@ import com.github.ka4ok85.wca.response.DeleteRelationalTableDataResponse;
 import com.github.ka4ok85.wca.response.DeleteTableResponse;
 import com.github.ka4ok85.wca.response.DoubleOptInRecipientResponse;
 import com.github.ka4ok85.wca.response.ExportListResponse;
+import com.github.ka4ok85.wca.response.ExportMailingTemplateResponse;
 import com.github.ka4ok85.wca.response.ExportTableResponse;
 import com.github.ka4ok85.wca.response.GetListMetaDataResponse;
 import com.github.ka4ok85.wca.response.GetListsResponse;
@@ -361,6 +367,29 @@ public class Engage {
 		getSentMailingsForList.setoAuthClient(oAuthClient);
 		getSentMailingsForList.setSftp(sftp);
 		ResponseContainer<GetSentMailingsForListResponse> result = getSentMailingsForList.executeCommand(options);
+
+		return result;
+	}
+
+	public ResponseContainer<ExportMailingTemplateResponse> exportMailingTemplate(ExportMailingTemplateOptions options)
+			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+		ExportMailingTemplateCommand exportMailingTemplate = getApplicationContext()
+				.getBean(ExportMailingTemplateCommand.class);
+		exportMailingTemplate.setoAuthClient(oAuthClient);
+		exportMailingTemplate.setSftp(sftp);
+		ResponseContainer<ExportMailingTemplateResponse> result = exportMailingTemplate.executeCommand(options);
+
+		return result;
+	}
+
+	public ResponseContainer<AddContactToContactListResponse> addContactToContactList(
+			AddContactToContactListOptions options)
+			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+		AddContactToContactListCommand addContactToContactList = getApplicationContext()
+				.getBean(AddContactToContactListCommand.class);
+		addContactToContactList.setoAuthClient(oAuthClient);
+		addContactToContactList.setSftp(sftp);
+		ResponseContainer<AddContactToContactListResponse> result = addContactToContactList.executeCommand(options);
 
 		return result;
 	}
