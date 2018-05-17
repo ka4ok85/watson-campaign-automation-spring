@@ -4,6 +4,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.github.ka4ok85.wca.command.AddContactToContactListCommand;
+import com.github.ka4ok85.wca.command.AddContactToProgramCommand;
 import com.github.ka4ok85.wca.command.AddRecipientCommand;
 import com.github.ka4ok85.wca.command.CalculateQueryCommand;
 import com.github.ka4ok85.wca.command.CreateContactListCommand;
@@ -37,6 +38,7 @@ import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.oauth.OAuthClient;
 import com.github.ka4ok85.wca.oauth.OAuthClientImplementation;
 import com.github.ka4ok85.wca.options.AddContactToContactListOptions;
+import com.github.ka4ok85.wca.options.AddContactToProgramOptions;
 import com.github.ka4ok85.wca.options.AddRecipientOptions;
 import com.github.ka4ok85.wca.options.CalculateQueryOptions;
 import com.github.ka4ok85.wca.options.CreateContactListOptions;
@@ -64,6 +66,7 @@ import com.github.ka4ok85.wca.options.RemoveRecipientOptions;
 import com.github.ka4ok85.wca.options.SelectRecipientDataOptions;
 import com.github.ka4ok85.wca.options.UpdateRecipientOptions;
 import com.github.ka4ok85.wca.response.AddContactToContactListResponse;
+import com.github.ka4ok85.wca.response.AddContactToProgramResponse;
 import com.github.ka4ok85.wca.response.AddRecipientResponse;
 import com.github.ka4ok85.wca.response.CalculateQueryResponse;
 import com.github.ka4ok85.wca.response.CreateContactListResponse;
@@ -390,6 +393,17 @@ public class Engage {
 		addContactToContactList.setoAuthClient(oAuthClient);
 		addContactToContactList.setSftp(sftp);
 		ResponseContainer<AddContactToContactListResponse> result = addContactToContactList.executeCommand(options);
+
+		return result;
+	}
+
+	public ResponseContainer<AddContactToProgramResponse> addContactToProgram(AddContactToProgramOptions options)
+			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+		AddContactToProgramCommand addContactToProgram = getApplicationContext()
+				.getBean(AddContactToProgramCommand.class);
+		addContactToProgram.setoAuthClient(oAuthClient);
+		addContactToProgram.setSftp(sftp);
+		ResponseContainer<AddContactToProgramResponse> result = addContactToProgram.executeCommand(options);
 
 		return result;
 	}
