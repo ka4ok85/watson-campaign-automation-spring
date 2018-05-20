@@ -16,6 +16,7 @@ import com.github.ka4ok85.wca.command.DoubleOptInRecipientCommand;
 import com.github.ka4ok85.wca.command.ExportListCommand;
 import com.github.ka4ok85.wca.command.ExportMailingTemplateCommand;
 import com.github.ka4ok85.wca.command.ExportTableCommand;
+import com.github.ka4ok85.wca.command.GetAggregateTrackingForMailingCommand;
 import com.github.ka4ok85.wca.command.GetAggregateTrackingForOrgCommand;
 import com.github.ka4ok85.wca.command.GetListMetaDataCommand;
 import com.github.ka4ok85.wca.command.GetListsCommand;
@@ -51,6 +52,7 @@ import com.github.ka4ok85.wca.options.DoubleOptInRecipientOptions;
 import com.github.ka4ok85.wca.options.ExportListOptions;
 import com.github.ka4ok85.wca.options.ExportMailingTemplateOptions;
 import com.github.ka4ok85.wca.options.ExportTableOptions;
+import com.github.ka4ok85.wca.options.GetAggregateTrackingForMailingOptions;
 import com.github.ka4ok85.wca.options.GetAggregateTrackingForOrgOptions;
 import com.github.ka4ok85.wca.options.GetListMetaDataOptions;
 import com.github.ka4ok85.wca.options.GetListsOptions;
@@ -80,6 +82,7 @@ import com.github.ka4ok85.wca.response.DoubleOptInRecipientResponse;
 import com.github.ka4ok85.wca.response.ExportListResponse;
 import com.github.ka4ok85.wca.response.ExportMailingTemplateResponse;
 import com.github.ka4ok85.wca.response.ExportTableResponse;
+import com.github.ka4ok85.wca.response.GetAggregateTrackingForMailingResponse;
 import com.github.ka4ok85.wca.response.GetAggregateTrackingForOrgResponse;
 import com.github.ka4ok85.wca.response.GetListMetaDataResponse;
 import com.github.ka4ok85.wca.response.GetListsResponse;
@@ -419,6 +422,19 @@ public class Engage {
 		getAggregateTrackingForOrg.setoAuthClient(oAuthClient);
 		getAggregateTrackingForOrg.setSftp(sftp);
 		ResponseContainer<GetAggregateTrackingForOrgResponse> result = getAggregateTrackingForOrg
+				.executeCommand(options);
+
+		return result;
+	}
+
+	public ResponseContainer<GetAggregateTrackingForMailingResponse> getAggregateTrackingForMailing(
+			GetAggregateTrackingForMailingOptions options)
+			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+		GetAggregateTrackingForMailingCommand getAggregateTrackingForMailing = getApplicationContext()
+				.getBean(GetAggregateTrackingForMailingCommand.class);
+		getAggregateTrackingForMailing.setoAuthClient(oAuthClient);
+		getAggregateTrackingForMailing.setSftp(sftp);
+		ResponseContainer<GetAggregateTrackingForMailingResponse> result = getAggregateTrackingForMailing
 				.executeCommand(options);
 
 		return result;
