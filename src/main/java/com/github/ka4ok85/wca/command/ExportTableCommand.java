@@ -32,7 +32,7 @@ public class ExportTableCommand extends AbstractCommand<ExportTableResponse, Exp
 
 	private static final String apiMethodName = "ExportTable";
 	private static final Logger log = LoggerFactory.getLogger(ExportTableCommand.class);
-	
+
 	@Autowired
 	private ExportTableResponse exportTableResponse;
 
@@ -45,18 +45,15 @@ public class ExportTableCommand extends AbstractCommand<ExportTableResponse, Exp
 		currentNode = addChildNode(methodElement, null);
 
 		Element tableID = doc.createElement("TABLE_ID");
-		tableID.setTextContent(options.getTableId()
-				.toString());
+		tableID.setTextContent(options.getTableId().toString());
 		addChildNode(tableID, currentNode);
 
 		Element exportFormat = doc.createElement("EXPORT_FORMAT");
-		exportFormat.setTextContent(options.getExportFormat()
-				.value());
+		exportFormat.setTextContent(options.getExportFormat().value());
 		addChildNode(exportFormat, currentNode);
 
 		Element fileEncoding = doc.createElement("FILE_ENCODING");
-		fileEncoding.setTextContent(options.getFileEncoding()
-				.value());
+		fileEncoding.setTextContent(options.getFileEncoding().value());
 		addChildNode(fileEncoding, currentNode);
 
 		DateTimeRange lastModifiedRange = options.getLastModifiedRange();
@@ -73,6 +70,12 @@ public class ExportTableCommand extends AbstractCommand<ExportTableResponse, Exp
 
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
+
+		String description;
+		String remoteFileName;
+		String listName;
+		Long listId;
+		Long numProcessed;
 		String filePath;
 		try {
 			Node jobIdNode = (Node) xpath.evaluate("JOB_ID", resultNode, XPathConstants.NODE);
@@ -84,6 +87,12 @@ public class ExportTableCommand extends AbstractCommand<ExportTableResponse, Exp
 			final JobResponse jobResponse = waitUntilJobIsCompleted(jobId);
 			log.debug("Job Response is {}", jobResponse);
 			if (jobResponse.isComplete()) {
+				description = jobResponse.getJobDescription();
+				listName = jobResponse.getParameters().get("LIST_NAME");
+				remoteFileName = jobResponse.getParameters().get("FILENAME");
+				listId = Long.parseLong(jobResponse.getParameters().get("LIST_ID"));
+				numProcessed = Long.parseLong(jobResponse.getParameters().get("NUM_PROCESSED"));
+
 				filePath = filePathNode.getTextContent();
 				log.debug("Generated Export File {} on SFTP", filePath);
 				if (options.getLocalAbsoluteFilePath() != null) {
@@ -98,7 +107,12 @@ public class ExportTableCommand extends AbstractCommand<ExportTableResponse, Exp
 			throw new EngageApiException(e.getMessage());
 		}
 
-		exportTableResponse.setRemoteFileName(filePath);
+		exportTableResponse.setDescription(description);
+		exportTableResponse.setRemoteFilePath(filePath);
+		exportTableResponse.setListId(listId);
+		exportTableResponse.setListName(listName);
+		exportTableResponse.setNumProcessed(numProcessed);
+		exportTableResponse.setRemoteFileName(remoteFileName);
 		ResponseContainer<ExportTableResponse> response = new ResponseContainer<ExportTableResponse>(
 				exportTableResponse);
 
