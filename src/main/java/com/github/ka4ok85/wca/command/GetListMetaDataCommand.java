@@ -13,6 +13,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -29,10 +32,15 @@ import com.github.ka4ok85.wca.response.GetListMetaDataResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.ListColumnLimited;
 
+@Service
+@Scope("prototype")
 public class GetListMetaDataCommand extends AbstractCommand<GetListMetaDataResponse, GetListMetaDataOptions> {
 
 	private static final String apiMethodName = "GetListMetaData";
 	private static final Logger log = LoggerFactory.getLogger(GetListMetaDataCommand.class);
+	
+	@Autowired
+	private GetListMetaDataResponse getListMetaDataResponse;
 
 	@Override
 	public ResponseContainer<GetListMetaDataResponse> executeCommand(GetListMetaDataOptions options)
@@ -175,7 +183,6 @@ public class GetListMetaDataCommand extends AbstractCommand<GetListMetaDataRespo
 			throw new EngageApiException(e.getMessage());
 		}
 
-		GetListMetaDataResponse getListMetaDataResponse = new GetListMetaDataResponse();
 		getListMetaDataResponse.setId(id);
 		getListMetaDataResponse.setName(name);
 		getListMetaDataResponse.setType(type);

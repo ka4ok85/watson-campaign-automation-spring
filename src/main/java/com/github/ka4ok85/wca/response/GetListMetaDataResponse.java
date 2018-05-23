@@ -4,9 +4,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import com.github.ka4ok85.wca.constants.Visibility;
 import com.github.ka4ok85.wca.response.containers.ListColumnLimited;
 
+@Component
+@Scope("prototype")
 public class GetListMetaDataResponse extends AbstractResponse {
 
 	private Long id;
