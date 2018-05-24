@@ -14,6 +14,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -29,11 +32,16 @@ import com.github.ka4ok85.wca.response.InsertUpdateRelationalTableResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.RelationalTableRecordFailure;
 
+@Service
+@Scope("prototype")
 public class InsertUpdateRelationalTableCommand
 		extends AbstractCommand<InsertUpdateRelationalTableResponse, InsertUpdateRelationalTableOptions> {
 
 	private static final String apiMethodName = "InsertUpdateRelationalTable";
 	private static final Logger log = LoggerFactory.getLogger(InsertUpdateRelationalTableCommand.class);
+	
+	@Autowired
+	private InsertUpdateRelationalTableResponse insertUpdateRelationalTableResponse;
 
 	@Override
 	public ResponseContainer<InsertUpdateRelationalTableResponse> executeCommand(
@@ -117,7 +125,6 @@ public class InsertUpdateRelationalTableCommand
 			throw new EngageApiException(e.getMessage());
 		}
 
-		InsertUpdateRelationalTableResponse insertUpdateRelationalTableResponse = new InsertUpdateRelationalTableResponse();
 		insertUpdateRelationalTableResponse.setFailures(failures);
 		ResponseContainer<InsertUpdateRelationalTableResponse> response = new ResponseContainer<InsertUpdateRelationalTableResponse>(
 				insertUpdateRelationalTableResponse);
