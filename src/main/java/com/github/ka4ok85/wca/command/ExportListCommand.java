@@ -16,10 +16,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.github.ka4ok85.wca.constants.FileEncoding;
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.options.ExportListOptions;
 import com.github.ka4ok85.wca.response.ExportListResponse;
@@ -38,8 +35,7 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 	private ExportListResponse exportListResponse;
 
 	@Override
-	public ResponseContainer<ExportListResponse> executeCommand(ExportListOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public String buildXmlRequest(ExportListOptions options) {
 		Objects.requireNonNull(options, "ExportListOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -85,8 +81,12 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 
 		String xml = getXML();
 		log.debug("XML Request is {}", xml);
-		Node resultNode = runApi(xml);
 
+		return xml;
+	}
+
+	@Override
+	public ResponseContainer<ExportListResponse> readResponse(Node resultNode, ExportListOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 		String filePath;
