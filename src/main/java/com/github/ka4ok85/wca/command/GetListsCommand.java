@@ -11,6 +11,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -25,10 +28,15 @@ import com.github.ka4ok85.wca.response.GetListsResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.EngageList;
 
+@Service
+@Scope("prototype")
 public class GetListsCommand extends AbstractCommand<GetListsResponse, GetListsOptions> {
 
 	private static final String apiMethodName = "GetLists";
 	private static final Logger log = LoggerFactory.getLogger(GetListsCommand.class);
+
+	@Autowired
+	private GetListsResponse getListsResponse;
 
 	@Override
 	public ResponseContainer<GetListsResponse> executeCommand(GetListsOptions options)
@@ -72,21 +80,37 @@ public class GetListsCommand extends AbstractCommand<GetListsResponse, GetListsO
 			for (int i = 0; i < listsNode.getLength(); i++) {
 				EngageList engageList = new EngageList();
 				listNode = listsNode.item(i);
-				engageList.setId(Long.parseLong(((Node) xpath.evaluate("ID", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setId(
+						Long.parseLong(((Node) xpath.evaluate("ID", listNode, XPathConstants.NODE)).getTextContent()));
 				engageList.setName(((Node) xpath.evaluate("NAME", listNode, XPathConstants.NODE)).getTextContent());
-				engageList.setType(Integer.parseInt(((Node) xpath.evaluate("TYPE", listNode, XPathConstants.NODE)).getTextContent()));
-				engageList.setSize(Long.parseLong(((Node) xpath.evaluate("SIZE", listNode, XPathConstants.NODE)).getTextContent()));
-				engageList.setNumberOptOuts(Long.parseLong(((Node) xpath.evaluate("NUM_OPT_OUTS", listNode, XPathConstants.NODE)).getTextContent()));
-				engageList.setNumberUndeliverables(Long.parseLong(((Node) xpath.evaluate("NUM_UNDELIVERABLE", listNode, XPathConstants.NODE)).getTextContent()));
-				engageList.setLastModifiedDate(((Node) xpath.evaluate("LAST_MODIFIED", listNode, XPathConstants.NODE)).getTextContent());
-				engageList.setVisibility(Integer.parseInt(((Node) xpath.evaluate("VISIBILITY", listNode, XPathConstants.NODE)).getTextContent()));
-				engageList.setParentName(((Node) xpath.evaluate("PARENT_NAME", listNode, XPathConstants.NODE)).getTextContent());
-				engageList.setUserId(((Node) xpath.evaluate("USER_ID", listNode, XPathConstants.NODE)).getTextContent());
-				engageList.setFolderId(Long.parseLong(((Node) xpath.evaluate("PARENT_FOLDER_ID", listNode, XPathConstants.NODE)).getTextContent()));
-				engageList.setIsFolder(Boolean.parseBoolean(((Node) xpath.evaluate("IS_FOLDER", listNode, XPathConstants.NODE)).getTextContent()));
-				engageList.setFlaggedForBackup(Boolean.parseBoolean(((Node) xpath.evaluate("FLAGGED_FOR_BACKUP", listNode, XPathConstants.NODE)).getTextContent()));
-				engageList.setSuppressionList(Long.parseLong(((Node) xpath.evaluate("SUPPRESSION_LIST_ID", listNode, XPathConstants.NODE)).getTextContent()));
-				engageList.setIsDatabaseTemplate(Boolean.parseBoolean(((Node) xpath.evaluate("IS_DATABASE_TEMPLATE", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setType(Integer
+						.parseInt(((Node) xpath.evaluate("TYPE", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setSize(Long
+						.parseLong(((Node) xpath.evaluate("SIZE", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setNumberOptOuts(Long.parseLong(
+						((Node) xpath.evaluate("NUM_OPT_OUTS", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setNumberUndeliverables(Long.parseLong(
+						((Node) xpath.evaluate("NUM_UNDELIVERABLE", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setLastModifiedDate(
+						((Node) xpath.evaluate("LAST_MODIFIED", listNode, XPathConstants.NODE)).getTextContent());
+				engageList.setVisibility(Integer.parseInt(
+						((Node) xpath.evaluate("VISIBILITY", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setParentName(
+						((Node) xpath.evaluate("PARENT_NAME", listNode, XPathConstants.NODE)).getTextContent());
+				engageList
+						.setUserId(((Node) xpath.evaluate("USER_ID", listNode, XPathConstants.NODE)).getTextContent());
+				engageList.setFolderId(Long.parseLong(
+						((Node) xpath.evaluate("PARENT_FOLDER_ID", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setIsFolder(Boolean.parseBoolean(
+						((Node) xpath.evaluate("IS_FOLDER", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setFlaggedForBackup(Boolean.parseBoolean(
+						((Node) xpath.evaluate("FLAGGED_FOR_BACKUP", listNode, XPathConstants.NODE)).getTextContent()));
+				engageList.setSuppressionList(
+						Long.parseLong(((Node) xpath.evaluate("SUPPRESSION_LIST_ID", listNode, XPathConstants.NODE))
+								.getTextContent()));
+				engageList.setIsDatabaseTemplate(Boolean
+						.parseBoolean(((Node) xpath.evaluate("IS_DATABASE_TEMPLATE", listNode, XPathConstants.NODE))
+								.getTextContent()));
 
 				NodeList tagsNode = (NodeList) xpath.evaluate("TAGS/TAG", listNode, XPathConstants.NODESET);
 				List<String> tagsList = new ArrayList<String>();
@@ -101,7 +125,6 @@ public class GetListsCommand extends AbstractCommand<GetListsResponse, GetListsO
 			throw new EngageApiException(e.getMessage());
 		}
 
-		GetListsResponse getListsResponse = new GetListsResponse();
 		getListsResponse.setLists(lists);
 		ResponseContainer<GetListsResponse> response = new ResponseContainer<GetListsResponse>(getListsResponse);
 
