@@ -90,10 +90,15 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 		this.sftp = sftp;
 	}
 
+	public abstract String buildXmlRequest(V options);
+	public abstract ResponseContainer<T> readResponse(Node resultNode, V options);
+	
 	public ResponseContainer<T> executeCommand(V options) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
-		System.out.println("Running Command with options " + options.getClass());
+		buildXmlRequest(options);
+		String xml = getXML();
+		Node resultNode = runApi(xml);
 
-		return new ResponseContainer<T>(null);
+		return readResponse(resultNode, options);
 	}
 
 	protected String getXML() {
@@ -147,10 +152,10 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 	protected Node runApi(String xml) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
 		// TODO UTF8 check
         HttpHeaders headers = new HttpHeaders();
-
         headers.set("Authorization", "Bearer " + oAuthClient.getAccessToken());
         headers.setContentType(MediaType.TEXT_XML);
         headers.setContentLength(xml.length());
+System.out.println(xml);
         HttpEntity<String> entity = new HttpEntity<String>(xml, headers);
         Node resultNode = null;
 
@@ -158,7 +163,7 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
         	RestTemplate restTemplate = new RestTemplate();
         	restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
         	ResponseEntity<String> result = restTemplate.exchange(Pod.getXMLAPIEndpoint(oAuthClient.getPodNumber()), HttpMethod.POST, entity, String.class);
-
+System.out.println(result);
         	try {
 	        	DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 	        	InputSource is = new InputSource();
