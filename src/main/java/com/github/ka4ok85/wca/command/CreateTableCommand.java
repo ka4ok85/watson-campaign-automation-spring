@@ -17,10 +17,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.github.ka4ok85.wca.constants.RelationalTableColumnType;
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.options.CreateTableOptions;
 import com.github.ka4ok85.wca.options.containers.RelationalTableColumn;
 import com.github.ka4ok85.wca.response.CreateTableResponse;
@@ -40,8 +37,7 @@ public class CreateTableCommand extends AbstractCommand<CreateTableResponse, Cre
 	private CreateTableResponse createTableResponse;
 
 	@Override
-	public ResponseContainer<CreateTableResponse> executeCommand(CreateTableOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public void buildXmlRequest(CreateTableOptions options) {
 		Objects.requireNonNull(options, "CreateTableOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -100,11 +96,10 @@ public class CreateTableCommand extends AbstractCommand<CreateTableResponse, Cre
 				}
 			}
 		}
+	}
 
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-		Node resultNode = runApi(xml);
-
+	@Override
+	public ResponseContainer<CreateTableResponse> readResponse(Node resultNode, CreateTableOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 		Long tableId;

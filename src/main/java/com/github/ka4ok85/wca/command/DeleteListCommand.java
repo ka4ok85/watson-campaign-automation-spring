@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.options.DeleteListOptions;
 import com.github.ka4ok85.wca.response.DeleteListResponse;
@@ -36,8 +33,7 @@ public class DeleteListCommand extends AbstractCommand<DeleteListResponse, Delet
 	private DeleteListResponse deleteListResponse;
 
 	@Override
-	public ResponseContainer<DeleteListResponse> executeCommand(DeleteListOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public void buildXmlRequest(DeleteListOptions options) {
 		Objects.requireNonNull(options, "CreateContactListOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -59,11 +55,10 @@ public class DeleteListCommand extends AbstractCommand<DeleteListResponse, Delet
 
 		addBooleanParameter(methodElement, "KEEP_DETAILS", options.isKeepListDetails());
 		addBooleanParameter(methodElement, "RECURSIVE", options.isRecursive());
+	}
 
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-		Node resultNode = runApi(xml);
-
+	@Override
+	public ResponseContainer<DeleteListResponse> readResponse(Node resultNode, DeleteListOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 		Long jobId;

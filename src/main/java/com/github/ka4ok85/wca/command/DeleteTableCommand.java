@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.options.DeleteTableOptions;
 import com.github.ka4ok85.wca.response.DeleteTableResponse;
@@ -31,13 +28,12 @@ public class DeleteTableCommand extends AbstractCommand<DeleteTableResponse, Del
 
 	private static final String apiMethodName = "DeleteTable";
 	private static final Logger log = LoggerFactory.getLogger(DeleteTableCommand.class);
-	
+
 	@Autowired
 	private DeleteTableResponse deleteTableResponse;
 
 	@Override
-	public ResponseContainer<DeleteTableResponse> executeCommand(DeleteTableOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public void buildXmlRequest(DeleteTableOptions options) {
 		Objects.requireNonNull(options, "DeleteTableOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -60,11 +56,10 @@ public class DeleteTableCommand extends AbstractCommand<DeleteTableResponse, Del
 			tableVisibility.setTextContent(options.getTableVisibility().value().toString());
 			addChildNode(tableVisibility, currentNode);
 		}
+	}
 
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-		Node resultNode = runApi(xml);
-
+	@Override
+	public ResponseContainer<DeleteTableResponse> readResponse(Node resultNode, DeleteTableOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 		Long jobId;

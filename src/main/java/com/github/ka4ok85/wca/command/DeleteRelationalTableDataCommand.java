@@ -4,16 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -23,10 +21,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.options.DeleteRelationalTableDataOptions;
 import com.github.ka4ok85.wca.response.DeleteRelationalTableDataResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
@@ -38,14 +33,12 @@ public class DeleteRelationalTableDataCommand
 		extends AbstractCommand<DeleteRelationalTableDataResponse, DeleteRelationalTableDataOptions> {
 
 	private static final String apiMethodName = "DeleteRelationalTableData";
-	private static final Logger log = LoggerFactory.getLogger(DeleteRelationalTableDataCommand.class);
 
 	@Autowired
 	private DeleteRelationalTableDataResponse deleteRelationalTableDataResponse;
 
 	@Override
-	public ResponseContainer<DeleteRelationalTableDataResponse> executeCommand(DeleteRelationalTableDataOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public void buildXmlRequest(DeleteRelationalTableDataOptions options) {
 		Objects.requireNonNull(options, "DeleteRelationalTableDataOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -77,11 +70,11 @@ public class DeleteRelationalTableDataCommand
 		} else {
 			throw new RuntimeException("You must provide Rows");
 		}
+	}
 
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-		Node resultNode = runApi(xml);
-
+	@Override
+	public ResponseContainer<DeleteRelationalTableDataResponse> readResponse(Node resultNode,
+			DeleteRelationalTableDataOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 		List<RelationalTableRecordFailure> failures = new ArrayList<RelationalTableRecordFailure>();
