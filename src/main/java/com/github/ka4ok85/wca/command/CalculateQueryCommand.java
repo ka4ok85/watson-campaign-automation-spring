@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.options.CalculateQueryOptions;
 import com.github.ka4ok85.wca.response.CalculateQueryResponse;
@@ -36,8 +33,7 @@ public class CalculateQueryCommand extends AbstractCommand<CalculateQueryRespons
 	private CalculateQueryResponse calculateQueryResponse;
 
 	@Override
-	public ResponseContainer<CalculateQueryResponse> executeCommand(CalculateQueryOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public void buildXmlRequest(CalculateQueryOptions options) {
 		Objects.requireNonNull(options, "CalculateQueryOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -46,11 +42,10 @@ public class CalculateQueryCommand extends AbstractCommand<CalculateQueryRespons
 		Element queryId = doc.createElement("QUERY_ID");
 		queryId.setTextContent(options.getQueryId().toString());
 		addChildNode(queryId, currentNode);
+	}
 
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-		Node resultNode = runApi(xml);
-
+	@Override
+	public ResponseContainer<CalculateQueryResponse> readResponse(Node resultNode, CalculateQueryOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 		Long jobId;
