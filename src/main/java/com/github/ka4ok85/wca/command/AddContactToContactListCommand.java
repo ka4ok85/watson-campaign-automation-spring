@@ -3,17 +3,13 @@ package com.github.ka4ok85.wca.command;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.options.AddContactToContactListOptions;
 import com.github.ka4ok85.wca.response.AddContactToContactListResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
@@ -24,14 +20,12 @@ public class AddContactToContactListCommand
 		extends AbstractCommand<AddContactToContactListResponse, AddContactToContactListOptions> {
 
 	private static final String apiMethodName = "AddContactToContactList";
-	private static final Logger log = LoggerFactory.getLogger(AddContactToContactListCommand.class);
 
 	@Autowired
 	private AddContactToContactListResponse addContactToContactListResponse;
 
 	@Override
-	public ResponseContainer<AddContactToContactListResponse> executeCommand(AddContactToContactListOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public void buildXmlRequest(AddContactToContactListOptions options) {
 		Objects.requireNonNull(options, "AddContactToContactListOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -63,11 +57,11 @@ public class AddContactToContactListCommand
 		} else {
 			throw new RuntimeException("Please provide ContactId or Columns");
 		}
+	}
 
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-		runApi(xml);
-
+	@Override
+	public ResponseContainer<AddContactToContactListResponse> readResponse(Node resultNode,
+			AddContactToContactListOptions options) {
 		ResponseContainer<AddContactToContactListResponse> response = new ResponseContainer<AddContactToContactListResponse>(
 				addContactToContactListResponse);
 

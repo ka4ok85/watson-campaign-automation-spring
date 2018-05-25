@@ -90,12 +90,13 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 		this.sftp = sftp;
 	}
 
-	public abstract String buildXmlRequest(V options);
+	public abstract void buildXmlRequest(V options);
 	public abstract ResponseContainer<T> readResponse(Node resultNode, V options);
 	
 	public ResponseContainer<T> executeCommand(V options) throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
 		buildXmlRequest(options);
 		String xml = getXML();
+		log.debug("XML Request is {}", xml);
 		Node resultNode = runApi(xml);
 
 		return readResponse(resultNode, options);
