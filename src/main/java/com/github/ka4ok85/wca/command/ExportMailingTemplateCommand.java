@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.options.ExportMailingTemplateOptions;
 import com.github.ka4ok85.wca.response.ExportMailingTemplateResponse;
@@ -36,8 +33,7 @@ public class ExportMailingTemplateCommand
 	private ExportMailingTemplateResponse exportMailingTemplateResponse;
 
 	@Override
-	public ResponseContainer<ExportMailingTemplateResponse> executeCommand(ExportMailingTemplateOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public void buildXmlRequest(ExportMailingTemplateOptions options) {
 		Objects.requireNonNull(options, "ExportMailingTemplateOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -48,11 +44,11 @@ public class ExportMailingTemplateCommand
 		addChildNode(templateID, currentNode);
 
 		addBooleanParameter(methodElement, "ADD_TO_STORED_FILES", options.isAddToStoredFiles());
+	}
 
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-		Node resultNode = runApi(xml);
-
+	@Override
+	public ResponseContainer<ExportMailingTemplateResponse> readResponse(Node resultNode,
+			ExportMailingTemplateOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 		String filePath;

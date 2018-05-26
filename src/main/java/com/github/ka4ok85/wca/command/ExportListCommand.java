@@ -35,7 +35,7 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 	private ExportListResponse exportListResponse;
 
 	@Override
-	public String buildXmlRequest(ExportListOptions options) {
+	public void buildXmlRequest(ExportListOptions options) {
 		Objects.requireNonNull(options, "ExportListOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -78,11 +78,6 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 				addChildNode(columnElement, exportColumns);
 			}
 		}
-
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-
-		return xml;
 	}
 
 	@Override
