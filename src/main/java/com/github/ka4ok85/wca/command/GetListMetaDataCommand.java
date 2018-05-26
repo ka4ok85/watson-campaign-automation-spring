@@ -11,8 +11,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -22,10 +20,7 @@ import org.w3c.dom.NodeList;
 
 import com.github.ka4ok85.wca.constants.ListColumnType;
 import com.github.ka4ok85.wca.constants.Visibility;
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.options.GetListMetaDataOptions;
 import com.github.ka4ok85.wca.response.GetListMetaDataResponse;
@@ -37,14 +32,12 @@ import com.github.ka4ok85.wca.response.containers.ListColumnLimited;
 public class GetListMetaDataCommand extends AbstractCommand<GetListMetaDataResponse, GetListMetaDataOptions> {
 
 	private static final String apiMethodName = "GetListMetaData";
-	private static final Logger log = LoggerFactory.getLogger(GetListMetaDataCommand.class);
-	
+
 	@Autowired
 	private GetListMetaDataResponse getListMetaDataResponse;
 
 	@Override
-	public ResponseContainer<GetListMetaDataResponse> executeCommand(GetListMetaDataOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public void buildXmlRequest(GetListMetaDataOptions options) {
 		Objects.requireNonNull(options, "GetListMetaDataOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -53,11 +46,10 @@ public class GetListMetaDataCommand extends AbstractCommand<GetListMetaDataRespo
 		Element listId = doc.createElement("LIST_ID");
 		listId.setTextContent(options.getListId().toString());
 		addChildNode(listId, currentNode);
+	}
 
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-		Node resultNode = runApi(xml);
-
+	@Override
+	public ResponseContainer<GetListMetaDataResponse> readResponse(Node resultNode, GetListMetaDataOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 		Long id;
