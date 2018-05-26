@@ -11,8 +11,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -21,10 +19,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.github.ka4ok85.wca.constants.Visibility;
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.options.GetAggregateTrackingForOrgOptions;
 import com.github.ka4ok85.wca.response.GetAggregateTrackingForOrgResponse;
@@ -41,15 +36,12 @@ public class GetAggregateTrackingForOrgCommand
 		extends AbstractCommand<GetAggregateTrackingForOrgResponse, GetAggregateTrackingForOrgOptions> {
 
 	private static final String apiMethodName = "GetAggregateTrackingForOrg";
-	private static final Logger log = LoggerFactory.getLogger(GetAggregateTrackingForOrgCommand.class);
 
 	@Autowired
 	private GetAggregateTrackingForOrgResponse getAggregateTrackingForOrgResponse;
 
 	@Override
-	public ResponseContainer<GetAggregateTrackingForOrgResponse> executeCommand(
-			GetAggregateTrackingForOrgOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public void buildXmlRequest(GetAggregateTrackingForOrgOptions options) {
 		Objects.requireNonNull(options, "GetAggregateTrackingForOrgOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -116,11 +108,11 @@ public class GetAggregateTrackingForOrgCommand
 		if (options.isPerClick()) {
 			addBooleanParameter(currentNode, "PER_CLICK", true);
 		}
+	}
 
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-		Node resultNode = runApi(xml);
-
+	@Override
+	public ResponseContainer<GetAggregateTrackingForOrgResponse> readResponse(Node resultNode,
+			GetAggregateTrackingForOrgOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 
