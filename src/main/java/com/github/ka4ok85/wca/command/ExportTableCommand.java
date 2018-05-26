@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.options.ExportTableOptions;
 import com.github.ka4ok85.wca.response.ExportTableResponse;
@@ -37,8 +34,7 @@ public class ExportTableCommand extends AbstractCommand<ExportTableResponse, Exp
 	private ExportTableResponse exportTableResponse;
 
 	@Override
-	public ResponseContainer<ExportTableResponse> executeCommand(ExportTableOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public void buildXmlRequest(ExportTableOptions options) {
 		Objects.requireNonNull(options, "ExportTableOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -63,11 +59,10 @@ public class ExportTableCommand extends AbstractCommand<ExportTableResponse, Exp
 		}
 
 		addBooleanParameter(methodElement, "ADD_TO_STORED_FILES", options.isAddToStoredFiles());
+	}
 
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-		Node resultNode = runApi(xml);
-
+	@Override
+	public ResponseContainer<ExportTableResponse> readResponse(Node resultNode, ExportTableOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 
