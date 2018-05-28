@@ -11,8 +11,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -21,10 +19,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.github.ka4ok85.wca.constants.Visibility;
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.options.GetMailingTemplatesOptions;
 import com.github.ka4ok85.wca.response.GetMailingTemplatesResponse;
@@ -37,14 +32,12 @@ public class GetMailingTemplatesCommand
 		extends AbstractCommand<GetMailingTemplatesResponse, GetMailingTemplatesOptions> {
 
 	private static final String apiMethodName = "GetMailingTemplates";
-	private static final Logger log = LoggerFactory.getLogger(GetMailingTemplatesCommand.class);
 
 	@Autowired
 	private GetMailingTemplatesResponse getMailingTemplatesResponse;
 
 	@Override
-	public ResponseContainer<GetMailingTemplatesResponse> executeCommand(GetMailingTemplatesOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public void buildXmlRequest(GetMailingTemplatesOptions options) {
 		Objects.requireNonNull(options, "GetMailingTemplatesOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -78,11 +71,11 @@ public class GetMailingTemplatesCommand
 		if (options.isCrmEnabled()) {
 			addBooleanParameter(methodElement, "IS_CRM_ENABLED", options.isCrmEnabled());
 		}
+	}
 
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-		Node resultNode = runApi(xml);
-
+	@Override
+	public ResponseContainer<GetMailingTemplatesResponse> readResponse(Node resultNode,
+			GetMailingTemplatesOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 
