@@ -113,5 +113,4 @@ public class ExportTableCommand extends AbstractCommand<ExportTableResponse, Exp
 
 		return response;
 	}
-
 }

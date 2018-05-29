@@ -316,5 +316,4 @@ public class GetAggregateTrackingForMailingCommand
 
 		return response;
 	}
-
 }

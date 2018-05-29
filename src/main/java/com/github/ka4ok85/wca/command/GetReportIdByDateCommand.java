@@ -11,8 +11,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -20,10 +18,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.options.GetReportIdByDateOptions;
 import com.github.ka4ok85.wca.response.GetReportIdByDateResponse;
@@ -35,14 +30,12 @@ import com.github.ka4ok85.wca.response.containers.ReportIdByDateMailing;
 public class GetReportIdByDateCommand extends AbstractCommand<GetReportIdByDateResponse, GetReportIdByDateOptions> {
 
 	private static final String apiMethodName = "GetReportIdByDate";
-	private static final Logger log = LoggerFactory.getLogger(GetReportIdByDateCommand.class);
 
 	@Autowired
 	private GetReportIdByDateResponse getReportIdByDateResponse;
 
 	@Override
-	public ResponseContainer<GetReportIdByDateResponse> executeCommand(GetReportIdByDateOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public void buildXmlRequest(GetReportIdByDateOptions options) {
 		Objects.requireNonNull(options, "GetReportIdByDateOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -61,11 +54,11 @@ public class GetReportIdByDateCommand extends AbstractCommand<GetReportIdByDateR
 		Element dateEnd = doc.createElement("DATE_END");
 		dateEnd.setTextContent(options.getDateEnd().format(formatter));
 		addChildNode(dateEnd, currentNode);
+	}
 
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-		Node resultNode = runApi(xml);
-
+	@Override
+	public ResponseContainer<GetReportIdByDateResponse> readResponse(Node resultNode,
+			GetReportIdByDateOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 
