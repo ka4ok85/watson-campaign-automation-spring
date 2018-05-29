@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.options.ImportListOptions;
 import com.github.ka4ok85.wca.response.ImportListResponse;
@@ -37,8 +34,7 @@ public class ImportListCommand extends AbstractCommand<ImportListResponse, Impor
 	private ImportListResponse importListResponse;
 
 	@Override
-	public ResponseContainer<ImportListResponse> executeCommand(ImportListOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public void buildXmlRequest(ImportListOptions options) {
 		Objects.requireNonNull(options, "ImportListOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -60,10 +56,10 @@ public class ImportListCommand extends AbstractCommand<ImportListResponse, Impor
 		fileEncoding.setTextContent(options.getFileEncoding().value());
 		addChildNode(fileEncoding, currentNode);
 
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-		Node resultNode = runApi(xml);
+	}
 
+	@Override
+	public ResponseContainer<ImportListResponse> readResponse(Node resultNode, ImportListOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 

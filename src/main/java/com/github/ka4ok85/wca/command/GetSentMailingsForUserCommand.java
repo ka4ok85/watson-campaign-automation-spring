@@ -11,8 +11,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -21,10 +19,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.github.ka4ok85.wca.constants.Visibility;
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.options.GetSentMailingsForUserOptions;
 import com.github.ka4ok85.wca.response.GetSentMailingsForUserResponse;
@@ -38,14 +33,12 @@ public class GetSentMailingsForUserCommand
 		extends AbstractCommand<GetSentMailingsForUserResponse, GetSentMailingsForUserOptions> {
 
 	private static final String apiMethodName = "GetSentMailingsForUser";
-	private static final Logger log = LoggerFactory.getLogger(GetSentMailingsForUserCommand.class);
 
 	@Autowired
 	private GetSentMailingsForUserResponse getSentMailingsForUserResponse;
 
 	@Override
-	public ResponseContainer<GetSentMailingsForUserResponse> executeCommand(GetSentMailingsForUserOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public void buildXmlRequest(GetSentMailingsForUserOptions options) {
 		Objects.requireNonNull(options, "GetSentMailingsForUserOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -60,7 +53,7 @@ public class GetSentMailingsForUserCommand
 		} else if (options.getVisibility() == Visibility.PRIVATE) {
 			addBooleanParameter(currentNode, "PRIVATE", true);
 		}
-		
+
 		if (options.getOptionalUser() != null) {
 			addParameter(currentNode, "OPTIONALUSER", options.getOptionalUser());
 		}
@@ -120,11 +113,11 @@ public class GetSentMailingsForUserCommand
 		if (options.isSending()) {
 			addBooleanParameter(currentNode, "SENDING", true);
 		}
+	}
 
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-		Node resultNode = runApi(xml);
-
+	@Override
+	public ResponseContainer<GetSentMailingsForUserResponse> readResponse(Node resultNode,
+			GetSentMailingsForUserOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 
