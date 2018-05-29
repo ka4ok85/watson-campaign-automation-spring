@@ -18,6 +18,7 @@ import com.github.ka4ok85.wca.command.ExportMailingTemplateCommand;
 import com.github.ka4ok85.wca.command.ExportTableCommand;
 import com.github.ka4ok85.wca.command.GetAggregateTrackingForMailingCommand;
 import com.github.ka4ok85.wca.command.GetAggregateTrackingForOrgCommand;
+import com.github.ka4ok85.wca.command.GetAggregateTrackingForUserCommand;
 import com.github.ka4ok85.wca.command.GetListMetaDataCommand;
 import com.github.ka4ok85.wca.command.GetListsCommand;
 import com.github.ka4ok85.wca.command.GetMailingTemplatesCommand;
@@ -25,6 +26,7 @@ import com.github.ka4ok85.wca.command.GetReportIdByDateCommand;
 import com.github.ka4ok85.wca.command.GetSentMailingsForListCommand;
 import com.github.ka4ok85.wca.command.GetSentMailingsForOrgCommand;
 import com.github.ka4ok85.wca.command.GetSentMailingsForUserCommand;
+import com.github.ka4ok85.wca.command.ImportListCommand;
 import com.github.ka4ok85.wca.command.InsertUpdateRelationalTableCommand;
 import com.github.ka4ok85.wca.command.JoinTableCommand;
 import com.github.ka4ok85.wca.command.OptOutRecipientCommand;
@@ -54,6 +56,7 @@ import com.github.ka4ok85.wca.options.ExportMailingTemplateOptions;
 import com.github.ka4ok85.wca.options.ExportTableOptions;
 import com.github.ka4ok85.wca.options.GetAggregateTrackingForMailingOptions;
 import com.github.ka4ok85.wca.options.GetAggregateTrackingForOrgOptions;
+import com.github.ka4ok85.wca.options.GetAggregateTrackingForUserOptions;
 import com.github.ka4ok85.wca.options.GetListMetaDataOptions;
 import com.github.ka4ok85.wca.options.GetListsOptions;
 import com.github.ka4ok85.wca.options.GetMailingTemplatesOptions;
@@ -61,6 +64,7 @@ import com.github.ka4ok85.wca.options.GetReportIdByDateOptions;
 import com.github.ka4ok85.wca.options.GetSentMailingsForListOptions;
 import com.github.ka4ok85.wca.options.GetSentMailingsForOrgOptions;
 import com.github.ka4ok85.wca.options.GetSentMailingsForUserOptions;
+import com.github.ka4ok85.wca.options.ImportListOptions;
 import com.github.ka4ok85.wca.options.InsertUpdateRelationalTableOptions;
 import com.github.ka4ok85.wca.options.JoinTableOptions;
 import com.github.ka4ok85.wca.options.OptOutRecipientOptions;
@@ -84,6 +88,7 @@ import com.github.ka4ok85.wca.response.ExportMailingTemplateResponse;
 import com.github.ka4ok85.wca.response.ExportTableResponse;
 import com.github.ka4ok85.wca.response.GetAggregateTrackingForMailingResponse;
 import com.github.ka4ok85.wca.response.GetAggregateTrackingForOrgResponse;
+import com.github.ka4ok85.wca.response.GetAggregateTrackingForUserResponse;
 import com.github.ka4ok85.wca.response.GetListMetaDataResponse;
 import com.github.ka4ok85.wca.response.GetListsResponse;
 import com.github.ka4ok85.wca.response.GetMailingTemplatesResponse;
@@ -91,6 +96,7 @@ import com.github.ka4ok85.wca.response.GetReportIdByDateResponse;
 import com.github.ka4ok85.wca.response.GetSentMailingsForListResponse;
 import com.github.ka4ok85.wca.response.GetSentMailingsForOrgResponse;
 import com.github.ka4ok85.wca.response.GetSentMailingsForUserResponse;
+import com.github.ka4ok85.wca.response.ImportListResponse;
 import com.github.ka4ok85.wca.response.InsertUpdateRelationalTableResponse;
 import com.github.ka4ok85.wca.response.JoinTableResponse;
 import com.github.ka4ok85.wca.response.OptOutRecipientResponse;
@@ -436,6 +442,29 @@ public class Engage {
 		getAggregateTrackingForMailing.setSftp(sftp);
 		ResponseContainer<GetAggregateTrackingForMailingResponse> result = getAggregateTrackingForMailing
 				.executeCommand(options);
+
+		return result;
+	}
+
+	public ResponseContainer<GetAggregateTrackingForUserResponse> getAggregateTrackingForUser(
+			GetAggregateTrackingForUserOptions options)
+			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+		GetAggregateTrackingForUserCommand getAggregateTrackingForUser = getApplicationContext()
+				.getBean(GetAggregateTrackingForUserCommand.class);
+		getAggregateTrackingForUser.setoAuthClient(oAuthClient);
+		getAggregateTrackingForUser.setSftp(sftp);
+		ResponseContainer<GetAggregateTrackingForUserResponse> result = getAggregateTrackingForUser
+				.executeCommand(options);
+
+		return result;
+	}
+
+	public ResponseContainer<ImportListResponse> importList(ImportListOptions options)
+			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+		ImportListCommand importList = getApplicationContext().getBean(ImportListCommand.class);
+		importList.setoAuthClient(oAuthClient);
+		importList.setSftp(sftp);
+		ResponseContainer<ImportListResponse> result = importList.executeCommand(options);
 
 		return result;
 	}
