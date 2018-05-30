@@ -12,8 +12,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -23,10 +21,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.options.InsertUpdateRelationalTableOptions;
 import com.github.ka4ok85.wca.response.InsertUpdateRelationalTableResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
@@ -35,18 +30,15 @@ import com.github.ka4ok85.wca.response.containers.RelationalTableRecordFailure;
 @Service
 @Scope("prototype")
 public class InsertUpdateRelationalTableCommand
-		extends AbstractCommand<InsertUpdateRelationalTableResponse, InsertUpdateRelationalTableOptions> {
+		extends AbstractInstantCommand<InsertUpdateRelationalTableResponse, InsertUpdateRelationalTableOptions> {
 
 	private static final String apiMethodName = "InsertUpdateRelationalTable";
-	private static final Logger log = LoggerFactory.getLogger(InsertUpdateRelationalTableCommand.class);
-	
+
 	@Autowired
 	private InsertUpdateRelationalTableResponse insertUpdateRelationalTableResponse;
 
 	@Override
-	public ResponseContainer<InsertUpdateRelationalTableResponse> executeCommand(
-			InsertUpdateRelationalTableOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public void buildXmlRequest(InsertUpdateRelationalTableOptions options) {
 		Objects.requireNonNull(options, "InsertUpdateRelationalTableOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -84,11 +76,11 @@ public class InsertUpdateRelationalTableCommand
 		} else {
 			throw new RuntimeException("You must provide Rows");
 		}
+	}
 
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-		Node resultNode = runApi(xml);
-
+	@Override
+	public ResponseContainer<InsertUpdateRelationalTableResponse> readResponse(Node resultNode,
+			InsertUpdateRelationalTableOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 		List<RelationalTableRecordFailure> failures = new ArrayList<RelationalTableRecordFailure>();

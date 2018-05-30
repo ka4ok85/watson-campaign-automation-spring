@@ -3,34 +3,28 @@ package com.github.ka4ok85.wca.command;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.options.OptOutRecipientOptions;
 import com.github.ka4ok85.wca.response.OptOutRecipientResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
 @Service
 @Scope("prototype")
-public class OptOutRecipientCommand extends AbstractCommand<OptOutRecipientResponse, OptOutRecipientOptions> {
+public class OptOutRecipientCommand extends AbstractInstantCommand<OptOutRecipientResponse, OptOutRecipientOptions> {
 
 	private static final String apiMethodName = "OptOutRecipient";
-	private static final Logger log = LoggerFactory.getLogger(OptOutRecipientCommand.class);
 
 	@Autowired
 	private OptOutRecipientResponse optOutRecipientResponse;
 
 	@Override
-	public ResponseContainer<OptOutRecipientResponse> executeCommand(final OptOutRecipientOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public void buildXmlRequest(OptOutRecipientOptions options) {
 		Objects.requireNonNull(options, "OptOutRecipientOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -77,15 +71,13 @@ public class OptOutRecipientCommand extends AbstractCommand<OptOutRecipientRespo
 				addChildNode(columnValue, column);
 			}
 		}
+	}
 
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-		runApi(xml);
-
+	@Override
+	public ResponseContainer<OptOutRecipientResponse> readResponse(Node resultNode, OptOutRecipientOptions options) {
 		ResponseContainer<OptOutRecipientResponse> response = new ResponseContainer<OptOutRecipientResponse>(
 				optOutRecipientResponse);
 
 		return response;
 	}
-
 }
