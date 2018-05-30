@@ -17,7 +17,7 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
 @Service
 @Scope("prototype")
 public class AddContactToContactListCommand
-		extends AbstractCommand<AddContactToContactListResponse, AddContactToContactListOptions> {
+		extends AbstractInstantCommand<AddContactToContactListResponse, AddContactToContactListOptions> {
 
 	private static final String apiMethodName = "AddContactToContactList";
 

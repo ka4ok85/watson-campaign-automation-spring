@@ -22,7 +22,7 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
 
 @Service
 @Scope("prototype")
-public class AddRecipientCommand extends AbstractCommand<AddRecipientResponse, AddRecipientOptions> {
+public class AddRecipientCommand extends AbstractInstantCommand<AddRecipientResponse, AddRecipientOptions> {
 
 	private static final String apiMethodName = "AddRecipient";
 

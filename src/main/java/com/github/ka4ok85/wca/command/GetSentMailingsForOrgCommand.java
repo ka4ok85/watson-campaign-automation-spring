@@ -30,7 +30,7 @@ import com.github.ka4ok85.wca.utils.DateTimeRange;
 @Service
 @Scope("prototype")
 public class GetSentMailingsForOrgCommand
-		extends AbstractCommand<GetSentMailingsForOrgResponse, GetSentMailingsForOrgOptions> {
+		extends AbstractInstantCommand<GetSentMailingsForOrgResponse, GetSentMailingsForOrgOptions> {
 
 	private static final String apiMethodName = "GetSentMailingsForOrg";
 

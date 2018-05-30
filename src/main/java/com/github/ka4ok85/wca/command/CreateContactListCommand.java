@@ -23,7 +23,7 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
 
 @Service
 @Scope("prototype")
-public class CreateContactListCommand extends AbstractCommand<CreateContactListResponse, CreateContactListOptions> {
+public class CreateContactListCommand extends AbstractInstantCommand<CreateContactListResponse, CreateContactListOptions> {
 
 	private static final String apiMethodName = "CreateContactList";
 	private static final Logger log = LoggerFactory.getLogger(CreateContactListCommand.class);

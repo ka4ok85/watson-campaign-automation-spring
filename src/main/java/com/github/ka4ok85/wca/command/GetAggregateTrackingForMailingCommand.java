@@ -31,7 +31,7 @@ import com.github.ka4ok85.wca.response.containers.AggregateTrackingDataTopDomain
 @Service
 @Scope("prototype")
 public class GetAggregateTrackingForMailingCommand
-		extends AbstractCommand<GetAggregateTrackingForMailingResponse, GetAggregateTrackingForMailingOptions> {
+		extends AbstractInstantCommand<GetAggregateTrackingForMailingResponse, GetAggregateTrackingForMailingOptions> {
 
 	private static final String apiMethodName = "GetAggregateTrackingForMailing";
 

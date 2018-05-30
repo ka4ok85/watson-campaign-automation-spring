@@ -27,7 +27,7 @@ import com.github.ka4ok85.wca.response.containers.ReportIdByDateMailing;
 
 @Service
 @Scope("prototype")
-public class GetReportIdByDateCommand extends AbstractCommand<GetReportIdByDateResponse, GetReportIdByDateOptions> {
+public class GetReportIdByDateCommand extends AbstractInstantCommand<GetReportIdByDateResponse, GetReportIdByDateOptions> {
 
 	private static final String apiMethodName = "GetReportIdByDate";
 

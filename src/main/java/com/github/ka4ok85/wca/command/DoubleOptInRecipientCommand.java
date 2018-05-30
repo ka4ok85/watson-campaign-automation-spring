@@ -26,7 +26,7 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
 @Service
 @Scope("prototype")
 public class DoubleOptInRecipientCommand
-		extends AbstractCommand<DoubleOptInRecipientResponse, DoubleOptInRecipientOptions> {
+		extends AbstractInstantCommand<DoubleOptInRecipientResponse, DoubleOptInRecipientOptions> {
 
 	private static final String apiMethodName = "DoubleOptInRecipient";
 

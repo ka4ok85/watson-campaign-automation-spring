@@ -30,7 +30,7 @@ import com.github.ka4ok85.wca.response.containers.RelationalTableRecordFailure;
 @Service
 @Scope("prototype")
 public class DeleteRelationalTableDataCommand
-		extends AbstractCommand<DeleteRelationalTableDataResponse, DeleteRelationalTableDataOptions> {
+		extends AbstractInstantCommand<DeleteRelationalTableDataResponse, DeleteRelationalTableDataOptions> {
 
 	private static final String apiMethodName = "DeleteRelationalTableData";
 

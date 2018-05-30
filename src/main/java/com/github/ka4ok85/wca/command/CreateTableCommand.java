@@ -28,7 +28,7 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
  */
 @Service
 @Scope("prototype")
-public class CreateTableCommand extends AbstractCommand<CreateTableResponse, CreateTableOptions> {
+public class CreateTableCommand extends AbstractInstantCommand<CreateTableResponse, CreateTableOptions> {
 
 	private static final String apiMethodName = "CreateTable";
 	private static final Logger log = LoggerFactory.getLogger(CreateTableCommand.class);

@@ -24,7 +24,7 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
 @Service
 @Scope("prototype")
 public class ExportMailingTemplateCommand
-		extends AbstractCommand<ExportMailingTemplateResponse, ExportMailingTemplateOptions> {
+		extends AbstractInstantCommand<ExportMailingTemplateResponse, ExportMailingTemplateOptions> {
 
 	private static final String apiMethodName = "ExportMailingTemplate";
 	private static final Logger log = LoggerFactory.getLogger(ExportMailingTemplateCommand.class);

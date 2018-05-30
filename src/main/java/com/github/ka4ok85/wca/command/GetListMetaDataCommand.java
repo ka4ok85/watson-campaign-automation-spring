@@ -29,7 +29,7 @@ import com.github.ka4ok85.wca.response.containers.ListColumnLimited;
 
 @Service
 @Scope("prototype")
-public class GetListMetaDataCommand extends AbstractCommand<GetListMetaDataResponse, GetListMetaDataOptions> {
+public class GetListMetaDataCommand extends AbstractInstantCommand<GetListMetaDataResponse, GetListMetaDataOptions> {
 
 	private static final String apiMethodName = "GetListMetaData";
 

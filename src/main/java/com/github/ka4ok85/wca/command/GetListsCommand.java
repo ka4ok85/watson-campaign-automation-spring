@@ -25,7 +25,7 @@ import com.github.ka4ok85.wca.response.containers.EngageList;
 
 @Service
 @Scope("prototype")
-public class GetListsCommand extends AbstractCommand<GetListsResponse, GetListsOptions> {
+public class GetListsCommand extends AbstractInstantCommand<GetListsResponse, GetListsOptions> {
 
 	private static final String apiMethodName = "GetLists";
 

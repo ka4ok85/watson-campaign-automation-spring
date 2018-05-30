@@ -29,7 +29,7 @@ import com.github.ka4ok85.wca.response.containers.MailingTemplate;
 @Service
 @Scope("prototype")
 public class GetMailingTemplatesCommand
-		extends AbstractCommand<GetMailingTemplatesResponse, GetMailingTemplatesOptions> {
+		extends AbstractInstantCommand<GetMailingTemplatesResponse, GetMailingTemplatesOptions> {
 
 	private static final String apiMethodName = "GetMailingTemplates";
 

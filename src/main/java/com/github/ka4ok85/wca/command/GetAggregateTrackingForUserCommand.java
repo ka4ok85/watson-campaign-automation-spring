@@ -33,7 +33,7 @@ import com.github.ka4ok85.wca.utils.DateTimeRange;
 @Service
 @Scope("prototype")
 public class GetAggregateTrackingForUserCommand
-		extends AbstractCommand<GetAggregateTrackingForUserResponse, GetAggregateTrackingForUserOptions> {
+		extends AbstractInstantCommand<GetAggregateTrackingForUserResponse, GetAggregateTrackingForUserOptions> {
 
 	private static final String apiMethodName = "GetAggregateTrackingForUser";
 
