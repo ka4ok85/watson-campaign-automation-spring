@@ -3,34 +3,28 @@ package com.github.ka4ok85.wca.command;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.options.RemoveRecipientOptions;
 import com.github.ka4ok85.wca.response.RemoveRecipientResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
 @Service
 @Scope("prototype")
-public class RemoveRecipientCommand extends AbstractCommand<RemoveRecipientResponse, RemoveRecipientOptions> {
+public class RemoveRecipientCommand extends AbstractInstantCommand<RemoveRecipientResponse, RemoveRecipientOptions> {
 
 	private static final String apiMethodName = "RemoveRecipient";
-	private static final Logger log = LoggerFactory.getLogger(RemoveRecipientCommand.class);
 
 	@Autowired
 	private RemoveRecipientResponse removeRecipientResponse;
 
 	@Override
-	public ResponseContainer<RemoveRecipientResponse> executeCommand(final RemoveRecipientOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public void buildXmlRequest(RemoveRecipientOptions options) {
 		Objects.requireNonNull(options, "RemoveRecipientResponse must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -64,11 +58,10 @@ public class RemoveRecipientCommand extends AbstractCommand<RemoveRecipientRespo
 				addChildNode(columnValue, column);
 			}
 		}
+	}
 
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-		runApi(xml);
-
+	@Override
+	public ResponseContainer<RemoveRecipientResponse> readResponse(Node resultNode, RemoveRecipientOptions options) {
 		ResponseContainer<RemoveRecipientResponse> response = new ResponseContainer<RemoveRecipientResponse>(
 				removeRecipientResponse);
 

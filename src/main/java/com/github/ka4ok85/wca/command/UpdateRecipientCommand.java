@@ -9,8 +9,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -18,10 +16,7 @@ import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.options.UpdateRecipientOptions;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.UpdateRecipientResponse;
@@ -31,17 +26,15 @@ import com.github.ka4ok85.wca.response.UpdateRecipientResponse;
  */
 @Service
 @Scope("prototype")
-public class UpdateRecipientCommand extends AbstractCommand<UpdateRecipientResponse, UpdateRecipientOptions> {
+public class UpdateRecipientCommand extends AbstractInstantCommand<UpdateRecipientResponse, UpdateRecipientOptions> {
 
 	private static final String apiMethodName = "UpdateRecipient";
-	private static final Logger log = LoggerFactory.getLogger(UpdateRecipientCommand.class);
 
 	@Autowired
 	private UpdateRecipientResponse updateRecipientResponse;
 
 	@Override
-	public ResponseContainer<UpdateRecipientResponse> executeCommand(final UpdateRecipientOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public void buildXmlRequest(UpdateRecipientOptions options) {
 		Objects.requireNonNull(options, "UpdateRecipientOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -132,11 +125,10 @@ public class UpdateRecipientCommand extends AbstractCommand<UpdateRecipientRespo
 						"Snoozed contacts must have either DaysToSnooze or ResumeSendDate option set");
 			}
 		}
+	}
 
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-		Node resultNode = runApi(xml);
-
+	@Override
+	public ResponseContainer<UpdateRecipientResponse> readResponse(Node resultNode, UpdateRecipientOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 
@@ -161,5 +153,4 @@ public class UpdateRecipientCommand extends AbstractCommand<UpdateRecipientRespo
 
 		return response;
 	}
-
 }
