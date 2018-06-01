@@ -2,39 +2,29 @@ package com.github.ka4ok85.wca.command;
 
 import java.util.Objects;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
-import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.options.DeleteListOptions;
 import com.github.ka4ok85.wca.response.DeleteListResponse;
 import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
+import com.github.ka4ok85.wca.response.containers.JobPollingContainer;
 
 @Service
 @Scope("prototype")
-public class DeleteListCommand extends AbstractCommand<DeleteListResponse, DeleteListOptions> {
+public class DeleteListCommand extends AbstractJobCommand<DeleteListResponse, DeleteListOptions> {
 
 	private static final String apiMethodName = "DeleteList";
-	private static final Logger log = LoggerFactory.getLogger(DeleteListCommand.class);
 
 	@Autowired
 	private DeleteListResponse deleteListResponse;
 
 	@Override
 	public void buildXmlRequest(DeleteListOptions options) {
-		Objects.requireNonNull(options, "CreateContactListOptions must not be null");
+		Objects.requireNonNull(options, "DeleteListOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
 		currentNode = addChildNode(methodElement, null);
@@ -58,40 +48,15 @@ public class DeleteListCommand extends AbstractCommand<DeleteListResponse, Delet
 	}
 
 	@Override
-	public ResponseContainer<DeleteListResponse> readResponse(Node resultNode, DeleteListOptions options) {
-		XPathFactory factory = XPathFactory.newInstance();
-		XPath xpath = factory.newXPath();
-		Long jobId;
-		String description;
-		Long listId;
-		String listName;
-		boolean ignoreDependentMailings;
-		Long numberRemoved;
-		try {
-			Node jobIdNode = (Node) xpath.evaluate("JOB_ID", resultNode, XPathConstants.NODE);
+	public ResponseContainer<DeleteListResponse> readResponse(JobPollingContainer jobPollingContainer,
+			JobResponse jobResponse, DeleteListOptions options) {
+		String description = jobResponse.getJobDescription();
+		boolean ignoreDependentMailings = Boolean.valueOf(jobResponse.getParameters().get("IGNORE_DEPENDENT_MAILINGS"));
+		Long listId = Long.parseLong(jobResponse.getParameters().get("SOURCE_LIST_ID"));
+		Long numberRemoved = Long.parseLong(jobResponse.getParameters().get("NUM_REMOVED"));
+		String listName = jobResponse.getParameters().get("LIST_NAME");
 
-			jobId = Long.parseLong(jobIdNode.getTextContent());
-			log.debug("Job ID {} is being excuted", jobId);
-
-			final JobResponse jobResponse = waitUntilJobIsCompleted(jobId);
-			log.debug("Job Response is {}", jobResponse);
-
-			if (jobResponse.isComplete()) {
-				description = jobResponse.getJobDescription();
-				ignoreDependentMailings = Boolean.valueOf(jobResponse.getParameters().get("IGNORE_DEPENDENT_MAILINGS"));
-				listId = Long.parseLong(jobResponse.getParameters().get("SOURCE_LIST_ID"));
-				numberRemoved = Long.parseLong(jobResponse.getParameters().get("NUM_REMOVED"));
-				listName = jobResponse.getParameters().get("LIST_NAME");
-			} else {
-				log.error("State inconsistency for Job ID {}", jobId);
-				throw new JobBadStateException("Job ID " + jobId + " was reported as Completed, but actual State is "
-						+ jobResponse.getJobStatus());
-			}
-		} catch (XPathExpressionException | JobBadStateException e) {
-			throw new EngageApiException(e.getMessage());
-		}
-
-		deleteListResponse.setJobId(jobId);
+		deleteListResponse.setJobId(jobPollingContainer.getJobId());
 		deleteListResponse.setDescription(description);
 		deleteListResponse.setIgnoreDependentMailings(ignoreDependentMailings);
 		deleteListResponse.setListId(listId);
@@ -101,4 +66,5 @@ public class DeleteListCommand extends AbstractCommand<DeleteListResponse, Delet
 
 		return response;
 	}
+
 }
