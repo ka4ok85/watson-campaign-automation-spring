@@ -14,8 +14,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -24,10 +22,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.options.SelectRecipientDataOptions;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.SelectRecipientDataResponse;
@@ -38,17 +33,15 @@ import com.github.ka4ok85.wca.response.SelectRecipientDataResponse;
 @Service
 @Scope("prototype")
 public class SelectRecipientDataCommand
-		extends AbstractCommand<SelectRecipientDataResponse, SelectRecipientDataOptions> {
+		extends AbstractInstantCommand<SelectRecipientDataResponse, SelectRecipientDataOptions> {
 
 	private static final String apiMethodName = "SelectRecipientData";
-	private static final Logger log = LoggerFactory.getLogger(SelectRecipientDataCommand.class);
 
 	@Autowired
 	private SelectRecipientDataResponse selectRecipientDataResponse;
 
 	@Override
-	public ResponseContainer<SelectRecipientDataResponse> executeCommand(final SelectRecipientDataOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public void buildXmlRequest(SelectRecipientDataOptions options) {
 		Objects.requireNonNull(options, "SelectRecipientDataOptions must not be null");
 
 		Element methodElement = doc.createElement(apiMethodName);
@@ -95,10 +88,11 @@ public class SelectRecipientDataCommand
 
 		addBooleanParameter(methodElement, "RETURN_CONTACT_LISTS", options.isReturnContactLists());
 
-		String xml = getXML();
-		log.debug("XML Request is {}", xml);
-		Node resultNode = runApi(xml);
+	}
 
+	@Override
+	public ResponseContainer<SelectRecipientDataResponse> readResponse(Node resultNode,
+			SelectRecipientDataOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xpath = factory.newXPath();
 		String email;
