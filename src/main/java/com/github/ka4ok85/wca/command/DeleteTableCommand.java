@@ -2,32 +2,22 @@ package com.github.ka4ok85.wca.command;
 
 import java.util.Objects;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
-import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.options.DeleteTableOptions;
 import com.github.ka4ok85.wca.response.DeleteTableResponse;
 import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
+import com.github.ka4ok85.wca.response.containers.JobPollingContainer;
 
 @Service
 @Scope("prototype")
-public class DeleteTableCommand extends AbstractCommand<DeleteTableResponse, DeleteTableOptions> {
+public class DeleteTableCommand extends AbstractJobCommand<DeleteTableResponse, DeleteTableOptions> {
 
 	private static final String apiMethodName = "DeleteTable";
-	private static final Logger log = LoggerFactory.getLogger(DeleteTableCommand.class);
 
 	@Autowired
 	private DeleteTableResponse deleteTableResponse;
@@ -59,33 +49,13 @@ public class DeleteTableCommand extends AbstractCommand<DeleteTableResponse, Del
 	}
 
 	@Override
-	public ResponseContainer<DeleteTableResponse> readResponse(Node resultNode, DeleteTableOptions options) {
-		XPathFactory factory = XPathFactory.newInstance();
-		XPath xpath = factory.newXPath();
-		Long jobId;
-		try {
-			Node jobIdNode = (Node) xpath.evaluate("JOB_ID", resultNode, XPathConstants.NODE);
-
-			jobId = Long.parseLong(jobIdNode.getTextContent());
-			log.debug("Job ID {} is being excuted", jobId);
-
-			final JobResponse jobResponse = waitUntilJobIsCompleted(jobId);
-			log.debug("Job Response is {}", jobResponse);
-			if (jobResponse.isComplete()) {
-				log.debug("Job is completed");
-			} else {
-				log.error("State inconsistency for Job ID {}", jobId);
-				throw new JobBadStateException("Job ID " + jobId + " was reported as Completed, but actual State is "
-						+ jobResponse.getJobStatus());
-			}
-		} catch (XPathExpressionException | JobBadStateException e) {
-			throw new EngageApiException(e.getMessage());
-		}
-
-		deleteTableResponse.setJobId(jobId);
+	public ResponseContainer<DeleteTableResponse> readResponse(JobPollingContainer jobPollingContainer,
+			JobResponse jobResponse, DeleteTableOptions options) {
+		deleteTableResponse.setJobId(jobPollingContainer.getJobId());
 		ResponseContainer<DeleteTableResponse> response = new ResponseContainer<DeleteTableResponse>(
 				deleteTableResponse);
 
 		return response;
 	}
+
 }
