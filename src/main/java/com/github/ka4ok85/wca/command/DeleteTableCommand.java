@@ -51,7 +51,22 @@ public class DeleteTableCommand extends AbstractJobCommand<DeleteTableResponse, 
 	@Override
 	public ResponseContainer<DeleteTableResponse> readResponse(JobPollingContainer jobPollingContainer,
 			JobResponse jobResponse, DeleteTableOptions options) {
+
+		String description = jobResponse.getJobDescription();
+		boolean ignoreDependentMailings = Boolean.valueOf(jobResponse.getParameters().get("IGNORE_DEPENDENT_MAILINGS"));
+		boolean isKeepListDetails = Boolean.valueOf(jobResponse.getParameters().get("IS_KEEP_LIST_DETAILS"));
+		Long listId = Long.parseLong(jobResponse.getParameters().get("SOURCE_LIST_ID"));
+		Long numberRemoved = Long.parseLong(jobResponse.getParameters().get("NUM_REMOVED"));
+		String listName = jobResponse.getParameters().get("LIST_NAME");
+
 		deleteTableResponse.setJobId(jobPollingContainer.getJobId());
+		deleteTableResponse.setDescription(description);
+		deleteTableResponse.setIgnoreDependentMailings(ignoreDependentMailings);
+		deleteTableResponse.setKeepListDetails(isKeepListDetails);
+		deleteTableResponse.setListId(listId);
+		deleteTableResponse.setListName(listName);
+		deleteTableResponse.setNumberRemoved(numberRemoved);
+
 		ResponseContainer<DeleteTableResponse> response = new ResponseContainer<DeleteTableResponse>(
 				deleteTableResponse);
 
