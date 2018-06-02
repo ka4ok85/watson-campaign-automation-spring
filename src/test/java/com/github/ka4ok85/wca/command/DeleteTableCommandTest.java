@@ -20,36 +20,43 @@ import org.xmlunit.diff.Diff;
 
 import com.github.ka4ok85.wca.config.SpringConfig;
 import com.github.ka4ok85.wca.constants.Visibility;
-import com.github.ka4ok85.wca.options.DeleteListOptions;
-import com.github.ka4ok85.wca.response.DeleteListResponse;
+import com.github.ka4ok85.wca.options.DeleteTableOptions;
+import com.github.ka4ok85.wca.response.DeleteTableResponse;
 import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.JobPollingContainer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { SpringConfig.class })
-public class DeleteListCommandTest {
+public class DeleteTableCommandTest {
 
 	@Autowired
 	ApplicationContext context;
 
 	private String defaultRequest = String.join(System.getProperty("line.separator"),
-			"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>", "<Envelope>", "<Body>", "<DeleteList>",
-			"<LIST_ID>1</LIST_ID>", "<KEEP_DETAILS>TRUE</KEEP_DETAILS>", "<RECURSIVE>FALSE</RECURSIVE>",
-			"</DeleteList>", "</Body>", "</Envelope>");
+			"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>", "<Envelope>", "<Body>", "<DeleteTable>",
+			"<TABLE_ID>1</TABLE_ID>", "</DeleteTable>", "</Body>", "</Envelope>");
 
 	@Test(expected = NullPointerException.class)
 	public void testBuildXmlDoesNotAcceptNullOptions() {
-		DeleteListCommand command = new DeleteListCommand();
-		DeleteListOptions options = null;
+		DeleteTableCommand command = new DeleteTableCommand();
+		DeleteTableOptions options = null;
+		command.buildXmlRequest(options);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testBuildXmlRequiresTableIdorTableName() {
+		DeleteTableCommand command = new DeleteTableCommand();
+		DeleteTableOptions options = new DeleteTableOptions();
 		command.buildXmlRequest(options);
 	}
 
 	@Test
 	public void testBuildXmlDefaultRequest() {
 		// get XML from command
-		DeleteListCommand command = new DeleteListCommand();
-		DeleteListOptions options = new DeleteListOptions(1L);
+		DeleteTableCommand command = new DeleteTableCommand();
+		DeleteTableOptions options = new DeleteTableOptions();
+		options.setTableId(1L);
 		command.buildXmlRequest(options);
 		String testString = command.getXML();
 		Source test = Input.fromString(testString).build();
@@ -63,18 +70,20 @@ public class DeleteListCommandTest {
 	}
 
 	@Test
-	public void testBuildXmlHonorsKeepListDetails() {
+	public void testBuildXmlHonorsVisibility() {
 		// get XML from command
-		DeleteListCommand command = new DeleteListCommand();
-		DeleteListOptions options = new DeleteListOptions(1L);
-		options.setKeepListDetails(false);
+		DeleteTableCommand command = new DeleteTableCommand();
+		DeleteTableOptions options = new DeleteTableOptions();
+		options.setTableId(1L);
+		Visibility tableVisibility = Visibility.SHARED;
+		options.setTableVisibility(tableVisibility);
 		command.buildXmlRequest(options);
 		String testString = command.getXML();
 		Source test = Input.fromString(testString).build();
 
 		// get control XML
-		String controlString = defaultRequest.replace("<KEEP_DETAILS>TRUE</KEEP_DETAILS>",
-				"<KEEP_DETAILS>FALSE</KEEP_DETAILS>");
+		String controlString = defaultRequest.replace("</TABLE_ID>",
+				"</TABLE_ID><TABLE_VISIBILITY>" + tableVisibility.value().toString() + "</TABLE_VISIBILITY>");
 		Source control = Input.fromString(controlString).build();
 
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
@@ -82,37 +91,20 @@ public class DeleteListCommandTest {
 	}
 
 	@Test
-	public void testBuildXmlHonorsIsRecursive() {
+	public void testBuildXmlHonorsTableName() {
 		// get XML from command
-		DeleteListCommand command = new DeleteListCommand();
-		DeleteListOptions options = new DeleteListOptions(1L);
-		options.setRecursive(true);
+		DeleteTableCommand command = new DeleteTableCommand();
+		DeleteTableOptions options = new DeleteTableOptions();
+		String tableName = "table 1";
+		options.setTableName(tableName);
+
 		command.buildXmlRequest(options);
 		String testString = command.getXML();
 		Source test = Input.fromString(testString).build();
 
 		// get control XML
-		String controlString = defaultRequest.replace("<RECURSIVE>FALSE</RECURSIVE>", "<RECURSIVE>TRUE</RECURSIVE>");
-		Source control = Input.fromString(controlString).build();
-
-		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
-		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
-	}
-
-	@Test
-	public void testBuildXmlAlternativeConstructor() {
-		// get XML from command
-		DeleteListCommand command = new DeleteListCommand();
-		String listName = "list 1";
-		Visibility visibility = Visibility.PRIVATE;
-		DeleteListOptions options = new DeleteListOptions(listName, visibility);
-		command.buildXmlRequest(options);
-		String testString = command.getXML();
-		Source test = Input.fromString(testString).build();
-
-		// get control XML
-		String controlString = defaultRequest.replace("<LIST_ID>1</LIST_ID>", "<LIST_NAME>" + listName
-				+ "</LIST_NAME><LIST_VISIBILITY>" + visibility.value().toString() + "</LIST_VISIBILITY>");
+		String controlString = defaultRequest.replace("<TABLE_ID>1</TABLE_ID>",
+				"<TABLE_NAME>" + tableName + "</TABLE_NAME>");
 		Source control = Input.fromString(controlString).build();
 
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
@@ -121,9 +113,10 @@ public class DeleteListCommandTest {
 
 	@Test
 	public void testReadResponse() {
-		DeleteListCommand command = context.getBean(DeleteListCommand.class);
+		DeleteTableCommand command = context.getBean(DeleteTableCommand.class);
 
-		DeleteListOptions options = new DeleteListOptions(1L);
+		DeleteTableOptions options = new DeleteTableOptions();
+		options.setTableId(1L);
 		JobPollingContainer jobPollingContainer = new JobPollingContainer();
 		Long jobId = 10L;
 		jobPollingContainer.setJobId(jobId);
@@ -133,6 +126,7 @@ public class DeleteListCommandTest {
 		String listName = "Test List 2";
 		String numberRemoved = "23";
 		String ignoreDependentMailings = "TRUE";
+		String isKeepListDetails = "TRUE";
 		JobResponse jobResponse = new JobResponse();
 		jobResponse.setJobDescription(jobDescription);
 		Map<String, String> jobParameters = new HashMap<String, String>();
@@ -140,11 +134,12 @@ public class DeleteListCommandTest {
 		jobParameters.put("LIST_NAME", listName);
 		jobParameters.put("NUM_REMOVED", numberRemoved);
 		jobParameters.put("IGNORE_DEPENDENT_MAILINGS", ignoreDependentMailings);
+		jobParameters.put("IS_KEEP_LIST_DETAILS", isKeepListDetails);
 		jobResponse.setParameters(jobParameters);
 
-		ResponseContainer<DeleteListResponse> responseContainer = command.readResponse(jobPollingContainer, jobResponse,
-				options);
-		DeleteListResponse response = responseContainer.getResposne();
+		ResponseContainer<DeleteTableResponse> responseContainer = command.readResponse(jobPollingContainer,
+				jobResponse, options);
+		DeleteTableResponse response = responseContainer.getResposne();
 
 		assertEquals(response.getDescription(), jobDescription);
 		assertEquals(response.getListName(), listName);
@@ -152,5 +147,7 @@ public class DeleteListCommandTest {
 		assertEquals(response.getListId(), Long.valueOf(listId));
 		assertEquals(response.getNumberRemoved(), Long.valueOf(numberRemoved));
 		assertEquals(response.isIgnoreDependentMailings(), Boolean.valueOf(ignoreDependentMailings));
+		assertEquals(response.isKeepListDetails(), Boolean.valueOf(isKeepListDetails));
 	}
+
 }
