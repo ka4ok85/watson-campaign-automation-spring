@@ -5,8 +5,8 @@ import java.io.File;
 import com.github.ka4ok85.wca.constants.FileEncoding;
 
 public class ImportListOptions extends AbstractOptions {
-	private String mapFile;
-	private String sourceFile;
+	private final String mapFile;
+	private final String sourceFile;
 	private FileEncoding fileEncoding = FileEncoding.UTF_8;
 
 	public ImportListOptions(String mapFile, String sourceFile) {
@@ -29,16 +29,8 @@ public class ImportListOptions extends AbstractOptions {
 		return mapFile;
 	}
 
-	public void setMapFile(String mapFile) {
-		this.mapFile = mapFile;
-	}
-
 	public String getSourceFile() {
 		return sourceFile;
-	}
-
-	public void setSourceFile(String sourceFile) {
-		this.sourceFile = sourceFile;
 	}
 
 	public FileEncoding getFileEncoding() {
