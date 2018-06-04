@@ -54,7 +54,7 @@ public class JoinTableCommand extends AbstractJobCommand<JoinTableResponse, Join
 			listId.setTextContent(options.getListId().toString());
 			addChildNode(listId, currentNode);
 		} else if (options.getListName() != null) {
-			Element listName = doc.createElement("List_NAME");
+			Element listName = doc.createElement("LIST_NAME");
 			listName.setTextContent(options.getListName());
 			addChildNode(listName, currentNode);
 		} else {
@@ -62,7 +62,7 @@ public class JoinTableCommand extends AbstractJobCommand<JoinTableResponse, Join
 		}
 
 		if (options.getListVisibility() != null) {
-			Element listVisibility = doc.createElement("List_VISIBILITY");
+			Element listVisibility = doc.createElement("LIST_VISIBILITY");
 			listVisibility.setTextContent(options.getListVisibility().value().toString());
 			addChildNode(listVisibility, currentNode);
 		}
