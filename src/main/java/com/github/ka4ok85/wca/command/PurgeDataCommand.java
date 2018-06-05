@@ -41,7 +41,7 @@ public class PurgeDataCommand extends AbstractJobCommand<PurgeDataResponse, Purg
 	@Override
 	public ResponseContainer<PurgeDataResponse> readResponse(JobPollingContainer jobPollingContainer,
 			JobResponse jobResponse, PurgeDataOptions options) {
-		Long jobId = jobResponse.getJobId();
+		Long jobId = jobPollingContainer.getJobId();
 		String description = jobResponse.getJobDescription();
 		Long purgedContactListId = Long.parseLong(jobResponse.getParameters().get("LIST_ID_C"));
 		String purgedContactListName = jobResponse.getParameters().get("LIST_NAME_C");
