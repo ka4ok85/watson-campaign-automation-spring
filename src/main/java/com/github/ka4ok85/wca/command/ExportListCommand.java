@@ -2,31 +2,24 @@ package com.github.ka4ok85.wca.command;
 
 import java.util.Objects;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import com.github.ka4ok85.wca.constants.FileEncoding;
-import com.github.ka4ok85.wca.exceptions.EngageApiException;
-import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.options.ExportListOptions;
 import com.github.ka4ok85.wca.response.ExportListResponse;
 import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
+import com.github.ka4ok85.wca.response.containers.JobPollingContainer;
 import com.github.ka4ok85.wca.utils.DateTimeRange;
 
 @Service
 @Scope("prototype")
-public class ExportListCommand extends AbstractCommand<ExportListResponse, ExportListOptions> {
+public class ExportListCommand extends AbstractJobCommand<ExportListResponse, ExportListOptions> {
 
 	private static final String apiMethodName = "ExportList";
 	private static final Logger log = LoggerFactory.getLogger(ExportListCommand.class);
@@ -81,44 +74,24 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 	}
 
 	@Override
-	public ResponseContainer<ExportListResponse> readResponse(Node resultNode, ExportListOptions options) {
-		XPathFactory factory = XPathFactory.newInstance();
-		XPath xpath = factory.newXPath();
+	public ResponseContainer<ExportListResponse> readResponse(JobPollingContainer jobPollingContainer,
+			JobResponse jobResponse, ExportListOptions options) {
 		String filePath;
 		String description;
 		String listName;
 		Boolean keepInStoredFiles;
 		Boolean keepInFtpDownloadDirectory;
 		FileEncoding fileEncodingValue;
-		try {
-			Node jobIdNode = (Node) xpath.evaluate("JOB_ID", resultNode, XPathConstants.NODE);
-			Node filePathNode = (Node) xpath.evaluate("FILE_PATH", resultNode, XPathConstants.NODE);
+		filePath = jobPollingContainer.getParameters().get("FILE_PATH");
+		description = jobResponse.getJobDescription();
+		listName = jobResponse.getParameters().get("LIST_NAME");
+		keepInStoredFiles = Boolean.valueOf(jobResponse.getParameters().get("KEEP_IN_STORED_FILES"));
+		keepInFtpDownloadDirectory = Boolean.valueOf(jobResponse.getParameters().get("KEEP_IN_FTP_DOWNLOAD_DIRECTORY"));
+		fileEncodingValue = FileEncoding.getFileEncoding(jobResponse.getParameters().get("FILE_ENCODING"));
 
-			final Long jobId = Long.parseLong(jobIdNode.getTextContent());
-			log.debug("Job ID {} is being excuted", jobId);
-
-			final JobResponse jobResponse = waitUntilJobIsCompleted(jobId);
-			log.debug("Job Response is {}", jobResponse);
-			if (jobResponse.isComplete()) {
-				filePath = filePathNode.getTextContent();
-				description = jobResponse.getJobDescription();
-				listName = jobResponse.getParameters().get("LIST_NAME");
-				keepInStoredFiles = Boolean.valueOf(jobResponse.getParameters().get("KEEP_IN_STORED_FILES"));
-				keepInFtpDownloadDirectory = Boolean
-						.valueOf(jobResponse.getParameters().get("KEEP_IN_FTP_DOWNLOAD_DIRECTORY"));
-				fileEncodingValue = FileEncoding.getFileEncoding(jobResponse.getParameters().get("FILE_ENCODING"));
-
-				log.debug("Generated Export File {} on SFTP", filePath);
-				if (options.getLocalAbsoluteFilePath() != null) {
-					sftp.download(filePath, options.getLocalAbsoluteFilePath());
-				}
-			} else {
-				log.error("State inconsistency for Job ID {}", jobId);
-				throw new JobBadStateException("Job ID " + jobId + " was reported as Completed, but actual State is "
-						+ jobResponse.getJobStatus());
-			}
-		} catch (XPathExpressionException | JobBadStateException e) {
-			throw new EngageApiException(e.getMessage());
+		log.debug("Generated Export File {} on SFTP", filePath);
+		if (options.getLocalAbsoluteFilePath() != null) {
+			sftp.download(filePath, options.getLocalAbsoluteFilePath());
 		}
 
 		exportListResponse.setRemoteFileName(filePath);
@@ -132,4 +105,5 @@ public class ExportListCommand extends AbstractCommand<ExportListResponse, Expor
 
 		return response;
 	}
+
 }
