@@ -1,6 +1,6 @@
 package com.github.ka4ok85.wca.command;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +27,10 @@ public class ImportListCommandTest {
 	@Autowired
 	ApplicationContext context;
 
+	@Test
+	public void testDummy() {
+		assertTrue(true);
+	}
 	// TODO: add mocks
 	/*
 	@Test
