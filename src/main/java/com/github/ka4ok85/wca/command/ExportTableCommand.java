@@ -16,6 +16,23 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.JobPollingContainer;
 import com.github.ka4ok85.wca.utils.DateTimeRange;
 
+/**
+ * <strong>Class for interacting with WCA ExportTable API.</strong> It builds XML
+ * request for ExportTable API using
+ * {@link com.github.ka4ok85.wca.options.ExportTableOptions} and reads response
+ * into {@link com.github.ka4ok85.wca.response.ExportTableResponse}.
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ * <p>
+ * It relies on parent {@link com.github.ka4ok85.wca.command.AbstractJobCommand}
+ * for polling mechanism.
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 @Service
 @Scope("prototype")
 public class ExportTableCommand extends AbstractJobCommand<ExportTableResponse, ExportTableOptions> {
@@ -26,6 +43,14 @@ public class ExportTableCommand extends AbstractJobCommand<ExportTableResponse, 
 	@Autowired
 	private ExportTableResponse exportTableResponse;
 
+	/**
+	 * Builds XML request for ExportTable API using
+	 * {@link com.github.ka4ok85.wca.options.ExportTableOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(ExportTableOptions options) {
 		Objects.requireNonNull(options, "ExportTableOptions must not be null");
@@ -54,6 +79,18 @@ public class ExportTableCommand extends AbstractJobCommand<ExportTableResponse, 
 		addBooleanParameter(methodElement, "ADD_TO_STORED_FILES", options.isAddToStoredFiles());
 	}
 
+	/**
+	 * Reads ExportTable API response into
+	 * {@link com.github.ka4ok85.wca.response.ExportTableResponse}
+	 * 
+	 * @param jobPollingContainer
+	 *            - raw POJO response for Schedule a Job API
+	 * @param jobResponse
+	 *            - raw POJO response for ExportTable API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO Export Table Response
+	 */
 	@Override
 	public ResponseContainer<ExportTableResponse> readResponse(JobPollingContainer jobPollingContainer,
 			JobResponse jobResponse, ExportTableOptions options) {
