@@ -17,6 +17,23 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.JobPollingContainer;
 import com.github.ka4ok85.wca.utils.DateTimeRange;
 
+/**
+ * <strong>Class for interacting with WCA ExportList API.</strong> It builds XML
+ * request for ExportList API using
+ * {@link com.github.ka4ok85.wca.options.ExportListOptions} and reads response
+ * into {@link com.github.ka4ok85.wca.response.ExportListResponse}.
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ * <p>
+ * It relies on parent {@link com.github.ka4ok85.wca.command.AbstractJobCommand}
+ * for polling mechanism.
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 @Service
 @Scope("prototype")
 public class ExportListCommand extends AbstractJobCommand<ExportListResponse, ExportListOptions> {
@@ -27,6 +44,14 @@ public class ExportListCommand extends AbstractJobCommand<ExportListResponse, Ex
 	@Autowired
 	private ExportListResponse exportListResponse;
 
+	/**
+	 * Builds XML request for ExportList API using
+	 * {@link com.github.ka4ok85.wca.options.ExportListOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(ExportListOptions options) {
 		Objects.requireNonNull(options, "ExportListOptions must not be null");
@@ -73,6 +98,18 @@ public class ExportListCommand extends AbstractJobCommand<ExportListResponse, Ex
 		}
 	}
 
+	/**
+	 * Reads ExportList API response into
+	 * {@link com.github.ka4ok85.wca.response.ExportListResponse}
+	 * 
+	 * @param jobPollingContainer
+	 *            - raw POJO response for Schedule a Job API
+	 * @param jobResponse
+	 *            - raw POJO response for ExportList API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO Export List Response
+	 */
 	@Override
 	public ResponseContainer<ExportListResponse> readResponse(JobPollingContainer jobPollingContainer,
 			JobResponse jobResponse, ExportListOptions options) {
