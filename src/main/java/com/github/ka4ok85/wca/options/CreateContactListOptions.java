@@ -4,34 +4,42 @@ import com.github.ka4ok85.wca.constants.Visibility;
 
 public class CreateContactListOptions extends AbstractOptions {
 
-	private Long databaseId;
-	private String contactListName;
-	private Visibility visibility;
+	final private Long databaseId;
+	final private String contactListName;
+	final private Visibility visibility;
 	private Long parentFolderId;
 	private String parentFolderPath;
 
-	public Long getDatabaseId() {
-		return databaseId;
+	public CreateContactListOptions(Long databaseId, String contactListName, Visibility visibility) {
+		super();
+		if (databaseId == null || databaseId < 1) {
+			throw new RuntimeException("Database ID must be greater than zero. Provided Database ID = " + databaseId);
+		}
+
+		if (contactListName == null || contactListName.isEmpty()) {
+			throw new RuntimeException(
+					"Contact List Name must be non-empty String. Provided Contact List Name = " + contactListName);
+		}
+
+		if (visibility == null) {
+			throw new RuntimeException("Visibility must be non-null");
+		}
+
+		this.databaseId = databaseId;
+		this.contactListName = contactListName;
+		this.visibility = visibility;
 	}
 
-	public void setDatabaseId(Long databaseId) {
-		this.databaseId = databaseId;
+	public Long getDatabaseId() {
+		return databaseId;
 	}
 
 	public String getContactListName() {
 		return contactListName;
 	}
 
-	public void setContactListName(String contactListName) {
-		this.contactListName = contactListName;
-	}
-
 	public Visibility getVisibility() {
 		return visibility;
-	}
-
-	public void setVisibility(Visibility visibility) {
-		this.visibility = visibility;
 	}
 
 	public Long getParentFolderId() {

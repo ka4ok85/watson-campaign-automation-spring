@@ -89,7 +89,6 @@ public class AddContactToContactListCommandTest {
 						+ System.getProperty("line.separator") + "<VALUE><![CDATA[test@github.com]]></VALUE>"
 						+ System.getProperty("line.separator") + "</COLUMN>",
 				"<CONTACT_ID>" + contactId + "</CONTACT_ID>");
-		System.out.println(controlString);
 		Source control = Input.fromString(controlString).build();
 
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
