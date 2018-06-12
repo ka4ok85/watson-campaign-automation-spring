@@ -14,6 +14,19 @@ import com.github.ka4ok85.wca.options.AddContactToContactListOptions;
 import com.github.ka4ok85.wca.response.AddContactToContactListResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
+/**
+ * <strong>Class for interacting with WCA AddContactToContactList API.</strong> It builds XML
+ * request for AddContactToContactList API using
+ * {@link com.github.ka4ok85.wca.options.AddContactToContactListOptions} and reads response
+ * into {@link com.github.ka4ok85.wca.response.AddContactToContactListResponse}.
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 @Service
 @Scope("prototype")
 public class AddContactToContactListCommand
@@ -24,6 +37,14 @@ public class AddContactToContactListCommand
 	@Autowired
 	private AddContactToContactListResponse addContactToContactListResponse;
 
+	/**
+	 * Builds XML request for AddContactToContactList API using
+	 * {@link com.github.ka4ok85.wca.options.AddContactToContactListOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(AddContactToContactListOptions options) {
 		Objects.requireNonNull(options, "AddContactToContactListOptions must not be null");
@@ -59,6 +80,16 @@ public class AddContactToContactListCommand
 		}
 	}
 
+	/**
+	 * Reads AddContactToContactList API response into
+	 * {@link com.github.ka4ok85.wca.response.AddContactToContactListResponse}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO AddContactToContactList Response
+	 */
 	@Override
 	public ResponseContainer<AddContactToContactListResponse> readResponse(Node resultNode,
 			AddContactToContactListOptions options) {
