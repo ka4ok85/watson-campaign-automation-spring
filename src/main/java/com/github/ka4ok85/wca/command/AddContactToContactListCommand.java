@@ -15,10 +15,11 @@ import com.github.ka4ok85.wca.response.AddContactToContactListResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
 /**
- * <strong>Class for interacting with WCA AddContactToContactList API.</strong> It builds XML
- * request for AddContactToContactList API using
- * {@link com.github.ka4ok85.wca.options.AddContactToContactListOptions} and reads response
- * into {@link com.github.ka4ok85.wca.response.AddContactToContactListResponse}.
+ * <strong>Class for interacting with WCA AddContactToContactList API.</strong>
+ * It builds XML request for AddContactToContactList API using
+ * {@link com.github.ka4ok85.wca.options.AddContactToContactListOptions} and
+ * reads response into
+ * {@link com.github.ka4ok85.wca.response.AddContactToContactListResponse}.
  * <p>
  * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
  * synchronous client-side HTTP access.

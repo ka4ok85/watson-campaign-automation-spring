@@ -20,6 +20,19 @@ import com.github.ka4ok85.wca.options.AddRecipientOptions;
 import com.github.ka4ok85.wca.response.AddRecipientResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
+/**
+ * <strong>Class for interacting with WCA AddRecipient API.</strong> It builds
+ * XML request for AddRecipient API using
+ * {@link com.github.ka4ok85.wca.options.AddRecipientOptions} and reads response
+ * into {@link com.github.ka4ok85.wca.response.AddRecipientResponse}.
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 @Service
 @Scope("prototype")
 public class AddRecipientCommand extends AbstractInstantCommand<AddRecipientResponse, AddRecipientOptions> {
@@ -29,6 +42,14 @@ public class AddRecipientCommand extends AbstractInstantCommand<AddRecipientResp
 	@Autowired
 	private AddRecipientResponse addRecipientResponse;
 
+	/**
+	 * Builds XML request for AddRecipient API using
+	 * {@link com.github.ka4ok85.wca.options.AddRecipientOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(AddRecipientOptions options) {
 		Objects.requireNonNull(options, "AddRecipientOptions must not be null");
@@ -102,6 +123,16 @@ public class AddRecipientCommand extends AbstractInstantCommand<AddRecipientResp
 
 	}
 
+	/**
+	 * Reads AddRecipient API response into
+	 * {@link com.github.ka4ok85.wca.response.AddRecipientResponse}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO AddRecipient Response
+	 */
 	@Override
 	public ResponseContainer<AddRecipientResponse> readResponse(Node resultNode, AddRecipientOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
