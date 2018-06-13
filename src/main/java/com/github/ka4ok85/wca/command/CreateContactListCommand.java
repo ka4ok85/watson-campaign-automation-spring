@@ -21,9 +21,24 @@ import com.github.ka4ok85.wca.options.CreateContactListOptions;
 import com.github.ka4ok85.wca.response.CreateContactListResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
+/**
+ * <strong>Class for interacting with WCA CreateContactList API.</strong> It
+ * builds XML request for CreateContactList API using
+ * {@link com.github.ka4ok85.wca.options.CreateContactListOptions} and reads
+ * response into
+ * {@link com.github.ka4ok85.wca.response.CreateContactListResponse}.
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 @Service
 @Scope("prototype")
-public class CreateContactListCommand extends AbstractInstantCommand<CreateContactListResponse, CreateContactListOptions> {
+public class CreateContactListCommand
+		extends AbstractInstantCommand<CreateContactListResponse, CreateContactListOptions> {
 
 	private static final String apiMethodName = "CreateContactList";
 	private static final Logger log = LoggerFactory.getLogger(CreateContactListCommand.class);
@@ -31,6 +46,14 @@ public class CreateContactListCommand extends AbstractInstantCommand<CreateConta
 	@Autowired
 	private CreateContactListResponse createContactListResponse;
 
+	/**
+	 * Builds XML request for CreateContactList API using
+	 * {@link com.github.ka4ok85.wca.options.CreateContactListOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(CreateContactListOptions options) {
 		Objects.requireNonNull(options, "CreateContactListOptions must not be null");
@@ -62,6 +85,16 @@ public class CreateContactListCommand extends AbstractInstantCommand<CreateConta
 		}
 	}
 
+	/**
+	 * Reads CreateContactList API response into
+	 * {@link com.github.ka4ok85.wca.response.CreateContactListResponse}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO CreateContactList Response
+	 */
 	@Override
 	public ResponseContainer<CreateContactListResponse> readResponse(Node resultNode,
 			CreateContactListOptions options) {

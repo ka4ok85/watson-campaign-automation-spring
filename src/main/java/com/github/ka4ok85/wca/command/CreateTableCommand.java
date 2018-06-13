@@ -23,8 +23,21 @@ import com.github.ka4ok85.wca.options.containers.RelationalTableColumn;
 import com.github.ka4ok85.wca.response.CreateTableResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
-/*
- * No way to specify Visibility. RTs is created in Shared Folder
+/**
+ * <strong>Class for interacting with WCA CreateTable API.</strong> It builds
+ * XML request for CreateTable API using
+ * {@link com.github.ka4ok85.wca.options.CreateTableOptions} and reads response
+ * into {@link com.github.ka4ok85.wca.response.CreateTableResponse}.
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ * <p>
+ * <strong>ATTN: </strong>No way to specify Visibility. RTs is created in Shared Folder
+ * </p>
+ * 
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
  */
 @Service
 @Scope("prototype")
@@ -36,6 +49,14 @@ public class CreateTableCommand extends AbstractInstantCommand<CreateTableRespon
 	@Autowired
 	private CreateTableResponse createTableResponse;
 
+	/**
+	 * Builds XML request for CreateTable API using
+	 * {@link com.github.ka4ok85.wca.options.CreateTableOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(CreateTableOptions options) {
 		Objects.requireNonNull(options, "CreateTableOptions must not be null");
@@ -98,6 +119,16 @@ public class CreateTableCommand extends AbstractInstantCommand<CreateTableRespon
 		}
 	}
 
+	/**
+	 * Reads CreateTable API response into
+	 * {@link com.github.ka4ok85.wca.response.CreateTableOptions}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO CreateTable Response
+	 */
 	@Override
 	public ResponseContainer<CreateTableResponse> readResponse(Node resultNode, CreateTableOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
