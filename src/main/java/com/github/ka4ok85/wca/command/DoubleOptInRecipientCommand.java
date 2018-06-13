@@ -23,6 +23,23 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
 /*
  * Flexible Databases are not supported 
  */
+/**
+ * <strong>Class for interacting with WCA DoubleOptInRecipient API.</strong> It
+ * builds XML request for DoubleOptInRecipient API using
+ * {@link com.github.ka4ok85.wca.options.DoubleOptInRecipientOptions} and reads
+ * response into
+ * {@link com.github.ka4ok85.wca.response.DoubleOptInRecipientResponse}.
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ * <p>
+ * <strong>ATTN: </strong> Flexible Databases are not supported
+ * </p>
+ * 
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 @Service
 @Scope("prototype")
 public class DoubleOptInRecipientCommand
@@ -33,6 +50,14 @@ public class DoubleOptInRecipientCommand
 	@Autowired
 	private DoubleOptInRecipientResponse doubleOptInRecipientResponse;
 
+	/**
+	 * Builds XML request for DoubleOptInRecipient API using
+	 * {@link com.github.ka4ok85.wca.options.DoubleOptInRecipientOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(DoubleOptInRecipientOptions options) {
 		Objects.requireNonNull(options, "DoubleOptInRecipientOptions must not be null");
@@ -71,6 +96,16 @@ public class DoubleOptInRecipientCommand
 		}
 	}
 
+	/**
+	 * Reads DoubleOptInRecipient API response into
+	 * {@link com.github.ka4ok85.wca.response.DoubleOptInRecipientResponse}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO DoubleOptInRecipient Response
+	 */
 	@Override
 	public ResponseContainer<DoubleOptInRecipientResponse> readResponse(Node resultNode,
 			DoubleOptInRecipientOptions options) {

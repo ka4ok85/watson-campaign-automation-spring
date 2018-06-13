@@ -27,6 +27,19 @@ import com.github.ka4ok85.wca.response.DeleteRelationalTableDataResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.RelationalTableRecordFailure;
 
+/**
+ * <strong>Class for interacting with WCA DeleteRelationalTableData API.</strong> It builds
+ * XML request for DeleteRelationalTableData API using
+ * {@link com.github.ka4ok85.wca.options.DeleteRelationalTableDataOptions} and reads response
+ * into {@link com.github.ka4ok85.wca.response.DeleteRelationalTableDataResponse}.
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 @Service
 @Scope("prototype")
 public class DeleteRelationalTableDataCommand
@@ -37,6 +50,14 @@ public class DeleteRelationalTableDataCommand
 	@Autowired
 	private DeleteRelationalTableDataResponse deleteRelationalTableDataResponse;
 
+	/**
+	 * Builds XML request for DeleteRelationalTableData API using
+	 * {@link com.github.ka4ok85.wca.options.DeleteRelationalTableDataOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(DeleteRelationalTableDataOptions options) {
 		Objects.requireNonNull(options, "DeleteRelationalTableDataOptions must not be null");
@@ -72,6 +93,16 @@ public class DeleteRelationalTableDataCommand
 		}
 	}
 
+	/**
+	 * Reads DeleteRelationalTableData API response into
+	 * {@link com.github.ka4ok85.wca.response.DeleteRelationalTableDataResponse}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO DeleteRelationalTableData Response
+	 */
 	@Override
 	public ResponseContainer<DeleteRelationalTableDataResponse> readResponse(Node resultNode,
 			DeleteRelationalTableDataOptions options) {
