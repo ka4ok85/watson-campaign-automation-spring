@@ -30,6 +30,20 @@ import com.github.ka4ok85.wca.response.containers.AggregateTrackingDataMailing;
 import com.github.ka4ok85.wca.response.containers.AggregateTrackingDataTopDomain;
 import com.github.ka4ok85.wca.utils.DateTimeRange;
 
+/**
+ * <strong>Class for interacting with WCA GetAggregateTrackingForOrg
+ * API.</strong> It builds XML request for GetAggregateTrackingForOrg API using
+ * {@link com.github.ka4ok85.wca.options.GetAggregateTrackingForOrgOptions} and
+ * reads response into
+ * {@link com.github.ka4ok85.wca.response.GetAggregateTrackingForOrgResponse}.
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 @Service
 @Scope("prototype")
 public class GetAggregateTrackingForOrgCommand
@@ -40,6 +54,14 @@ public class GetAggregateTrackingForOrgCommand
 	@Autowired
 	private GetAggregateTrackingForOrgResponse getAggregateTrackingForOrgResponse;
 
+	/**
+	 * Builds XML request for GetAggregateTrackingForOrg API using
+	 * {@link com.github.ka4ok85.wca.options.GetAggregateTrackingForOrgOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(GetAggregateTrackingForOrgOptions options) {
 		Objects.requireNonNull(options, "GetAggregateTrackingForOrgOptions must not be null");
@@ -110,6 +132,16 @@ public class GetAggregateTrackingForOrgCommand
 		}
 	}
 
+	/**
+	 * Reads GetAggregateTrackingForOrg API response into
+	 * {@link com.github.ka4ok85.wca.response.GetAggregateTrackingForOrgResponse}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO GetAggregateTrackingForOrg Response
+	 */
 	@Override
 	public ResponseContainer<GetAggregateTrackingForOrgResponse> readResponse(Node resultNode,
 			GetAggregateTrackingForOrgOptions options) {
