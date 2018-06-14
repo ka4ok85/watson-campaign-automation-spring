@@ -20,9 +20,6 @@ import com.github.ka4ok85.wca.options.DoubleOptInRecipientOptions;
 import com.github.ka4ok85.wca.response.DoubleOptInRecipientResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
-/*
- * Flexible Databases are not supported 
- */
 /**
  * <strong>Class for interacting with WCA DoubleOptInRecipient API.</strong> It
  * builds XML request for DoubleOptInRecipient API using

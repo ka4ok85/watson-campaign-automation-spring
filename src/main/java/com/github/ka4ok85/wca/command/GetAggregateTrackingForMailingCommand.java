@@ -28,6 +28,22 @@ import com.github.ka4ok85.wca.response.containers.AggregateTrackingDataInboxMoni
 import com.github.ka4ok85.wca.response.containers.AggregateTrackingDataMailing;
 import com.github.ka4ok85.wca.response.containers.AggregateTrackingDataTopDomain;
 
+/**
+ * <strong>Class for interacting with WCA GetAggregateTrackingForMailing
+ * API.</strong> It builds XML request for GetAggregateTrackingForMailing API
+ * using
+ * {@link com.github.ka4ok85.wca.options.GetAggregateTrackingForMailingOptions}
+ * and reads response into
+ * {@link com.github.ka4ok85.wca.response.GetAggregateTrackingForMailingResponse}
+ * .
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 @Service
 @Scope("prototype")
 public class GetAggregateTrackingForMailingCommand
@@ -38,6 +54,14 @@ public class GetAggregateTrackingForMailingCommand
 	@Autowired
 	private GetAggregateTrackingForMailingResponse getAggregateTrackingForMailingResponse;
 
+	/**
+	 * Builds XML request for GetAggregateTrackingForMailing API using
+	 * {@link com.github.ka4ok85.wca.options.GetAggregateTrackingForMailingOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(GetAggregateTrackingForMailingOptions options) {
 		Objects.requireNonNull(options, "GetAggregateTrackingForMailingOptions must not be null");
@@ -61,6 +85,16 @@ public class GetAggregateTrackingForMailingCommand
 		}
 	}
 
+	/**
+	 * Reads GetAggregateTrackingForMailing API response into
+	 * {@link com.github.ka4ok85.wca.response.GetAggregateTrackingForMailingResponse}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO GetAggregateTrackingForMailing Response
+	 */
 	@Override
 	public ResponseContainer<GetAggregateTrackingForMailingResponse> readResponse(Node resultNode,
 			GetAggregateTrackingForMailingOptions options) {

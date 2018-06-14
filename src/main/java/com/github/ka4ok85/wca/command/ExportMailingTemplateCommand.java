@@ -21,6 +21,20 @@ import com.github.ka4ok85.wca.options.ExportMailingTemplateOptions;
 import com.github.ka4ok85.wca.response.ExportMailingTemplateResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
+/**
+ * <strong>Class for interacting with WCA ExportMailingTemplate API.</strong> It
+ * builds XML request for ExportMailingTemplate API using
+ * {@link com.github.ka4ok85.wca.options.ExportMailingTemplateOptions} and reads
+ * response into
+ * {@link com.github.ka4ok85.wca.response.ExportMailingTemplateResponse}.
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 @Service
 @Scope("prototype")
 public class ExportMailingTemplateCommand
@@ -32,6 +46,14 @@ public class ExportMailingTemplateCommand
 	@Autowired
 	private ExportMailingTemplateResponse exportMailingTemplateResponse;
 
+	/**
+	 * Builds XML request for ExportMailingTemplate API using
+	 * {@link com.github.ka4ok85.wca.options.ExportMailingTemplateOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(ExportMailingTemplateOptions options) {
 		Objects.requireNonNull(options, "ExportMailingTemplateOptions must not be null");
@@ -46,6 +68,16 @@ public class ExportMailingTemplateCommand
 		addBooleanParameter(methodElement, "ADD_TO_STORED_FILES", options.isAddToStoredFiles());
 	}
 
+	/**
+	 * Reads ExportMailingTemplate API response into
+	 * {@link com.github.ka4ok85.wca.response.ExportMailingTemplateResponse}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO ExportMailingTemplate Response
+	 */
 	@Override
 	public ResponseContainer<ExportMailingTemplateResponse> readResponse(Node resultNode,
 			ExportMailingTemplateOptions options) {
