@@ -27,6 +27,20 @@ import com.github.ka4ok85.wca.response.GetListMetaDataResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.ListColumnLimited;
 
+/**
+ * <strong>Class for interacting with WCA GetListMetaData API.</strong> It
+ * builds XML request for GetListMetaData API using
+ * {@link com.github.ka4ok85.wca.options.GetListMetaDataOptions} and reads
+ * response into {@link com.github.ka4ok85.wca.response.GetListMetaDataResponse}
+ * .
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 @Service
 @Scope("prototype")
 public class GetListMetaDataCommand extends AbstractInstantCommand<GetListMetaDataResponse, GetListMetaDataOptions> {
@@ -36,6 +50,14 @@ public class GetListMetaDataCommand extends AbstractInstantCommand<GetListMetaDa
 	@Autowired
 	private GetListMetaDataResponse getListMetaDataResponse;
 
+	/**
+	 * Builds XML request for GetListMetaData API using
+	 * {@link com.github.ka4ok85.wca.options.GetListMetaDataOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(GetListMetaDataOptions options) {
 		Objects.requireNonNull(options, "GetListMetaDataOptions must not be null");
@@ -48,6 +70,16 @@ public class GetListMetaDataCommand extends AbstractInstantCommand<GetListMetaDa
 		addChildNode(listId, currentNode);
 	}
 
+	/**
+	 * Reads GetListMetaData API response into
+	 * {@link com.github.ka4ok85.wca.response.GetListMetaDataOptions}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO GetListMetaData Response
+	 */
 	@Override
 	public ResponseContainer<GetListMetaDataResponse> readResponse(Node resultNode, GetListMetaDataOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();

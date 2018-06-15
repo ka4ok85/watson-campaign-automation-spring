@@ -23,6 +23,19 @@ import com.github.ka4ok85.wca.response.GetListsResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.EngageList;
 
+/**
+ * <strong>Class for interacting with WCA GetLists API.</strong> It builds XML
+ * request for GetLists API using
+ * {@link com.github.ka4ok85.wca.options.GetListsOptions} and reads response
+ * into {@link com.github.ka4ok85.wca.response.GetListsResponse}.
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 @Service
 @Scope("prototype")
 public class GetListsCommand extends AbstractInstantCommand<GetListsResponse, GetListsOptions> {
@@ -32,6 +45,14 @@ public class GetListsCommand extends AbstractInstantCommand<GetListsResponse, Ge
 	@Autowired
 	private GetListsResponse getListsResponse;
 
+	/**
+	 * Builds XML request for GetLists API using
+	 * {@link com.github.ka4ok85.wca.options.GetListsOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(GetListsOptions options) {
 		Objects.requireNonNull(options, "GetListsOptions must not be null");
@@ -60,6 +81,16 @@ public class GetListsCommand extends AbstractInstantCommand<GetListsResponse, Ge
 		}
 	}
 
+	/**
+	 * Reads GetLists API response into
+	 * {@link com.github.ka4ok85.wca.response.GetListsResponse}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO GetLists Response
+	 */
 	@Override
 	public ResponseContainer<GetListsResponse> readResponse(Node resultNode, GetListsOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
