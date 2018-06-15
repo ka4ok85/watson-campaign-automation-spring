@@ -25,15 +25,38 @@ import com.github.ka4ok85.wca.response.GetReportIdByDateResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.ReportIdByDateMailing;
 
+/**
+ * <strong>Class for interacting with WCA GetReportIdByDate API.</strong> It
+ * builds XML request for GetReportIdByDate API using
+ * {@link com.github.ka4ok85.wca.options.GetReportIdByDateOptions} and reads
+ * response into
+ * {@link com.github.ka4ok85.wca.response.GetReportIdByDateResponse}.
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 @Service
 @Scope("prototype")
-public class GetReportIdByDateCommand extends AbstractInstantCommand<GetReportIdByDateResponse, GetReportIdByDateOptions> {
+public class GetReportIdByDateCommand
+		extends AbstractInstantCommand<GetReportIdByDateResponse, GetReportIdByDateOptions> {
 
 	private static final String apiMethodName = "GetReportIdByDate";
 
 	@Autowired
 	private GetReportIdByDateResponse getReportIdByDateResponse;
 
+	/**
+	 * Builds XML request for GetReportIdByDate API using
+	 * {@link com.github.ka4ok85.wca.options.GetReportIdByDateOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(GetReportIdByDateOptions options) {
 		Objects.requireNonNull(options, "GetReportIdByDateOptions must not be null");
@@ -56,6 +79,16 @@ public class GetReportIdByDateCommand extends AbstractInstantCommand<GetReportId
 		addChildNode(dateEnd, currentNode);
 	}
 
+	/**
+	 * Reads GetReportIdByDate API response into
+	 * {@link com.github.ka4ok85.wca.response.GetReportIdByDateResponse}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO GetReportIdByDate Response
+	 */
 	@Override
 	public ResponseContainer<GetReportIdByDateResponse> readResponse(Node resultNode,
 			GetReportIdByDateOptions options) {

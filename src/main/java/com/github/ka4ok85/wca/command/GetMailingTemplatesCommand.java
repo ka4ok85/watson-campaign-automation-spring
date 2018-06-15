@@ -26,6 +26,20 @@ import com.github.ka4ok85.wca.response.GetMailingTemplatesResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.MailingTemplate;
 
+/**
+ * <strong>Class for interacting with WCA GetMailingTemplates API.</strong> It
+ * builds XML request for GetMailingTemplates API using
+ * {@link com.github.ka4ok85.wca.options.GetMailingTemplatesOptions} and reads
+ * response into
+ * {@link com.github.ka4ok85.wca.response.GetMailingTemplatesResponse}.
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 @Service
 @Scope("prototype")
 public class GetMailingTemplatesCommand
@@ -36,6 +50,14 @@ public class GetMailingTemplatesCommand
 	@Autowired
 	private GetMailingTemplatesResponse getMailingTemplatesResponse;
 
+	/**
+	 * Builds XML request for GetMailingTemplates API using
+	 * {@link com.github.ka4ok85.wca.options.GetMailingTemplatesOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(GetMailingTemplatesOptions options) {
 		Objects.requireNonNull(options, "GetMailingTemplatesOptions must not be null");
@@ -73,6 +95,16 @@ public class GetMailingTemplatesCommand
 		}
 	}
 
+	/**
+	 * Reads GetMailingTemplates API response into
+	 * {@link com.github.ka4ok85.wca.response.GetMailingTemplatesResponse}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO GetMailingTemplates Response
+	 */
 	@Override
 	public ResponseContainer<GetMailingTemplatesResponse> readResponse(Node resultNode,
 			GetMailingTemplatesOptions options) {
