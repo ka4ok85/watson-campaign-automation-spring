@@ -27,6 +27,20 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.SentMailing;
 import com.github.ka4ok85.wca.utils.DateTimeRange;
 
+/**
+ * <strong>Class for interacting with WCA GetSentMailingsForUser API.</strong>
+ * It builds XML request for GetSentMailingsForUser API using
+ * {@link com.github.ka4ok85.wca.options.GetSentMailingsForUserOptions} and
+ * reads response into
+ * {@link com.github.ka4ok85.wca.response.GetSentMailingsForUserResponse}.
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 @Service
 @Scope("prototype")
 public class GetSentMailingsForUserCommand
@@ -37,6 +51,14 @@ public class GetSentMailingsForUserCommand
 	@Autowired
 	private GetSentMailingsForUserResponse getSentMailingsForUserResponse;
 
+	/**
+	 * Builds XML request for GetSentMailingsForUser API using
+	 * {@link com.github.ka4ok85.wca.options.GetSentMailingsForUserOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(GetSentMailingsForUserOptions options) {
 		Objects.requireNonNull(options, "GetSentMailingsForUserOptions must not be null");
@@ -115,6 +137,16 @@ public class GetSentMailingsForUserCommand
 		}
 	}
 
+	/**
+	 * Reads GetSentMailingsForUser API response into
+	 * {@link com.github.ka4ok85.wca.response.GetSentMailingsForUserResponse}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO GetSentMailingsForUser Response
+	 */
 	@Override
 	public ResponseContainer<GetSentMailingsForUserResponse> readResponse(Node resultNode,
 			GetSentMailingsForUserOptions options) {
