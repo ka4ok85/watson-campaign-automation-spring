@@ -27,6 +27,20 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.SentMailing;
 import com.github.ka4ok85.wca.utils.DateTimeRange;
 
+/**
+ * <strong>Class for interacting with WCA GetSentMailingsForOrg API.</strong> It
+ * builds XML request for GetSentMailingsForOrg API using
+ * {@link com.github.ka4ok85.wca.options.GetSentMailingsForOrgOptions} and reads
+ * response into
+ * {@link com.github.ka4ok85.wca.response.GetSentMailingsForOrgResponse}.
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 @Service
 @Scope("prototype")
 public class GetSentMailingsForOrgCommand
@@ -37,6 +51,14 @@ public class GetSentMailingsForOrgCommand
 	@Autowired
 	private GetSentMailingsForOrgResponse getSentMailingsForOrgResponse;
 
+	/**
+	 * Builds XML request for GetSentMailingsForOrg API using
+	 * {@link com.github.ka4ok85.wca.options.GetSentMailingsForOrgOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(GetSentMailingsForOrgOptions options) {
 		Objects.requireNonNull(options, "GetSentMailingsForOrgOptions must not be null");
@@ -111,6 +133,16 @@ public class GetSentMailingsForOrgCommand
 		}
 	}
 
+	/**
+	 * Reads GetSentMailingsForOrg API response into
+	 * {@link com.github.ka4ok85.wca.response.GetSentMailingsForOrgResponse}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO GetSentMailingsForOrg Response
+	 */
 	@Override
 	public ResponseContainer<GetSentMailingsForOrgResponse> readResponse(Node resultNode,
 			GetSentMailingsForOrgOptions options) {
