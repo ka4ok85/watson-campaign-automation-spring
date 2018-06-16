@@ -19,10 +19,31 @@ import com.github.ka4ok85.wca.options.JobOptions;
 import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
+/**
+ * <strong>Class for interacting with WCA GetJobStatus API.</strong> It builds
+ * XML request for GetJobStatus API using
+ * {@link com.github.ka4ok85.wca.options.JobOptions} and reads response into
+ * {@link com.github.ka4ok85.wca.response.JobResponse}.
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 public class WaitForJobCommand extends AbstractInstantCommand<JobResponse, JobOptions> {
 
 	private static String apiMethodName = "GetJobStatus";
 
+	/**
+	 * Builds XML request for GetJobStatus API using
+	 * {@link com.github.ka4ok85.wca.options.JobOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(JobOptions options) {
 		Objects.requireNonNull(options, "JobOptions must not be null");
@@ -35,6 +56,16 @@ public class WaitForJobCommand extends AbstractInstantCommand<JobResponse, JobOp
 		addChildNode(jobID, currentNode);
 	}
 
+	/**
+	 * Reads GetJobStatus API response into
+	 * {@link com.github.ka4ok85.wca.response.JobResponse}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO GetJobStatus Response
+	 */
 	@Override
 	public ResponseContainer<JobResponse> readResponse(Node resultNode, JobOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
