@@ -14,6 +14,20 @@ import com.github.ka4ok85.wca.options.OptOutRecipientOptions;
 import com.github.ka4ok85.wca.response.OptOutRecipientResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
+/**
+ * <strong>Class for interacting with WCA OptOutRecipient API.</strong> It
+ * builds XML request for OptOutRecipient API using
+ * {@link com.github.ka4ok85.wca.options.OptOutRecipientOptions} and reads
+ * response into {@link com.github.ka4ok85.wca.response.OptOutRecipientResponse}
+ * .
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 @Service
 @Scope("prototype")
 public class OptOutRecipientCommand extends AbstractInstantCommand<OptOutRecipientResponse, OptOutRecipientOptions> {
@@ -23,6 +37,14 @@ public class OptOutRecipientCommand extends AbstractInstantCommand<OptOutRecipie
 	@Autowired
 	private OptOutRecipientResponse optOutRecipientResponse;
 
+	/**
+	 * Builds XML request for OptOutRecipient API using
+	 * {@link com.github.ka4ok85.wca.options.OptOutRecipientOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(OptOutRecipientOptions options) {
 		Objects.requireNonNull(options, "OptOutRecipientOptions must not be null");
@@ -73,6 +95,16 @@ public class OptOutRecipientCommand extends AbstractInstantCommand<OptOutRecipie
 		}
 	}
 
+	/**
+	 * Reads OptOutRecipient API response into
+	 * {@link com.github.ka4ok85.wca.response.OptOutRecipientResponse}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO OptOutRecipient Response
+	 */
 	@Override
 	public ResponseContainer<OptOutRecipientResponse> readResponse(Node resultNode, OptOutRecipientOptions options) {
 		ResponseContainer<OptOutRecipientResponse> response = new ResponseContainer<OptOutRecipientResponse>(
