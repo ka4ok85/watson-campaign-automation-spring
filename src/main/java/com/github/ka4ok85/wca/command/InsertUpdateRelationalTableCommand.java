@@ -27,6 +27,20 @@ import com.github.ka4ok85.wca.response.InsertUpdateRelationalTableResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.RelationalTableRecordFailure;
 
+/**
+ * <strong>Class for interacting with WCA InsertUpdateRelationalTable
+ * API.</strong> It builds XML request for InsertUpdateRelationalTable API using
+ * {@link com.github.ka4ok85.wca.options.InsertUpdateRelationalTableOptions} and
+ * reads response into
+ * {@link com.github.ka4ok85.wca.response.InsertUpdateRelationalTableResponse}.
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 @Service
 @Scope("prototype")
 public class InsertUpdateRelationalTableCommand
@@ -37,6 +51,14 @@ public class InsertUpdateRelationalTableCommand
 	@Autowired
 	private InsertUpdateRelationalTableResponse insertUpdateRelationalTableResponse;
 
+	/**
+	 * Builds XML request for InsertUpdateRelationalTable API using
+	 * {@link com.github.ka4ok85.wca.options.InsertUpdateRelationalTableOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(InsertUpdateRelationalTableOptions options) {
 		Objects.requireNonNull(options, "InsertUpdateRelationalTableOptions must not be null");
@@ -78,6 +100,16 @@ public class InsertUpdateRelationalTableCommand
 		}
 	}
 
+	/**
+	 * Reads InsertUpdateRelationalTable API response into
+	 * {@link com.github.ka4ok85.wca.response.InsertUpdateRelationalTableResponse}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO InsertUpdateRelationalTable Response
+	 */
 	@Override
 	public ResponseContainer<InsertUpdateRelationalTableResponse> readResponse(Node resultNode,
 			InsertUpdateRelationalTableOptions options) {
