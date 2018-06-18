@@ -21,8 +21,23 @@ import com.github.ka4ok85.wca.options.UpdateRecipientOptions;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.UpdateRecipientResponse;
 
-/*
- * For Opt-in opted-out recipient again put in Columns "OPT_OUT" name with "false" value
+/**
+ * <strong>Class for interacting with WCA UpdateRecipient API.</strong> It
+ * builds XML request for UpdateRecipient API using
+ * {@link com.github.ka4ok85.wca.options.UpdateRecipientOptions} and reads
+ * response into {@link com.github.ka4ok85.wca.response.UpdateRecipientResponse}
+ * .
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ * <p>
+ * <strong>ATTN: </strong>For Opt-in opted-out recipient again put in Columns
+ * "OPT_OUT" name with "false" value
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
  */
 @Service
 @Scope("prototype")
@@ -33,6 +48,14 @@ public class UpdateRecipientCommand extends AbstractInstantCommand<UpdateRecipie
 	@Autowired
 	private UpdateRecipientResponse updateRecipientResponse;
 
+	/**
+	 * Builds XML request for UpdateRecipient API using
+	 * {@link com.github.ka4ok85.wca.options.UpdateRecipientOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(UpdateRecipientOptions options) {
 		Objects.requireNonNull(options, "UpdateRecipientOptions must not be null");
@@ -127,6 +150,16 @@ public class UpdateRecipientCommand extends AbstractInstantCommand<UpdateRecipie
 		}
 	}
 
+	/**
+	 * Reads UpdateRecipient API response into
+	 * {@link com.github.ka4ok85.wca.response.UpdateRecipientResponse}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO UpdateRecipient Response
+	 */
 	@Override
 	public ResponseContainer<UpdateRecipientResponse> readResponse(Node resultNode, UpdateRecipientOptions options) {
 		XPathFactory factory = XPathFactory.newInstance();
