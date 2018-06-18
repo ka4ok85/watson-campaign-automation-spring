@@ -14,6 +14,20 @@ import com.github.ka4ok85.wca.options.RemoveRecipientOptions;
 import com.github.ka4ok85.wca.response.RemoveRecipientResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
+/**
+ * <strong>Class for interacting with WCA RemoveRecipient API.</strong> It
+ * builds XML request for RemoveRecipient API using
+ * {@link com.github.ka4ok85.wca.options.RemoveRecipientOptions} and reads
+ * response into {@link com.github.ka4ok85.wca.response.RemoveRecipientResponse}
+ * .
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
+ */
 @Service
 @Scope("prototype")
 public class RemoveRecipientCommand extends AbstractInstantCommand<RemoveRecipientResponse, RemoveRecipientOptions> {
@@ -23,6 +37,14 @@ public class RemoveRecipientCommand extends AbstractInstantCommand<RemoveRecipie
 	@Autowired
 	private RemoveRecipientResponse removeRecipientResponse;
 
+	/**
+	 * Builds XML request for RemoveRecipient API using
+	 * {@link com.github.ka4ok85.wca.options.RemoveRecipientOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 * @return void
+	 */
 	@Override
 	public void buildXmlRequest(RemoveRecipientOptions options) {
 		Objects.requireNonNull(options, "RemoveRecipientResponse must not be null");
@@ -60,6 +82,16 @@ public class RemoveRecipientCommand extends AbstractInstantCommand<RemoveRecipie
 		}
 	}
 
+	/**
+	 * Reads RemoveRecipient API response into
+	 * {@link com.github.ka4ok85.wca.response.RemoveRecipientResponse}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO RemoveRecipient Response
+	 */
 	@Override
 	public ResponseContainer<RemoveRecipientResponse> readResponse(Node resultNode, RemoveRecipientOptions options) {
 		ResponseContainer<RemoveRecipientResponse> response = new ResponseContainer<RemoveRecipientResponse>(
