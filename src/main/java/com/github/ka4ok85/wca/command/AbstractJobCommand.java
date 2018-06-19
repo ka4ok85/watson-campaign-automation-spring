@@ -8,9 +8,13 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.options.AbstractOptions;
@@ -20,12 +24,14 @@ import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.JobPollingContainer;
 
+@Service
 abstract public class AbstractJobCommand<T extends AbstractResponse, V extends AbstractOptions>
 		extends AbstractCommand<T, V> {
 
 	public abstract ResponseContainer<T> readResponse(JobPollingContainer jobPollingContainer, JobResponse jobResponse,
 			V options);
 
+	@Retryable(value = EngageApiException.class, maxAttempts = 5, backoff = @Backoff(delay = 5000, multiplier = 2))
 	public ResponseContainer<T> executeCommand(V options) {
 		buildXmlRequest(options);
 		String xml = getXML();
@@ -64,7 +70,7 @@ abstract public class AbstractJobCommand<T extends AbstractResponse, V extends A
 
 			jobId = Long.parseLong(jobIdNode.getTextContent());
 		} catch (XPathExpressionException | JobBadStateException e) {
-			throw new EngageApiException(e.getMessage());
+			throw new BadApiResultException(e.getMessage());
 		}
 
 		JobPollingContainer jobPollingContainer = new JobPollingContainer();
