@@ -26,6 +26,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
@@ -35,14 +36,14 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.github.ka4ok85.wca.exceptions.BadApiResultException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
+import com.github.ka4ok85.wca.exceptions.EngageApiException;
 import com.github.ka4ok85.wca.oauth.OAuthClient;
 import com.github.ka4ok85.wca.options.AbstractOptions;
 import com.github.ka4ok85.wca.pod.Pod;
 import com.github.ka4ok85.wca.response.AbstractResponse;
 import com.github.ka4ok85.wca.sftp.SFTP;
 
+@Service
 public abstract class AbstractCommand<T extends AbstractResponse, V extends AbstractOptions> {
 	protected OAuthClient oAuthClient;
 	protected SFTP sftp;
@@ -68,9 +69,7 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 		}
 	}
 
-	public AbstractCommand() {
-
-	}
+	public AbstractCommand() {}
 
 	public void setoAuthClient(OAuthClient oAuthClient) {
 		this.oAuthClient = oAuthClient;
@@ -130,14 +129,13 @@ public abstract class AbstractCommand<T extends AbstractResponse, V extends Abst
 		return addChildNode(node, parentNode);
 	}
 
-	protected Node runApi(String xml)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	protected Node runApi(String xml) {
 		// TODO UTF8 check
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", "Bearer " + oAuthClient.getAccessToken());
 		headers.setContentType(MediaType.TEXT_XML);
 		headers.setContentLength(xml.length());
-System.out.println(xml);
 		HttpEntity<String> entity = new HttpEntity<String>(xml, headers);
 		Node resultNode = null;
 
@@ -146,7 +144,6 @@ System.out.println(xml);
 			restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
 			ResponseEntity<String> result = restTemplate.exchange(Pod.getXMLAPIEndpoint(oAuthClient.getPodNumber()),
 					HttpMethod.POST, entity, String.class);
-System.out.println(result);
 			try {
 				DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 				InputSource is = new InputSource();
@@ -163,7 +160,7 @@ System.out.println(result);
 				if (apiResult == false && !successNode.getTextContent().equals("SUCCESS")) {
 					Node faultStringNode = (Node) xpath.evaluate("/Envelope/Body/Fault/FaultString", doc,
 							XPathConstants.NODE);
-					throw new FaultApiResultException(faultStringNode.getTextContent());
+					throw new BadApiResultException(faultStringNode.getTextContent());
 				}
 
 				resultNode = (Node) xpath.evaluate("/Envelope/Body/RESULT", doc, XPathConstants.NODE);
@@ -172,7 +169,7 @@ System.out.println(result);
 			}
 
 		} catch (HttpClientErrorException e) {
-			throw new BadApiResultException(e.getMessage());
+			throw new EngageApiException(e.getMessage());
 		}
 
 		return resultNode;
