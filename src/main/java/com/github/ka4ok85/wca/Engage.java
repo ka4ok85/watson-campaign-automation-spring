@@ -2,6 +2,7 @@ package com.github.ka4ok85.wca;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Configuration;
 
 import com.github.ka4ok85.wca.command.AddContactToContactListCommand;
 import com.github.ka4ok85.wca.command.AddContactToProgramCommand;
@@ -36,9 +37,6 @@ import com.github.ka4ok85.wca.command.RemoveRecipientCommand;
 import com.github.ka4ok85.wca.command.SelectRecipientDataCommand;
 import com.github.ka4ok85.wca.command.UpdateRecipientCommand;
 import com.github.ka4ok85.wca.config.SpringConfig;
-import com.github.ka4ok85.wca.exceptions.BadApiResultException;
-import com.github.ka4ok85.wca.exceptions.FailedGetAccessTokenException;
-import com.github.ka4ok85.wca.exceptions.FaultApiResultException;
 import com.github.ka4ok85.wca.oauth.OAuthClient;
 import com.github.ka4ok85.wca.oauth.OAuthClientImplementation;
 import com.github.ka4ok85.wca.options.AddContactToContactListOptions;
@@ -108,6 +106,10 @@ import com.github.ka4ok85.wca.response.SelectRecipientDataResponse;
 import com.github.ka4ok85.wca.response.UpdateRecipientResponse;
 import com.github.ka4ok85.wca.sftp.SFTP;
 
+import org.springframework.retry.annotation.*;
+
+@Configuration
+@EnableRetry
 public class Engage {
 	private OAuthClient oAuthClient;
 	private SFTP sftp;
@@ -123,8 +125,7 @@ public class Engage {
 		this.sftp = new SFTP(this.oAuthClient);
 	}
 
-	public ResponseContainer<ExportListResponse> exportList(ExportListOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<ExportListResponse> exportList(ExportListOptions options) {
 		ExportListCommand exportList = getApplicationContext().getBean(ExportListCommand.class);
 		exportList.setoAuthClient(oAuthClient);
 		exportList.setSftp(sftp);
@@ -133,8 +134,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<ExportTableResponse> exportTable(ExportTableOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<ExportTableResponse> exportTable(ExportTableOptions options) {
 		ExportTableCommand exportTable = getApplicationContext().getBean(ExportTableCommand.class);
 		exportTable.setoAuthClient(oAuthClient);
 		exportTable.setSftp(sftp);
@@ -143,8 +143,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<CreateContactListResponse> createContactList(CreateContactListOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<CreateContactListResponse> createContactList(CreateContactListOptions options) {
 		CreateContactListCommand createContactList = getApplicationContext().getBean(CreateContactListCommand.class);
 		createContactList.setoAuthClient(oAuthClient);
 		createContactList.setSftp(sftp);
@@ -153,8 +152,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<DeleteListResponse> deleteList(DeleteListOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<DeleteListResponse> deleteList(DeleteListOptions options) {
 		DeleteListCommand deleteList = getApplicationContext().getBean(DeleteListCommand.class);
 		deleteList.setoAuthClient(oAuthClient);
 		deleteList.setSftp(sftp);
@@ -163,8 +161,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<SelectRecipientDataResponse> selectRecipientData(SelectRecipientDataOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<SelectRecipientDataResponse> selectRecipientData(SelectRecipientDataOptions options) {
 		SelectRecipientDataCommand selectRecipientData = getApplicationContext()
 				.getBean(SelectRecipientDataCommand.class);
 		selectRecipientData.setoAuthClient(oAuthClient);
@@ -174,8 +171,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<AddRecipientResponse> addRecipient(AddRecipientOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<AddRecipientResponse> addRecipient(AddRecipientOptions options) {
 		AddRecipientCommand addRecipient = getApplicationContext().getBean(AddRecipientCommand.class);
 		addRecipient.setoAuthClient(oAuthClient);
 		addRecipient.setSftp(sftp);
@@ -184,8 +180,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<DoubleOptInRecipientResponse> doubleOptInRecipient(DoubleOptInRecipientOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<DoubleOptInRecipientResponse> doubleOptInRecipient(DoubleOptInRecipientOptions options) {
 		DoubleOptInRecipientCommand doubleOptInRecipient = getApplicationContext()
 				.getBean(DoubleOptInRecipientCommand.class);
 		doubleOptInRecipient.setoAuthClient(oAuthClient);
@@ -195,8 +190,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<UpdateRecipientResponse> updateRecipient(UpdateRecipientOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<UpdateRecipientResponse> updateRecipient(UpdateRecipientOptions options) {
 		UpdateRecipientCommand updateRecipient = getApplicationContext().getBean(UpdateRecipientCommand.class);
 		updateRecipient.setoAuthClient(oAuthClient);
 		updateRecipient.setSftp(sftp);
@@ -205,8 +199,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<OptOutRecipientResponse> optOutRecipient(OptOutRecipientOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<OptOutRecipientResponse> optOutRecipient(OptOutRecipientOptions options) {
 		OptOutRecipientCommand optOutRecipient = getApplicationContext().getBean(OptOutRecipientCommand.class);
 		optOutRecipient.setoAuthClient(oAuthClient);
 		optOutRecipient.setSftp(sftp);
@@ -215,8 +208,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<RemoveRecipientResponse> removeRecipient(RemoveRecipientOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<RemoveRecipientResponse> removeRecipient(RemoveRecipientOptions options) {
 		RemoveRecipientCommand removeRecipient = getApplicationContext().getBean(RemoveRecipientCommand.class);
 		removeRecipient.setoAuthClient(oAuthClient);
 		removeRecipient.setSftp(sftp);
@@ -225,8 +217,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<GetListsResponse> getLists(GetListsOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<GetListsResponse> getLists(GetListsOptions options) {
 		GetListsCommand getLists = getApplicationContext().getBean(GetListsCommand.class);
 		getLists.setoAuthClient(oAuthClient);
 		getLists.setSftp(sftp);
@@ -235,8 +226,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<CreateTableResponse> createTable(CreateTableOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<CreateTableResponse> createTable(CreateTableOptions options) {
 		CreateTableCommand createTable = getApplicationContext().getBean(CreateTableCommand.class);
 		createTable.setoAuthClient(oAuthClient);
 		createTable.setSftp(sftp);
@@ -245,8 +235,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<JoinTableResponse> joinTable(JoinTableOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<JoinTableResponse> joinTable(JoinTableOptions options) {
 		JoinTableCommand joinTable = getApplicationContext().getBean(JoinTableCommand.class);
 		joinTable.setoAuthClient(oAuthClient);
 		joinTable.setSftp(sftp);
@@ -256,8 +245,7 @@ public class Engage {
 	}
 
 	public ResponseContainer<InsertUpdateRelationalTableResponse> insertUpdateRelationalTable(
-			InsertUpdateRelationalTableOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+			InsertUpdateRelationalTableOptions options) {
 		InsertUpdateRelationalTableCommand insertUpdateRelationalTable = getApplicationContext()
 				.getBean(InsertUpdateRelationalTableCommand.class);
 		insertUpdateRelationalTable.setoAuthClient(oAuthClient);
@@ -269,8 +257,7 @@ public class Engage {
 	}
 
 	public ResponseContainer<DeleteRelationalTableDataResponse> deleteRelationalTableData(
-			DeleteRelationalTableDataOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+			DeleteRelationalTableDataOptions options) {
 		DeleteRelationalTableDataCommand deleteRelationalTableData = getApplicationContext()
 				.getBean(DeleteRelationalTableDataCommand.class);
 		deleteRelationalTableData.setoAuthClient(oAuthClient);
@@ -280,8 +267,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<PurgeTableResponse> purgeTable(PurgeTableOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<PurgeTableResponse> purgeTable(PurgeTableOptions options) {
 		PurgeTableCommand purgeTable = getApplicationContext().getBean(PurgeTableCommand.class);
 		purgeTable.setoAuthClient(oAuthClient);
 		purgeTable.setSftp(sftp);
@@ -290,8 +276,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<DeleteTableResponse> deleteTable(DeleteTableOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<DeleteTableResponse> deleteTable(DeleteTableOptions options) {
 		DeleteTableCommand deleteTable = getApplicationContext().getBean(DeleteTableCommand.class);
 		deleteTable.setoAuthClient(oAuthClient);
 		deleteTable.setSftp(sftp);
@@ -300,8 +285,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<CalculateQueryResponse> calculateQuery(CalculateQueryOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<CalculateQueryResponse> calculateQuery(CalculateQueryOptions options) {
 		CalculateQueryCommand calculateQuery = getApplicationContext().getBean(CalculateQueryCommand.class);
 		calculateQuery.setoAuthClient(oAuthClient);
 		calculateQuery.setSftp(sftp);
@@ -310,8 +294,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<GetListMetaDataResponse> getListMetaData(GetListMetaDataOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<GetListMetaDataResponse> getListMetaData(GetListMetaDataOptions options) {
 		GetListMetaDataCommand getListMetaData = getApplicationContext().getBean(GetListMetaDataCommand.class);
 		getListMetaData.setoAuthClient(oAuthClient);
 		getListMetaData.setSftp(sftp);
@@ -320,8 +303,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<GetMailingTemplatesResponse> getMailingTemplates(GetMailingTemplatesOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<GetMailingTemplatesResponse> getMailingTemplates(GetMailingTemplatesOptions options) {
 		GetMailingTemplatesCommand getMailingTemplates = getApplicationContext()
 				.getBean(GetMailingTemplatesCommand.class);
 		getMailingTemplates.setoAuthClient(oAuthClient);
@@ -331,8 +313,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<PurgeDataResponse> purgeData(PurgeDataOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<PurgeDataResponse> purgeData(PurgeDataOptions options) {
 		PurgeDataCommand purgeData = getApplicationContext().getBean(PurgeDataCommand.class);
 		purgeData.setoAuthClient(oAuthClient);
 		purgeData.setSftp(sftp);
@@ -341,8 +322,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<GetReportIdByDateResponse> getReportIdByDate(GetReportIdByDateOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<GetReportIdByDateResponse> getReportIdByDate(GetReportIdByDateOptions options) {
 		GetReportIdByDateCommand getReportIdByDate = getApplicationContext().getBean(GetReportIdByDateCommand.class);
 		getReportIdByDate.setoAuthClient(oAuthClient);
 		getReportIdByDate.setSftp(sftp);
@@ -351,8 +331,8 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<GetSentMailingsForOrgResponse> getSentMailingsForOrg(GetSentMailingsForOrgOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<GetSentMailingsForOrgResponse> getSentMailingsForOrg(
+			GetSentMailingsForOrgOptions options) {
 		GetSentMailingsForOrgCommand getSentMailingsForOrg = getApplicationContext()
 				.getBean(GetSentMailingsForOrgCommand.class);
 		getSentMailingsForOrg.setoAuthClient(oAuthClient);
@@ -363,8 +343,7 @@ public class Engage {
 	}
 
 	public ResponseContainer<GetSentMailingsForUserResponse> getSentMailingsForUser(
-			GetSentMailingsForUserOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+			GetSentMailingsForUserOptions options) {
 		GetSentMailingsForUserCommand getSentMailingsForUser = getApplicationContext()
 				.getBean(GetSentMailingsForUserCommand.class);
 		getSentMailingsForUser.setoAuthClient(oAuthClient);
@@ -375,8 +354,7 @@ public class Engage {
 	}
 
 	public ResponseContainer<GetSentMailingsForListResponse> getSentMailingsForList(
-			GetSentMailingsForListOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+			GetSentMailingsForListOptions options) {
 		GetSentMailingsForListCommand getSentMailingsForList = getApplicationContext()
 				.getBean(GetSentMailingsForListCommand.class);
 		getSentMailingsForList.setoAuthClient(oAuthClient);
@@ -386,8 +364,8 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<ExportMailingTemplateResponse> exportMailingTemplate(ExportMailingTemplateOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<ExportMailingTemplateResponse> exportMailingTemplate(
+			ExportMailingTemplateOptions options) {
 		ExportMailingTemplateCommand exportMailingTemplate = getApplicationContext()
 				.getBean(ExportMailingTemplateCommand.class);
 		exportMailingTemplate.setoAuthClient(oAuthClient);
@@ -398,8 +376,7 @@ public class Engage {
 	}
 
 	public ResponseContainer<AddContactToContactListResponse> addContactToContactList(
-			AddContactToContactListOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+			AddContactToContactListOptions options) {
 		AddContactToContactListCommand addContactToContactList = getApplicationContext()
 				.getBean(AddContactToContactListCommand.class);
 		addContactToContactList.setoAuthClient(oAuthClient);
@@ -409,8 +386,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<AddContactToProgramResponse> addContactToProgram(AddContactToProgramOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<AddContactToProgramResponse> addContactToProgram(AddContactToProgramOptions options) {
 		AddContactToProgramCommand addContactToProgram = getApplicationContext()
 				.getBean(AddContactToProgramCommand.class);
 		addContactToProgram.setoAuthClient(oAuthClient);
@@ -421,8 +397,7 @@ public class Engage {
 	}
 
 	public ResponseContainer<GetAggregateTrackingForOrgResponse> getAggregateTrackingForOrg(
-			GetAggregateTrackingForOrgOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+			GetAggregateTrackingForOrgOptions options) {
 		GetAggregateTrackingForOrgCommand getAggregateTrackingForOrg = getApplicationContext()
 				.getBean(GetAggregateTrackingForOrgCommand.class);
 		getAggregateTrackingForOrg.setoAuthClient(oAuthClient);
@@ -434,8 +409,7 @@ public class Engage {
 	}
 
 	public ResponseContainer<GetAggregateTrackingForMailingResponse> getAggregateTrackingForMailing(
-			GetAggregateTrackingForMailingOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+			GetAggregateTrackingForMailingOptions options) {
 		GetAggregateTrackingForMailingCommand getAggregateTrackingForMailing = getApplicationContext()
 				.getBean(GetAggregateTrackingForMailingCommand.class);
 		getAggregateTrackingForMailing.setoAuthClient(oAuthClient);
@@ -447,8 +421,7 @@ public class Engage {
 	}
 
 	public ResponseContainer<GetAggregateTrackingForUserResponse> getAggregateTrackingForUser(
-			GetAggregateTrackingForUserOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+			GetAggregateTrackingForUserOptions options) {
 		GetAggregateTrackingForUserCommand getAggregateTrackingForUser = getApplicationContext()
 				.getBean(GetAggregateTrackingForUserCommand.class);
 		getAggregateTrackingForUser.setoAuthClient(oAuthClient);
@@ -459,8 +432,7 @@ public class Engage {
 		return result;
 	}
 
-	public ResponseContainer<ImportListResponse> importList(ImportListOptions options)
-			throws FailedGetAccessTokenException, FaultApiResultException, BadApiResultException {
+	public ResponseContainer<ImportListResponse> importList(ImportListOptions options) {
 		ImportListCommand importList = getApplicationContext().getBean(ImportListCommand.class);
 		importList.setoAuthClient(oAuthClient);
 		importList.setSftp(sftp);
