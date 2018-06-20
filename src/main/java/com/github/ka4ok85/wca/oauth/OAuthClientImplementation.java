@@ -40,16 +40,17 @@ public class OAuthClientImplementation implements OAuthClient {
 	}
 
 	@Override
-	public String getAccessToken() throws FailedGetAccessTokenException {
+	public String getAccessToken() {
 		if (LocalDateTime.now().compareTo(accessTokenExpirationTime) > 0) {
-			log.info("Calling Refresh Access Token API. Current Access Token Expiration Time is {}", accessTokenExpirationTime);
+			log.info("Calling Refresh Access Token API. Current Access Token Expiration Time is {}",
+					accessTokenExpirationTime);
 			refreshAccessToken();
 		}
 
 		return accessToken;
 	}
 
-	private void refreshAccessToken() throws FailedGetAccessTokenException {
+	private void refreshAccessToken() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -64,11 +65,13 @@ public class OAuthClientImplementation implements OAuthClient {
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<String> result = restTemplate.postForEntity(accessUrl, request, String.class);
 
-			log.debug("Refresh Access Token API Call Result: Status Code={}, Body={}", result.getStatusCodeValue(), result.getBody());
+			log.debug("Refresh Access Token API Call Result: Status Code={}, Body={}", result.getStatusCodeValue(),
+					result.getBody());
 
 			AccessTokenResponse accessTokenResponse = new AccessTokenResponse(result.getBody());
 			accessToken = accessTokenResponse.getAccessToken();
-			accessTokenExpirationTime = LocalDateTime.now().plusSeconds(Integer.parseInt(accessTokenResponse.getAccessTokenExpirationTime())); 
+			accessTokenExpirationTime = LocalDateTime.now()
+					.plusSeconds(Integer.parseInt(accessTokenResponse.getAccessTokenExpirationTime()));
 		} catch (HttpStatusCodeException | FailedGetAccessTokenException e) {
 			log.error("Refresh Access Token API Call Error: {}" + e.getMessage());
 			throw new FailedGetAccessTokenException("Can not get Access Token");
