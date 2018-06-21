@@ -12,7 +12,7 @@ public class AccessTokenResponse extends AbstractResponse {
 	private String accessToken;
 	private String accessTokenExpirationTime;
 
-	public AccessTokenResponse(String rawOutput) throws FailedGetAccessTokenException {
+	public AccessTokenResponse(String rawOutput) {
 		ObjectMapper mapper = new ObjectMapper();
 		TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {
 		};
