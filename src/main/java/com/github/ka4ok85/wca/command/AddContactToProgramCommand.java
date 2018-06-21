@@ -42,7 +42,6 @@ public class AddContactToProgramCommand
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(AddContactToProgramOptions options) {

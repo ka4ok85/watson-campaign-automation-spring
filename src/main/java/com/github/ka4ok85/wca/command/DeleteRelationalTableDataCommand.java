@@ -56,7 +56,6 @@ public class DeleteRelationalTableDataCommand
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(DeleteRelationalTableDataOptions options) {

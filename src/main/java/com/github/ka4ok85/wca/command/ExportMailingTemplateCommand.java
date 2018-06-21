@@ -52,7 +52,6 @@ public class ExportMailingTemplateCommand
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(ExportMailingTemplateOptions options) {

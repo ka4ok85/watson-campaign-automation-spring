@@ -44,7 +44,6 @@ public class AddContactToContactListCommand
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(AddContactToContactListOptions options) {

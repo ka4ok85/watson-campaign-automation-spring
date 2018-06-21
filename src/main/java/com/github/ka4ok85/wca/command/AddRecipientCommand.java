@@ -48,7 +48,6 @@ public class AddRecipientCommand extends AbstractInstantCommand<AddRecipientResp
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(AddRecipientOptions options) {

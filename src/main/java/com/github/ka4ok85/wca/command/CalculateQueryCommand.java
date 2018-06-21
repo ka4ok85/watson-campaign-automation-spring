@@ -45,7 +45,6 @@ public class CalculateQueryCommand extends AbstractJobCommand<CalculateQueryResp
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(CalculateQueryOptions options) {

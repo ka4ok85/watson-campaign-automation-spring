@@ -55,7 +55,6 @@ public class CreateTableCommand extends AbstractInstantCommand<CreateTableRespon
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(CreateTableOptions options) {
@@ -121,7 +120,7 @@ public class CreateTableCommand extends AbstractInstantCommand<CreateTableRespon
 
 	/**
 	 * Reads CreateTable API response into
-	 * {@link com.github.ka4ok85.wca.response.CreateTableOptions}
+	 * {@link com.github.ka4ok85.wca.response.CreateTableResponse}
 	 * 
 	 * @param resultNode
 	 *            - "RESULT" XML Node returned by API

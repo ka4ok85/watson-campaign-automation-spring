@@ -50,7 +50,6 @@ public class ExportListCommand extends AbstractJobCommand<ExportListResponse, Ex
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(ExportListOptions options) {
