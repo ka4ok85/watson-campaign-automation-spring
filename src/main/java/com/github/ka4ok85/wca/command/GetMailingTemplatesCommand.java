@@ -56,7 +56,6 @@ public class GetMailingTemplatesCommand
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(GetMailingTemplatesOptions options) {

@@ -47,7 +47,6 @@ public class JoinTableCommand extends AbstractJobCommand<JoinTableResponse, Join
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(JoinTableOptions options) {

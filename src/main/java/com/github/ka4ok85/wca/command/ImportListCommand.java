@@ -46,7 +46,6 @@ public class ImportListCommand extends AbstractJobCommand<ImportListResponse, Im
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(ImportListOptions options) {

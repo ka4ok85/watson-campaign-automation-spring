@@ -43,7 +43,6 @@ public class OptOutRecipientCommand extends AbstractInstantCommand<OptOutRecipie
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(OptOutRecipientOptions options) {

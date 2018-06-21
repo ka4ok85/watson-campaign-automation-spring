@@ -60,7 +60,6 @@ public class GetAggregateTrackingForOrgCommand
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(GetAggregateTrackingForOrgOptions options) {

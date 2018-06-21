@@ -57,7 +57,6 @@ public class InsertUpdateRelationalTableCommand
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(InsertUpdateRelationalTableOptions options) {

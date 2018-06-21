@@ -56,7 +56,6 @@ public class GetListMetaDataCommand extends AbstractInstantCommand<GetListMetaDa
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(GetListMetaDataOptions options) {
@@ -72,7 +71,7 @@ public class GetListMetaDataCommand extends AbstractInstantCommand<GetListMetaDa
 
 	/**
 	 * Reads GetListMetaData API response into
-	 * {@link com.github.ka4ok85.wca.response.GetListMetaDataOptions}
+	 * {@link com.github.ka4ok85.wca.response.GetListMetaDataResponse}
 	 * 
 	 * @param resultNode
 	 *            - "RESULT" XML Node returned by API

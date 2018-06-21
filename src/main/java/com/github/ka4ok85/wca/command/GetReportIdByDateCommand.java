@@ -55,7 +55,6 @@ public class GetReportIdByDateCommand
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(GetReportIdByDateOptions options) {

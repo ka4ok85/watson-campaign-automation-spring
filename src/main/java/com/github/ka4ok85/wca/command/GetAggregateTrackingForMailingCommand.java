@@ -60,7 +60,6 @@ public class GetAggregateTrackingForMailingCommand
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(GetAggregateTrackingForMailingOptions options) {
