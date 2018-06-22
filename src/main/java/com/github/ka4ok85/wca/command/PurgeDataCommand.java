@@ -45,7 +45,6 @@ public class PurgeDataCommand extends AbstractJobCommand<PurgeDataResponse, Purg
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(PurgeDataOptions options) {

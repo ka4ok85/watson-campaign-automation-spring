@@ -46,7 +46,6 @@ public class PurgeTableCommand extends AbstractJobCommand<PurgeTableResponse, Pu
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(PurgeTableOptions options) {

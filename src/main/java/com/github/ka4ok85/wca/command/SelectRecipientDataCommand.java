@@ -27,8 +27,23 @@ import com.github.ka4ok85.wca.options.SelectRecipientDataOptions;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.SelectRecipientDataResponse;
 
-/*
- * Be aware: SelectRecipientData API does not work for Restricted Databases with Compound non-String key columns
+/**
+ * <strong>Class for interacting with WCA SelectRecipientData API.</strong> It
+ * builds XML request for SelectRecipientData API using
+ * {@link com.github.ka4ok85.wca.options.SelectRecipientDataOptions} and reads
+ * response into
+ * {@link com.github.ka4ok85.wca.response.SelectRecipientDataResponse}.
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ * <p>
+ * <strong>ATTN: </strong>SelectRecipientData API does not work for Restricted
+ * Databases with Compound non-String key columns
+ * </p>
+ *
+ * @author Evgeny Makovetsky
+ * @since 0.0.2
  */
 @Service
 @Scope("prototype")
@@ -40,6 +55,13 @@ public class SelectRecipientDataCommand
 	@Autowired
 	private SelectRecipientDataResponse selectRecipientDataResponse;
 
+	/**
+	 * Builds XML request for SelectRecipientData API using
+	 * {@link com.github.ka4ok85.wca.options.SelectRecipientDataOptions}
+	 * 
+	 * @param options
+	 *            - settings for API call
+	 */
 	@Override
 	public void buildXmlRequest(SelectRecipientDataOptions options) {
 		Objects.requireNonNull(options, "SelectRecipientDataOptions must not be null");
@@ -90,6 +112,16 @@ public class SelectRecipientDataCommand
 
 	}
 
+	/**
+	 * Reads SelectRecipientData API response into
+	 * {@link com.github.ka4ok85.wca.response.SelectRecipientDataResponse}
+	 * 
+	 * @param resultNode
+	 *            - "RESULT" XML Node returned by API
+	 * @param options
+	 *            - settings for API call
+	 * @return POJO SelectRecipientData Response
+	 */
 	@Override
 	public ResponseContainer<SelectRecipientDataResponse> readResponse(Node resultNode,
 			SelectRecipientDataOptions options) {
