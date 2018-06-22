@@ -54,7 +54,6 @@ public class UpdateRecipientCommand extends AbstractInstantCommand<UpdateRecipie
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(UpdateRecipientOptions options) {

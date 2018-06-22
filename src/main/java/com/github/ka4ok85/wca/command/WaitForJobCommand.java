@@ -42,7 +42,6 @@ public class WaitForJobCommand extends AbstractInstantCommand<JobResponse, JobOp
 	 * 
 	 * @param options
 	 *            - settings for API call
-	 * @return void
 	 */
 	@Override
 	public void buildXmlRequest(JobOptions options) {
