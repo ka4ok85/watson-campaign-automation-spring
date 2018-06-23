@@ -13,6 +13,15 @@
 			<email>Makovetsky.Evgeny@gmail.com</email>
 		</contributor>
 	</contributors>
+	<developers>
+		<developer>
+			<name>Evgeny Makovetsky</name>
+			<email>Makovetsky.Evgeny@gmail.com</email>
+		</developer>
+	</developers>
+	<scm>
+		<url>https://github.com/ka4ok85/watson-campaign-automation-spring</url>
+	</scm>
 	<issueManagement>
 		<system>GitHub Issue Management</system>
 		<url>https://github.com/ka4ok85/watson-campaign-automation-spring/issues</url>
@@ -30,7 +39,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
-		<start-class>com.github.ka4ok85.main.Test</start-class>
+		<start-class>com.github.ka4ok85.wca.Engage</start-class>
 	</properties>
 	<dependencies>
 		<dependency>
