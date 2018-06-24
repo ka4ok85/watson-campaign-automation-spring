@@ -12,7 +12,7 @@ public enum GetFolderPathObjectType {
 	public String value() {
 		return value;
 	}
-	
+
 	public static GetFolderPathObjectType getObjectType(String value) {
 		for (GetFolderPathObjectType objectType : GetFolderPathObjectType.values()) {
 			if (objectType.value.equals(value)) {
