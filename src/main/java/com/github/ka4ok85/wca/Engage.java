@@ -20,6 +20,7 @@ import com.github.ka4ok85.wca.command.ExportTableCommand;
 import com.github.ka4ok85.wca.command.GetAggregateTrackingForMailingCommand;
 import com.github.ka4ok85.wca.command.GetAggregateTrackingForOrgCommand;
 import com.github.ka4ok85.wca.command.GetAggregateTrackingForUserCommand;
+import com.github.ka4ok85.wca.command.GetFolderPathCommand;
 import com.github.ka4ok85.wca.command.GetListMetaDataCommand;
 import com.github.ka4ok85.wca.command.GetListsCommand;
 import com.github.ka4ok85.wca.command.GetMailingTemplatesCommand;
@@ -55,6 +56,7 @@ import com.github.ka4ok85.wca.options.ExportTableOptions;
 import com.github.ka4ok85.wca.options.GetAggregateTrackingForMailingOptions;
 import com.github.ka4ok85.wca.options.GetAggregateTrackingForOrgOptions;
 import com.github.ka4ok85.wca.options.GetAggregateTrackingForUserOptions;
+import com.github.ka4ok85.wca.options.GetFolderPathOptions;
 import com.github.ka4ok85.wca.options.GetListMetaDataOptions;
 import com.github.ka4ok85.wca.options.GetListsOptions;
 import com.github.ka4ok85.wca.options.GetMailingTemplatesOptions;
@@ -87,6 +89,7 @@ import com.github.ka4ok85.wca.response.ExportTableResponse;
 import com.github.ka4ok85.wca.response.GetAggregateTrackingForMailingResponse;
 import com.github.ka4ok85.wca.response.GetAggregateTrackingForOrgResponse;
 import com.github.ka4ok85.wca.response.GetAggregateTrackingForUserResponse;
+import com.github.ka4ok85.wca.response.GetFolderPathResponse;
 import com.github.ka4ok85.wca.response.GetListMetaDataResponse;
 import com.github.ka4ok85.wca.response.GetListsResponse;
 import com.github.ka4ok85.wca.response.GetMailingTemplatesResponse;
@@ -437,6 +440,15 @@ public class Engage {
 		importList.setoAuthClient(oAuthClient);
 		importList.setSftp(sftp);
 		ResponseContainer<ImportListResponse> result = importList.executeCommand(options);
+
+		return result;
+	}
+
+	public ResponseContainer<GetFolderPathResponse> getFolderPath(GetFolderPathOptions options) {
+		GetFolderPathCommand getFolderPath = getApplicationContext().getBean(GetFolderPathCommand.class);
+		getFolderPath.setoAuthClient(oAuthClient);
+		getFolderPath.setSftp(sftp);
+		ResponseContainer<GetFolderPathResponse> result = getFolderPath.executeCommand(options);
 
 		return result;
 	}
