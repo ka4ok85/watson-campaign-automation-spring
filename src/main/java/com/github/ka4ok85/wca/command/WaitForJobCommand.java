@@ -97,7 +97,7 @@ public class WaitForJobCommand extends AbstractInstantCommand<JobResponse, JobOp
 			jobResponse.setJobStatus(JobStatus.valueOf(jobStatusNode.getTextContent()));
 
 			jobResponse.setParameters(parameters);
-		} catch (XPathExpressionException | InternalApiMismatchException e) {
+		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
