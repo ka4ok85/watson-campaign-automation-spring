@@ -4,7 +4,7 @@ public enum GetFolderPathObjectSubType {
 	Database("Database"), Contact_List("Contact List"), Query("Query"), Test_List("Test List"), Seed_List(
 			"Seed List"), Suppression_List("Suppression List"), Relational_Table("Relational Table"), Template(
 					"Template"), Sent("Sent"), Autoresponder(
-							"Autoresponder"), Inactive_Autoresponder("Inactive Autoresponder"), Deleted("Deleted");
+							"Autoresponder"), Inactive_Autoresponder("Inactive Autoresponder"), Deleted("Deleted"), List("List");
 
 	private String value;
 
