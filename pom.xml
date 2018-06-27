@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.ka4ok85</groupId>
 	<artifactId>watson-campaign-automation-spring</artifactId>
-	<version>0.0.3</version>
+	<version>0.0.4</version>
 	<packaging>jar</packaging>
 	<name>watson-campaign-automation-spring</name>
 	<description>Spring SDK for IBM Watson Campaign Automation (former Silverpop Engage) XML API</description>
