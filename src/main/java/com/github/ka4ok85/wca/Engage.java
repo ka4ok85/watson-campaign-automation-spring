@@ -12,6 +12,7 @@ import com.github.ka4ok85.wca.command.CreateContactListCommand;
 import com.github.ka4ok85.wca.command.CreateTableCommand;
 import com.github.ka4ok85.wca.command.DeleteListCommand;
 import com.github.ka4ok85.wca.command.DeleteRelationalTableDataCommand;
+import com.github.ka4ok85.wca.command.RawRecipientDataExportCommand;
 import com.github.ka4ok85.wca.command.DeleteTableCommand;
 import com.github.ka4ok85.wca.command.DoubleOptInRecipientCommand;
 import com.github.ka4ok85.wca.command.ExportListCommand;
@@ -70,6 +71,7 @@ import com.github.ka4ok85.wca.options.JoinTableOptions;
 import com.github.ka4ok85.wca.options.OptOutRecipientOptions;
 import com.github.ka4ok85.wca.options.PurgeDataOptions;
 import com.github.ka4ok85.wca.options.PurgeTableOptions;
+import com.github.ka4ok85.wca.options.RawRecipientDataExportOptions;
 import com.github.ka4ok85.wca.options.RemoveRecipientOptions;
 import com.github.ka4ok85.wca.options.SelectRecipientDataOptions;
 import com.github.ka4ok85.wca.options.UpdateRecipientOptions;
@@ -103,6 +105,7 @@ import com.github.ka4ok85.wca.response.JoinTableResponse;
 import com.github.ka4ok85.wca.response.OptOutRecipientResponse;
 import com.github.ka4ok85.wca.response.PurgeDataResponse;
 import com.github.ka4ok85.wca.response.PurgeTableResponse;
+import com.github.ka4ok85.wca.response.RawRecipientDataExportResponse;
 import com.github.ka4ok85.wca.response.RemoveRecipientResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.SelectRecipientDataResponse;
@@ -449,6 +452,17 @@ public class Engage {
 		getFolderPath.setoAuthClient(oAuthClient);
 		getFolderPath.setSftp(sftp);
 		ResponseContainer<GetFolderPathResponse> result = getFolderPath.executeCommand(options);
+
+		return result;
+	}
+
+	public ResponseContainer<RawRecipientDataExportResponse> rawRecipientDataExport(
+			RawRecipientDataExportOptions options) {
+		RawRecipientDataExportCommand rawRecipientDataExport = getApplicationContext()
+				.getBean(RawRecipientDataExportCommand.class);
+		rawRecipientDataExport.setoAuthClient(oAuthClient);
+		rawRecipientDataExport.setSftp(sftp);
+		ResponseContainer<RawRecipientDataExportResponse> result = rawRecipientDataExport.executeCommand(options);
 
 		return result;
 	}
