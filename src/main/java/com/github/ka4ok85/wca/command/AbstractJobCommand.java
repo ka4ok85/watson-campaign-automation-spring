@@ -28,6 +28,8 @@ import com.github.ka4ok85.wca.response.containers.JobPollingContainer;
 abstract public class AbstractJobCommand<T extends AbstractResponse, V extends AbstractOptions>
 		extends AbstractCommand<T, V> {
 
+	private String jobIdPath = "JOB_ID";
+
 	public abstract ResponseContainer<T> readResponse(JobPollingContainer jobPollingContainer, JobResponse jobResponse,
 			V options);
 
@@ -53,7 +55,7 @@ abstract public class AbstractJobCommand<T extends AbstractResponse, V extends A
 		Long jobId;
 		Map<String, String> parameters = new HashMap<String, String>();
 		try {
-			Node jobIdNode = (Node) xpath.evaluate("JOB_ID", resultNode, XPathConstants.NODE);
+			Node jobIdNode = (Node) xpath.evaluate(jobIdPath, resultNode, XPathConstants.NODE);
 
 			NodeList parametersNode = (NodeList) xpath.evaluate("*", resultNode, XPathConstants.NODESET);
 			Node parameterNode;
@@ -79,4 +81,9 @@ abstract public class AbstractJobCommand<T extends AbstractResponse, V extends A
 
 		return jobPollingContainer;
 	}
+
+	public void setJobIdPath(String jobIdPath) {
+		this.jobIdPath = jobIdPath;
+	}
+
 }
