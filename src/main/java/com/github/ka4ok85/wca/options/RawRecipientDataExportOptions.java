@@ -1,6 +1,7 @@
 package com.github.ka4ok85.wca.options;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.github.ka4ok85.wca.constants.ExportFormat;
@@ -10,8 +11,7 @@ import com.github.ka4ok85.wca.utils.DateTimeRange;
 
 public class RawRecipientDataExportOptions extends AbstractOptions {
 
-	private List<Long> mailingIdList = new ArrayList<Long>();
-	private List<Long> reportIdList = new ArrayList<Long>();
+	private List<HashMap<String, Long>> mailingReportId = new ArrayList<HashMap<String, Long>>();
 	private Long campaignId;
 	private Long listId;
 	private boolean includeChildren = false;
@@ -69,28 +69,32 @@ public class RawRecipientDataExportOptions extends AbstractOptions {
 	private boolean returnMailingSubject = false;
 	private boolean returnCRMCampaignId = false;
 	private boolean returnProgramId = false;
+	private String localAbsoluteFilePath;
 
-	public List<Long> getMailingIdList() {
-		return mailingIdList;
+	public List<HashMap<String, Long>> getMailingReportId() {
+		return mailingReportId;
 	}
 
-	public void setMailingIdList(List<Long> mailingIdList) {
+	/**
+	 * Setter for mailingReportId
+	 * {@link com.github.ka4ok85.wca.response.ExportListResponse}
+	 * 
+	 * @param mailingReportId
+	 *            - List of mailingId/reportId pairs
+	 * Each element is HashMap with "mailingId" and "reportId" keys. Both keys are not required.
+	 *            
+	 * @return POJO Export List Response
+	 */
+	public void setMailingReportId(List<HashMap<String, Long>> mailingReportId) {
 		if (campaignId != null || listId != null) {
 			throw new RuntimeException("You can't specify MailingId if you already specified Campaign or List");
 		}
 
-		if (mailingIdList.size() < 1) {
+		if (mailingReportId.size() < 1) {
 			throw new RuntimeException("You must provide at least one MailingId.");
 		}
-		this.mailingIdList = mailingIdList;
-	}
 
-	public List<Long> getReportIdList() {
-		return reportIdList;
-	}
-
-	public void setReportIdList(List<Long> reportIdList) {
-		this.reportIdList = reportIdList;
+		this.mailingReportId = mailingReportId;
 	}
 
 	public Long getCampaignId() {
@@ -98,7 +102,7 @@ public class RawRecipientDataExportOptions extends AbstractOptions {
 	}
 
 	public void setCampaignId(Long campaignId) {
-		if (!mailingIdList.isEmpty() || listId != null) {
+		if (!mailingReportId.isEmpty() || listId != null) {
 			throw new RuntimeException("You can't specify CampaignId if you already specified Mailings or List");
 		}
 
@@ -114,7 +118,7 @@ public class RawRecipientDataExportOptions extends AbstractOptions {
 	}
 
 	public void setListId(Long listId) {
-		if (!mailingIdList.isEmpty() || campaignId != null) {
+		if (!mailingReportId.isEmpty() || campaignId != null) {
 			throw new RuntimeException("You can't specify ListId if you already specified Mailings or Campaigns");
 		}
 
@@ -611,6 +615,14 @@ public class RawRecipientDataExportOptions extends AbstractOptions {
 
 	public void setReturnProgramId(boolean returnProgramId) {
 		this.returnProgramId = returnProgramId;
+	}
+
+	public String getLocalAbsoluteFilePath() {
+		return localAbsoluteFilePath;
+	}
+
+	public void setLocalAbsoluteFilePath(String localAbsoluteFilePath) {
+		this.localAbsoluteFilePath = localAbsoluteFilePath;
 	}
 
 }
