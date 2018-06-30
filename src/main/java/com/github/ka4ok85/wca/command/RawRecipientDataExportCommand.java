@@ -1,5 +1,7 @@
 package com.github.ka4ok85.wca.command;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -18,10 +20,11 @@ import com.github.ka4ok85.wca.response.containers.JobPollingContainer;
 import com.github.ka4ok85.wca.utils.DateTimeRange;
 
 /**
- * <strong>Class for interacting with WCA RawRecipientDataExport API.</strong> It builds XML
- * request for RawRecipientDataExport API using
- * {@link com.github.ka4ok85.wca.options.RawRecipientDataExportOptions} and reads response
- * into {@link com.github.ka4ok85.wca.response.RawRecipientDataExportResponse}.
+ * <strong>Class for interacting with WCA RawRecipientDataExport API.</strong>
+ * It builds XML request for RawRecipientDataExport API using
+ * {@link com.github.ka4ok85.wca.options.RawRecipientDataExportOptions} and
+ * reads response into
+ * {@link com.github.ka4ok85.wca.response.RawRecipientDataExportResponse}.
  * <p>
  * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
  * synchronous client-side HTTP access.
@@ -36,7 +39,8 @@ import com.github.ka4ok85.wca.utils.DateTimeRange;
  */
 @Service
 @Scope("prototype")
-public class RawRecipientDataExportCommand extends AbstractJobCommand<RawRecipientDataExportResponse, RawRecipientDataExportOptions> {
+public class RawRecipientDataExportCommand
+		extends AbstractJobCommand<RawRecipientDataExportResponse, RawRecipientDataExportOptions> {
 
 	private static final String apiMethodName = "RawRecipientDataExport";
 	private static final Logger log = LoggerFactory.getLogger(RawRecipientDataExportCommand.class);
@@ -55,6 +59,29 @@ public class RawRecipientDataExportCommand extends AbstractJobCommand<RawRecipie
 	public void buildXmlRequest(RawRecipientDataExportOptions options) {
 		Objects.requireNonNull(options, "RawRecipientDataExportOptions must not be null");
 
+		setJobIdPath("MAILING/JOB_ID");
+
+		Element methodElement = doc.createElement(apiMethodName);
+		currentNode = addChildNode(methodElement, null);
+
+		if (options.getMailingReportId() != null && options.getMailingReportId().size() > 0) {
+			for (HashMap<String, Long> mailingReportId : options.getMailingReportId()) {
+				Element mailingNode = doc.createElement("MAILING");
+				addChildNode(mailingNode, currentNode);
+
+				if (mailingReportId.containsKey("mailingId")) {
+					Element mailingIdNode = doc.createElement("MAILING_ID");
+					mailingIdNode.setTextContent(mailingReportId.get("mailingId").toString());
+					addChildNode(mailingIdNode, mailingNode);
+				}
+
+				if (mailingReportId.containsKey("reportId")) {
+					Element reportIdNode = doc.createElement("REPORT_ID");
+					reportIdNode.setTextContent(mailingReportId.get("reportId").toString());
+					addChildNode(reportIdNode, mailingNode);
+				}
+			}
+		}
 
 	}
 
@@ -74,7 +101,8 @@ public class RawRecipientDataExportCommand extends AbstractJobCommand<RawRecipie
 	public ResponseContainer<RawRecipientDataExportResponse> readResponse(JobPollingContainer jobPollingContainer,
 			JobResponse jobResponse, RawRecipientDataExportOptions options) {
 
-		ResponseContainer<RawRecipientDataExportResponse> response = new ResponseContainer<RawRecipientDataExportResponse>(rawRecipientDataExportResponse);
+		ResponseContainer<RawRecipientDataExportResponse> response = new ResponseContainer<RawRecipientDataExportResponse>(
+				rawRecipientDataExportResponse);
 
 		return response;
 	}
