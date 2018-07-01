@@ -150,6 +150,56 @@ public class RawRecipientDataExportCommand
 			addBooleanParameter(currentNode, "PRIVATE", true);
 		}
 
+		if (options.isIncludeSentMailings()) {
+			Element includeSentMailings = doc.createElement("SENT_MAILINGS");
+			addChildNode(includeSentMailings, currentNode);
+		}
+
+		if (options.isIncludeSendingMailings()) {
+			Element includeSendingMailings = doc.createElement("SENDING");
+			addChildNode(includeSendingMailings, currentNode);
+		}
+
+		if (options.isIncludeOptinConfirmationMailings()) {
+			Element includeOptinConfirmationMailings = doc.createElement("OPTIN_CONFIRMATION");
+			addChildNode(includeOptinConfirmationMailings, currentNode);
+		}
+
+		if (options.isIncludeProfileConfirmationMailings()) {
+			Element includeProfileConfirmationMailings = doc.createElement("PROFILE_CONFIRMATION");
+			addChildNode(includeProfileConfirmationMailings, currentNode);
+		}
+
+		if (options.isIncludeAutomatedMailings()) {
+			Element includeAutomatedMailings = doc.createElement("AUTOMATED");
+			addChildNode(includeAutomatedMailings, currentNode);
+		}
+
+		if (options.isIncludeCampaignActiveMailings()) {
+			Element includeCampaignActiveMailings = doc.createElement("CAMPAIGN_ACTIVE");
+			addChildNode(includeCampaignActiveMailings, currentNode);
+		}
+
+		if (options.isIncludeCampaignCompletedMailings()) {
+			Element includeCampaignCompletedMailings = doc.createElement("CAMPAIGN_COMPLETED");
+			addChildNode(includeCampaignCompletedMailings, currentNode);
+		}
+
+		if (options.isIncludeCampaignCancelledMailings()) {
+			Element includeCampaignCancelledMailings = doc.createElement("CAMPAIGN_CANCELLED");
+			addChildNode(includeCampaignCancelledMailings, currentNode);
+		}
+
+		if (options.isIncludeCampaignScrapeTemplateMailings()) {
+			Element includeCampaignScrapeTemplateMailings = doc.createElement("CAMPAIGN_SCRAPE_TEMPLATE");
+			addChildNode(includeCampaignScrapeTemplateMailings, currentNode);
+		}
+
+		if (options.isIncludeTestMailings()) {
+			Element includeTestMailings = doc.createElement("INCLUDE_TEST_MAILINGS");
+			addChildNode(includeTestMailings, currentNode);
+		}
+
 	}
 
 	/**
