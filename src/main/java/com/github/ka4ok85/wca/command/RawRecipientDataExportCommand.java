@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Element;
 
 import com.github.ka4ok85.wca.constants.FileEncoding;
+import com.github.ka4ok85.wca.constants.Visibility;
 import com.github.ka4ok85.wca.options.RawRecipientDataExportOptions;
 import com.github.ka4ok85.wca.response.RawRecipientDataExportResponse;
 import com.github.ka4ok85.wca.response.JobResponse;
@@ -82,13 +83,13 @@ public class RawRecipientDataExportCommand
 				}
 			}
 		}
-		
+
 		if (options.getCampaignId() != null) {
 			Element campaignID = doc.createElement("CAMPAIGN_ID");
 			campaignID.setTextContent(options.getCampaignId().toString());
 			addChildNode(campaignID, currentNode);
 		}
-		
+
 		if (options.getListId() != null) {
 			Element listID = doc.createElement("LIST_ID");
 			listID.setTextContent(options.getListId().toString());
@@ -97,6 +98,56 @@ public class RawRecipientDataExportCommand
 				Element includeChildren = doc.createElement("INCLUDE_CHILDREN");
 				addChildNode(includeChildren, currentNode);
 			}
+		}
+
+		if (options.isAllNonExported()) {
+			Element allNonExported = doc.createElement("ALL_NON_EXPORTED");
+			addChildNode(allNonExported, currentNode);
+		}
+
+		if (options.getEventRange() != null) {
+			addParameter(currentNode, "EVENT_DATE_START", options.getEventRange().getFormattedStartDateTime());
+			addParameter(currentNode, "EVENT_DATE_END", options.getEventRange().getFormattedEndDateTime());
+		}
+
+		if (options.getSendRange() != null) {
+			addParameter(currentNode, "SEND_DATE_START", options.getSendRange().getFormattedStartDateTime());
+			addParameter(currentNode, "SEND_DATE_END", options.getSendRange().getFormattedEndDateTime());
+		}
+
+		Element exportFormat = doc.createElement("EXPORT_FORMAT");
+		exportFormat.setTextContent(options.getExportFormat().value());
+		addChildNode(exportFormat, currentNode);
+
+		if (options.isReturnFromAddress()) {
+			Element returnFromAddress = doc.createElement("RETURN_FROM_ADDRESS");
+			addChildNode(returnFromAddress, currentNode);
+		}
+
+		if (options.isReturnFromName()) {
+			Element returnFromName = doc.createElement("RETURN_FROM_NAME");
+			addChildNode(returnFromName, currentNode);
+		}
+
+		Element fileEncoding = doc.createElement("FILE_ENCODING");
+		fileEncoding.setTextContent(options.getFileEncoding().value());
+		addChildNode(fileEncoding, currentNode);
+
+		if (options.getExportFileName() != null) {
+			Element exportFileName = doc.createElement("EXPORT_FILE_NAME");
+			exportFileName.setTextContent(options.getExportFileName());
+			addChildNode(exportFileName, currentNode);
+		}
+
+		if (options.isMoveToFtp()) {
+			Element moveToFtp = doc.createElement("MOVE_TO_FTP");
+			addChildNode(moveToFtp, currentNode);
+		}
+
+		if (options.getVisibility() == Visibility.SHARED) {
+			addBooleanParameter(currentNode, "SHARED", true);
+		} else if (options.getVisibility() == Visibility.PRIVATE) {
+			addBooleanParameter(currentNode, "PRIVATE", true);
 		}
 
 	}
