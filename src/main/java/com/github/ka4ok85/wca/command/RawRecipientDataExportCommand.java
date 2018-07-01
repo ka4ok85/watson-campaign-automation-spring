@@ -200,6 +200,92 @@ public class RawRecipientDataExportCommand
 			addChildNode(includeTestMailings, currentNode);
 		}
 
+		if (options.isAllEventTypes()) {
+			Element allEventTypes = doc.createElement("ALL_EVENT_TYPES");
+			addChildNode(allEventTypes, currentNode);
+		} else {
+			if (options.isEventSent()) {
+				Element eventSent = doc.createElement("SENT");
+				addChildNode(eventSent, currentNode);
+			}
+			if (options.isEventSuppressed()) {
+				Element eventSuppressed = doc.createElement("SUPPRESSED");
+				addChildNode(eventSuppressed, currentNode);
+			}
+			if (options.isEventOpens()) {
+				Element eventOpens = doc.createElement("OPENS");
+				addChildNode(eventOpens, currentNode);
+			}
+			if (options.isEventClicks()) {
+				Element eventClicks = doc.createElement("CLICKS");
+				addChildNode(eventClicks, currentNode);
+			}
+			if (options.isEventOptins()) {
+				Element eventOptins = doc.createElement("OPTINS");
+				addChildNode(eventOptins, currentNode);
+			}
+			if (options.isEventOptouts()) {
+				Element eventOptouts = doc.createElement("OPTOUTS");
+				addChildNode(eventOptouts, currentNode);
+			}
+			if (options.isEventForwards()) {
+				Element eventForwards = doc.createElement("FORWARDS");
+				addChildNode(eventForwards, currentNode);
+			}
+			if (options.isEventAttachments()) {
+				Element eventAttachments = doc.createElement("ATTACHMENTS");
+				addChildNode(eventAttachments, currentNode);
+			}
+			if (options.isEventConversions()) {
+				Element eventConversions = doc.createElement("CONVERSIONS");
+				addChildNode(eventConversions, currentNode);
+			}
+			if (options.isEventClickstreams()) {
+				Element eventClickstreams = doc.createElement("CLICKSTREAMS");
+				addChildNode(eventClickstreams, currentNode);
+			}
+			if (options.isEventHardBounces()) {
+				Element eventHardBounces = doc.createElement("HARD_BOUNCES");
+				addChildNode(eventHardBounces, currentNode);
+			}
+			if (options.isEventSoftBounces()) {
+				Element eventSoftBounces = doc.createElement("SOFT_BOUNCES");
+				addChildNode(eventSoftBounces, currentNode);
+			}
+			if (options.isEventReplyAbuse()) {
+				Element eventReplyAbuse = doc.createElement("REPLY_ABUSE");
+				addChildNode(eventReplyAbuse, currentNode);
+			}
+			if (options.isEventReplyCOA()) {
+				Element eventReplyCOA = doc.createElement("REPLY_COA");
+				addChildNode(eventReplyCOA, currentNode);
+			}
+			if (options.isEventReplyOther()) {
+				Element eventReplyOther = doc.createElement("REPLY_OTHER");
+				addChildNode(eventReplyOther, currentNode);
+			}
+			if (options.isEventMailBlocks()) {
+				Element eventMailBlocks = doc.createElement("MAIL_BLOCKS");
+				addChildNode(eventMailBlocks, currentNode);
+			}
+			if (options.isEventMailRestrictions()) {
+				Element eventMailRestrictions = doc.createElement("MAILING_RESTRICTIONS");
+				addChildNode(eventMailRestrictions, currentNode);
+			}
+			if (options.isEventSMSError()) {
+				Element eventSMSError = doc.createElement("SMS_ERROR");
+				addChildNode(eventSMSError, currentNode);
+			}
+			if (options.isEventSMSReject()) {
+				Element eventSMSReject = doc.createElement("SMS_REJECT");
+				addChildNode(eventSMSReject, currentNode);
+			}
+			if (options.isEventSMSOptout()) {
+				Element eventSMSOptout = doc.createElement("SMS_OPTOUT");
+				addChildNode(eventSMSOptout, currentNode);
+			}
+		}
+
 	}
 
 	/**
