@@ -82,6 +82,22 @@ public class RawRecipientDataExportCommand
 				}
 			}
 		}
+		
+		if (options.getCampaignId() != null) {
+			Element campaignID = doc.createElement("CAMPAIGN_ID");
+			campaignID.setTextContent(options.getCampaignId().toString());
+			addChildNode(campaignID, currentNode);
+		}
+		
+		if (options.getListId() != null) {
+			Element listID = doc.createElement("LIST_ID");
+			listID.setTextContent(options.getListId().toString());
+			addChildNode(listID, currentNode);
+			if (options.isIncludeChildren()) {
+				Element includeChildren = doc.createElement("INCLUDE_CHILDREN");
+				addChildNode(includeChildren, currentNode);
+			}
+		}
 
 	}
 
