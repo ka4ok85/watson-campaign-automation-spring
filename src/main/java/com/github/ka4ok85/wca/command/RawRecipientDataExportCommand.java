@@ -291,6 +291,51 @@ public class RawRecipientDataExportCommand
 			addChildNode(includeSeeds, currentNode);
 		}
 
+		if (options.isIncludeForwards()) {
+			Element includeForwards = doc.createElement("INCLUDE_FORWARDS");
+			addChildNode(includeForwards, currentNode);
+		}
+
+		if (options.isIncludeInboxMonitoring()) {
+			Element includeInboxMonitoring = doc.createElement("INCLUDE_INBOX_MONITORING");
+			addChildNode(includeInboxMonitoring, currentNode);
+		}
+
+		if (options.isCodedTypeFields()) {
+			Element codedTypeFields = doc.createElement("CODED_TYPE_FIELDS");
+			addChildNode(codedTypeFields, currentNode);
+		}
+
+		if (options.isExcludeDeleted()) {
+			Element excludeDeleted = doc.createElement("EXCLUDE_DELETED");
+			addChildNode(excludeDeleted, currentNode);
+		}
+
+		if (options.isIncludeForwardsOnly()) {
+			Element includeForwardsOnly = doc.createElement("FORWARDS_ONLY");
+			addChildNode(includeForwardsOnly, currentNode);
+		}
+
+		if (options.isReturnMailingName()) {
+			Element returnMailingName = doc.createElement("RETURN_MAILING_NAME");
+			addChildNode(returnMailingName, currentNode);
+		}
+
+		if (options.isReturnMailingSubject()) {
+			Element returnMailingSubject = doc.createElement("RETURN_SUBJECT");
+			addChildNode(returnMailingSubject, currentNode);
+		}
+
+		if (options.isReturnCRMCampaignId()) {
+			Element returnCRMCampaignId = doc.createElement("RETURN_CRM_CAMPAIGN_ID");
+			addChildNode(returnCRMCampaignId, currentNode);
+		}
+
+		if (options.isReturnProgramId()) {
+			Element returnProgramId = doc.createElement("RETURN_PROGRAM_ID");
+			addChildNode(returnProgramId, currentNode);
+		}
+
 	}
 
 	/**
