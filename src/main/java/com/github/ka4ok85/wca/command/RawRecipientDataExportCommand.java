@@ -286,6 +286,11 @@ public class RawRecipientDataExportCommand
 			}
 		}
 
+		if (options.isIncludeSeeds()) {
+			Element includeSeeds = doc.createElement("INCLUDE_SEEDS");
+			addChildNode(includeSeeds, currentNode);
+		}
+
 	}
 
 	/**

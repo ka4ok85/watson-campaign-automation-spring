@@ -38,7 +38,6 @@ public class RawRecipientDataExportOptions extends AbstractOptions {
 	private boolean includeTestMailings = false;
 
 	private boolean allEventTypes = true;
-
 	private boolean eventSent = false;
 	private boolean eventSuppressed = false;
 	private boolean eventOpens = false;
@@ -60,6 +59,7 @@ public class RawRecipientDataExportOptions extends AbstractOptions {
 	private boolean eventSMSReject = false;
 	private boolean eventSMSOptout = false;
 
+	private boolean includeSeeds = false;
 	private boolean includeForwards = false;
 	private boolean includeInboxMonitoring = false;
 	private boolean codedTypeFields = false;
@@ -80,9 +80,10 @@ public class RawRecipientDataExportOptions extends AbstractOptions {
 	 * {@link com.github.ka4ok85.wca.response.ExportListResponse}
 	 * 
 	 * @param mailingReportId
-	 *            - List of mailingId/reportId pairs
-	 * Each element is HashMap with "mailingId" and "reportId" keys. Both keys are not required.
-	 *            
+	 *            - List of mailingId/reportId pairs Each element is HashMap
+	 *            with "mailingId" and "reportId" keys. Both keys are not
+	 *            required.
+	 * 
 	 * @return POJO Export List Response
 	 */
 	public void setMailingReportId(List<HashMap<String, Long>> mailingReportId) {
@@ -543,6 +544,14 @@ public class RawRecipientDataExportOptions extends AbstractOptions {
 			allEventTypes = false;
 		}
 		this.eventSMSOptout = eventSMSOptout;
+	}
+
+	public boolean isIncludeSeeds() {
+		return includeSeeds;
+	}
+
+	public void setIncludeSeeds(boolean includeSeeds) {
+		this.includeSeeds = includeSeeds;
 	}
 
 	public boolean isIncludeForwards() {
