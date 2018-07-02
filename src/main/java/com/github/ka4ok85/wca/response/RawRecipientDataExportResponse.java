@@ -12,7 +12,7 @@ public class RawRecipientDataExportResponse extends AbstractResponse {
 	private Long jobId;
 	private String description;
 	private FileEncoding fileEncoding;
-	private Long timeZone;
+	private Integer timeZone;
 	private String eventTypes;
 	private String mailingTypes;
 	private String remoteFileName;
@@ -42,11 +42,11 @@ public class RawRecipientDataExportResponse extends AbstractResponse {
 		this.fileEncoding = fileEncoding;
 	}
 
-	public Long getTimeZone() {
+	public Integer getTimeZone() {
 		return timeZone;
 	}
 
-	public void setTimeZone(Long timeZone) {
+	public void setTimeZone(Integer timeZone) {
 		this.timeZone = timeZone;
 	}
 

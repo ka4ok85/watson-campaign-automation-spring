@@ -1,7 +1,6 @@
 package com.github.ka4ok85.wca.command;
 
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -18,7 +17,6 @@ import com.github.ka4ok85.wca.response.RawRecipientDataExportResponse;
 import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.JobPollingContainer;
-import com.github.ka4ok85.wca.utils.DateTimeRange;
 
 /**
  * <strong>Class for interacting with WCA RawRecipientDataExport API.</strong>
@@ -353,6 +351,25 @@ public class RawRecipientDataExportCommand
 	@Override
 	public ResponseContainer<RawRecipientDataExportResponse> readResponse(JobPollingContainer jobPollingContainer,
 			JobResponse jobResponse, RawRecipientDataExportOptions options) {
+
+		String remoteFileName = jobPollingContainer.getParameters().get("FILENAME");
+		String description = jobResponse.getJobDescription();
+		String eventTypes = jobResponse.getParameters().get("EVENT_TYPES");
+		Long exportedRowCount = Long.parseLong(jobResponse.getParameters().get("EXPORTED_ROW_COUNT"));
+		FileEncoding fileEncoding = FileEncoding.getFileEncoding(jobResponse.getParameters().get("FILE_ENCODING"));
+		String mailingTypes = jobResponse.getParameters().get("MAILING_TYPE_ARRAY");
+		Integer timeZone = Integer.parseInt(jobResponse.getParameters().get("TIME_ZONE"));
+
+		log.debug("Generated RRDE File {} on SFTP", remoteFileName);
+
+		rawRecipientDataExportResponse.setRemoteFileName(remoteFileName);
+		rawRecipientDataExportResponse.setDescription(description);
+		rawRecipientDataExportResponse.setJobId(jobResponse.getJobId());
+		rawRecipientDataExportResponse.setEventTypes(eventTypes);
+		rawRecipientDataExportResponse.setExportedRowCount(exportedRowCount);
+		rawRecipientDataExportResponse.setFileEncoding(fileEncoding);
+		rawRecipientDataExportResponse.setMailingTypes(mailingTypes);
+		rawRecipientDataExportResponse.setTimeZone(timeZone);
 
 		ResponseContainer<RawRecipientDataExportResponse> response = new ResponseContainer<RawRecipientDataExportResponse>(
 				rawRecipientDataExportResponse);
