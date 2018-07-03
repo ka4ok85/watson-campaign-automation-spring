@@ -29,6 +29,7 @@ abstract public class AbstractJobCommand<T extends AbstractResponse, V extends A
 		extends AbstractCommand<T, V> {
 
 	private String jobIdPath = "JOB_ID";
+	private String jobParametersPath = "*";
 
 	public abstract ResponseContainer<T> readResponse(JobPollingContainer jobPollingContainer, JobResponse jobResponse,
 			V options);
@@ -56,8 +57,8 @@ abstract public class AbstractJobCommand<T extends AbstractResponse, V extends A
 		Map<String, String> parameters = new HashMap<String, String>();
 		try {
 			Node jobIdNode = (Node) xpath.evaluate(jobIdPath, resultNode, XPathConstants.NODE);
+			NodeList parametersNode = (NodeList) xpath.evaluate(jobParametersPath, resultNode, XPathConstants.NODESET);
 
-			NodeList parametersNode = (NodeList) xpath.evaluate("*", resultNode, XPathConstants.NODESET);
 			Node parameterNode;
 			String nodeName;
 			String nodeValue;
@@ -86,4 +87,7 @@ abstract public class AbstractJobCommand<T extends AbstractResponse, V extends A
 		this.jobIdPath = jobIdPath;
 	}
 
+	public void setJobParametersPath(String jobParametersPath) {
+		this.jobParametersPath = jobParametersPath;
+	}
 }
