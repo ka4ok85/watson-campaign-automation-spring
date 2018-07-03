@@ -59,6 +59,7 @@ public class RawRecipientDataExportCommand
 		Objects.requireNonNull(options, "RawRecipientDataExportOptions must not be null");
 
 		setJobIdPath("MAILING/JOB_ID");
+		setJobParametersPath("MAILING/*");
 
 		Element methodElement = doc.createElement(apiMethodName);
 		currentNode = addChildNode(methodElement, null);
@@ -351,8 +352,7 @@ public class RawRecipientDataExportCommand
 	@Override
 	public ResponseContainer<RawRecipientDataExportResponse> readResponse(JobPollingContainer jobPollingContainer,
 			JobResponse jobResponse, RawRecipientDataExportOptions options) {
-
-		String remoteFileName = jobPollingContainer.getParameters().get("FILENAME");
+		String remoteFileName = jobPollingContainer.getParameters().get("FILE_PATH");
 		String description = jobResponse.getJobDescription();
 		String eventTypes = jobResponse.getParameters().get("EVENT_TYPES");
 		Long exportedRowCount = Long.parseLong(jobResponse.getParameters().get("EXPORTED_ROW_COUNT"));
@@ -361,6 +361,9 @@ public class RawRecipientDataExportCommand
 		Integer timeZone = Integer.parseInt(jobResponse.getParameters().get("TIME_ZONE"));
 
 		log.debug("Generated RRDE File {} on SFTP", remoteFileName);
+		if (options.getLocalAbsoluteFilePath() != null && options.isMoveToFtp() == true) {
+			sftp.download(remoteFileName, options.getLocalAbsoluteFilePath());
+		}
 
 		rawRecipientDataExportResponse.setRemoteFileName(remoteFileName);
 		rawRecipientDataExportResponse.setDescription(description);
