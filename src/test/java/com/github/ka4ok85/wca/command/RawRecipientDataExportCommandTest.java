@@ -72,5 +72,70 @@ public class RawRecipientDataExportCommandTest {
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
 
+	@Test
+	public void testBuildXmlHonorsMailingReportId() {
+		// get XML from command
+		RawRecipientDataExportCommand command = new RawRecipientDataExportCommand();
+		RawRecipientDataExportOptions options = new RawRecipientDataExportOptions();
+		List<HashMap<String, Long>> mailingReportId = new ArrayList<HashMap<String, Long>>();
+		HashMap<String, Long> map = new HashMap<String, Long>();
+		map.put("mailingId", 5L);
+		map.put("reportId", 6L);
+		mailingReportId.add(map);
+		
+		options.setMailingReportId(mailingReportId);
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest.replace("<RawRecipientDataExport>",
+				"<RawRecipientDataExport><MAILING><MAILING_ID>5</MAILING_ID><REPORT_ID>6</REPORT_ID></MAILING>");
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test
+	public void testBuildXmlHonorsCampaignId() {
+		// get XML from command
+		RawRecipientDataExportCommand command = new RawRecipientDataExportCommand();
+		RawRecipientDataExportOptions options = new RawRecipientDataExportOptions();
+		Long campaignId = 2L;
+		options.setCampaignId(campaignId);
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest.replace("<RawRecipientDataExport>",
+				"<RawRecipientDataExport><CAMPAIGN_ID>" + campaignId + "</CAMPAIGN_ID>");
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+	
+	@Test
+	public void testBuildXmlHonorsListId() {
+		// get XML from command
+		RawRecipientDataExportCommand command = new RawRecipientDataExportCommand();
+		RawRecipientDataExportOptions options = new RawRecipientDataExportOptions();
+		Long listId = 3L;
+		options.setListId(listId);
+		options.setIncludeChildren(true);
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest.replace("<RawRecipientDataExport>",
+				"<RawRecipientDataExport><LIST_ID>" + listId + "</LIST_ID><INCLUDE_CHILDREN></INCLUDE_CHILDREN>");
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
 
 }
