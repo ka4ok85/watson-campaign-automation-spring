@@ -69,6 +69,8 @@ public class RawRecipientDataExportOptions extends AbstractOptions {
 	private boolean returnMailingSubject = false;
 	private boolean returnCRMCampaignId = false;
 	private boolean returnProgramId = false;
+
+	private List<String> columns;
 	private String localAbsoluteFilePath;
 
 	public List<HashMap<String, Long>> getMailingReportId() {
@@ -632,6 +634,14 @@ public class RawRecipientDataExportOptions extends AbstractOptions {
 
 	public void setLocalAbsoluteFilePath(String localAbsoluteFilePath) {
 		this.localAbsoluteFilePath = localAbsoluteFilePath;
+	}
+
+	public List<String> getColumns() {
+		return columns;
+	}
+
+	public void setColumns(List<String> columns) {
+		this.columns = columns;
 	}
 
 }
