@@ -44,10 +44,10 @@ public class RawRecipientDataExportCommandTest {
 	ApplicationContext context;
 
 	private String defaultRequest = String.join(System.getProperty("line.separator"),
-			"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>", "<Envelope>", "<Body>", "<RawRecipientDataExport>",
-			"<EXPORT_FORMAT>CSV</EXPORT_FORMAT>", "<FILE_ENCODING>utf-8</FILE_ENCODING>", 
-			"<MOVE_TO_FTP/>",
-			"<SENT_MAILINGS/>", "<ALL_EVENT_TYPES/>", "</RawRecipientDataExport>", "</Body>", "</Envelope>");
+			"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>", "<Envelope>", "<Body>",
+			"<RawRecipientDataExport>", "<EXPORT_FORMAT>CSV</EXPORT_FORMAT>", "<FILE_ENCODING>utf-8</FILE_ENCODING>",
+			"<MOVE_TO_FTP/>", "<SENT_MAILINGS/>", "<ALL_EVENT_TYPES/>", "</RawRecipientDataExport>", "</Body>",
+			"</Envelope>");
 
 	@Test(expected = NullPointerException.class)
 	public void testBuildXmlDoesNotAcceptNullOptions() {
@@ -83,7 +83,7 @@ public class RawRecipientDataExportCommandTest {
 		map.put("mailingId", 5L);
 		map.put("reportId", 6L);
 		mailingReportId.add(map);
-		
+
 		options.setMailingReportId(mailingReportId);
 		command.buildXmlRequest(options);
 		String testString = command.getXML();
@@ -117,7 +117,7 @@ public class RawRecipientDataExportCommandTest {
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
-	
+
 	@Test
 	public void testBuildXmlHonorsListId() {
 		// get XML from command
@@ -138,7 +138,7 @@ public class RawRecipientDataExportCommandTest {
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
-	
+
 	@Test
 	public void testBuildXmlHonorsEventRange() {
 		// get XML from command
@@ -154,8 +154,8 @@ public class RawRecipientDataExportCommandTest {
 
 		// get control XML
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
-		String eventRangeString = "<EVENT_DATE_START>" + startDateTime.format(formatter) + "</EVENT_DATE_START><EVENT_DATE_END>"
-				+ endDateTime.format(formatter) + "</EVENT_DATE_END>";
+		String eventRangeString = "<EVENT_DATE_START>" + startDateTime.format(formatter)
+				+ "</EVENT_DATE_START><EVENT_DATE_END>" + endDateTime.format(formatter) + "</EVENT_DATE_END>";
 		String controlString = defaultRequest.replace("<RawRecipientDataExport>",
 				"<RawRecipientDataExport>" + eventRangeString);
 		Source control = Input.fromString(controlString).build();
@@ -163,7 +163,7 @@ public class RawRecipientDataExportCommandTest {
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
-	
+
 	@Test
 	public void testBuildXmlHonorsSendRange() {
 		// get XML from command
@@ -179,8 +179,8 @@ public class RawRecipientDataExportCommandTest {
 
 		// get control XML
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
-		String eventRangeString = "<SEND_DATE_START>" + startDateTime.format(formatter) + "</SEND_DATE_START><SEND_DATE_END>"
-				+ endDateTime.format(formatter) + "</SEND_DATE_END>";
+		String eventRangeString = "<SEND_DATE_START>" + startDateTime.format(formatter)
+				+ "</SEND_DATE_START><SEND_DATE_END>" + endDateTime.format(formatter) + "</SEND_DATE_END>";
 		String controlString = defaultRequest.replace("<RawRecipientDataExport>",
 				"<RawRecipientDataExport>" + eventRangeString);
 		Source control = Input.fromString(controlString).build();
@@ -188,7 +188,7 @@ public class RawRecipientDataExportCommandTest {
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
-	
+
 	@Test
 	public void testBuildXmlHonorsVisibilityPrivate() {
 		// get XML from command
@@ -226,6 +226,83 @@ public class RawRecipientDataExportCommandTest {
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
-	
+
+	@Test
+	public void testBuildXmlHonorsAllNonExported() {
+		// get XML from command
+		RawRecipientDataExportCommand command = new RawRecipientDataExportCommand();
+		RawRecipientDataExportOptions options = new RawRecipientDataExportOptions();
+		options.setAllNonExported(true);
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest.replace("<RawRecipientDataExport>",
+				"<RawRecipientDataExport><ALL_NON_EXPORTED></ALL_NON_EXPORTED>");
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test
+	public void testBuildXmlHonorsReturnFromAddress() {
+		// get XML from command
+		RawRecipientDataExportCommand command = new RawRecipientDataExportCommand();
+		RawRecipientDataExportOptions options = new RawRecipientDataExportOptions();
+		options.setReturnFromAddress(true);
+		;
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest.replace("</EXPORT_FORMAT>",
+				"</EXPORT_FORMAT><RETURN_FROM_ADDRESS></RETURN_FROM_ADDRESS>");
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test
+	public void testBuildXmlHonorsReturnFromName() {
+		// get XML from command
+		RawRecipientDataExportCommand command = new RawRecipientDataExportCommand();
+		RawRecipientDataExportOptions options = new RawRecipientDataExportOptions();
+		options.setReturnFromName(true);
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest.replace("</EXPORT_FORMAT>",
+				"</EXPORT_FORMAT><RETURN_FROM_NAME></RETURN_FROM_NAME>");
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test
+	public void testBuildXmlHonorsExportFileName() {
+		// get XML from command
+		RawRecipientDataExportCommand command = new RawRecipientDataExportCommand();
+		RawRecipientDataExportOptions options = new RawRecipientDataExportOptions();
+		String exportFileName = "test file.zip";
+		options.setExportFileName(exportFileName);
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest.replace("</FILE_ENCODING>",
+				"</FILE_ENCODING><EXPORT_FILE_NAME>" + exportFileName + "</EXPORT_FILE_NAME>");
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
 
 }
