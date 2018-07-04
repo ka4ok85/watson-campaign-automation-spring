@@ -335,6 +335,19 @@ public class RawRecipientDataExportCommand
 			addChildNode(returnProgramId, currentNode);
 		}
 
+		if (options.getColumns() != null && options.getColumns().size() > 0) {
+			Element exportColumns = doc.createElement("COLUMNS");
+			addChildNode(exportColumns, currentNode);
+			Element columnElement;
+			Element nameElement;
+			for (String column : options.getColumns()) {
+				columnElement = doc.createElement("COLUMN");
+				nameElement = doc.createElement("NAME");
+				nameElement.setTextContent(column);
+				addChildNode(nameElement, columnElement);
+				addChildNode(columnElement, exportColumns);
+			}
+		}
 	}
 
 	/**
