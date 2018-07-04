@@ -26,6 +26,7 @@ import com.github.ka4ok85.wca.config.SpringConfig;
 import com.github.ka4ok85.wca.constants.ExportFormat;
 import com.github.ka4ok85.wca.constants.FileEncoding;
 import com.github.ka4ok85.wca.constants.ListExportType;
+import com.github.ka4ok85.wca.constants.Visibility;
 import com.github.ka4ok85.wca.options.ExportListOptions;
 import com.github.ka4ok85.wca.options.RawRecipientDataExportOptions;
 import com.github.ka4ok85.wca.response.ExportListResponse;
@@ -137,5 +138,94 @@ public class RawRecipientDataExportCommandTest {
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
+	
+	@Test
+	public void testBuildXmlHonorsEventRange() {
+		// get XML from command
+		RawRecipientDataExportCommand command = new RawRecipientDataExportCommand();
+		RawRecipientDataExportOptions options = new RawRecipientDataExportOptions();
+		LocalDateTime startDateTime = LocalDateTime.of(2017, 2, 3, 4, 5);
+		LocalDateTime endDateTime = LocalDateTime.of(2018, 6, 7, 8, 9);
+		DateTimeRange eventRange = new DateTimeRange(startDateTime, endDateTime);
+		options.setEventRange(eventRange);
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
+		String eventRangeString = "<EVENT_DATE_START>" + startDateTime.format(formatter) + "</EVENT_DATE_START><EVENT_DATE_END>"
+				+ endDateTime.format(formatter) + "</EVENT_DATE_END>";
+		String controlString = defaultRequest.replace("<RawRecipientDataExport>",
+				"<RawRecipientDataExport>" + eventRangeString);
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+	
+	@Test
+	public void testBuildXmlHonorsSendRange() {
+		// get XML from command
+		RawRecipientDataExportCommand command = new RawRecipientDataExportCommand();
+		RawRecipientDataExportOptions options = new RawRecipientDataExportOptions();
+		LocalDateTime startDateTime = LocalDateTime.of(2017, 2, 3, 4, 5);
+		LocalDateTime endDateTime = LocalDateTime.of(2018, 6, 7, 8, 9);
+		DateTimeRange sendRange = new DateTimeRange(startDateTime, endDateTime);
+		options.setSendRange(sendRange);
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
+		String eventRangeString = "<SEND_DATE_START>" + startDateTime.format(formatter) + "</SEND_DATE_START><SEND_DATE_END>"
+				+ endDateTime.format(formatter) + "</SEND_DATE_END>";
+		String controlString = defaultRequest.replace("<RawRecipientDataExport>",
+				"<RawRecipientDataExport>" + eventRangeString);
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+	
+	@Test
+	public void testBuildXmlHonorsVisibilityPrivate() {
+		// get XML from command
+		RawRecipientDataExportCommand command = new RawRecipientDataExportCommand();
+		RawRecipientDataExportOptions options = new RawRecipientDataExportOptions();
+		options.setVisibility(Visibility.PRIVATE);
+
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest.replace("<MOVE_TO_FTP/>", "<MOVE_TO_FTP/><PRIVATE>TRUE</PRIVATE>");
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test
+	public void testBuildXmlHonorsVisibilityShared() {
+		// get XML from command
+		RawRecipientDataExportCommand command = new RawRecipientDataExportCommand();
+		RawRecipientDataExportOptions options = new RawRecipientDataExportOptions();
+		options.setVisibility(Visibility.SHARED);
+
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest.replace("<MOVE_TO_FTP/>", "<MOVE_TO_FTP/><SHARED>TRUE</SHARED>");
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+	
 
 }
