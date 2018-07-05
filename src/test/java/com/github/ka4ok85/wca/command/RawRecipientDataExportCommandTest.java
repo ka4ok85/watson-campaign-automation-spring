@@ -2,9 +2,11 @@ package com.github.ka4ok85.wca.command;
 
 import static org.junit.Assert.assertEquals;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,12 +14,17 @@ import java.util.Map;
 import javax.xml.transform.Source;
 
 import org.junit.Assert;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.rules.SpringClassRule;
+import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.builder.Input;
 import org.xmlunit.diff.Diff;
@@ -28,6 +35,7 @@ import com.github.ka4ok85.wca.constants.FileEncoding;
 import com.github.ka4ok85.wca.constants.ListExportType;
 import com.github.ka4ok85.wca.constants.Visibility;
 import com.github.ka4ok85.wca.options.ExportListOptions;
+import com.github.ka4ok85.wca.options.GetSentMailingsForListOptions;
 import com.github.ka4ok85.wca.options.RawRecipientDataExportOptions;
 import com.github.ka4ok85.wca.response.ExportListResponse;
 import com.github.ka4ok85.wca.response.JobResponse;
@@ -35,10 +43,18 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.JobPollingContainer;
 import com.github.ka4ok85.wca.utils.DateTimeRange;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(value = Parameterized.class)
 @ContextConfiguration(classes = { SpringConfig.class })
-
 public class RawRecipientDataExportCommandTest {
+
+	@ClassRule
+	public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
+
+	@Rule
+	public final SpringMethodRule springMethodRule = new SpringMethodRule();
+
+	private String xmlNodeName;
+	private String methodName;
 
 	@Autowired
 	ApplicationContext context;
@@ -48,6 +64,11 @@ public class RawRecipientDataExportCommandTest {
 			"<RawRecipientDataExport>", "<EXPORT_FORMAT>CSV</EXPORT_FORMAT>", "<FILE_ENCODING>utf-8</FILE_ENCODING>",
 			"<MOVE_TO_FTP/>", "<SENT_MAILINGS/>", "<ALL_EVENT_TYPES/>", "</RawRecipientDataExport>", "</Body>",
 			"</Envelope>");
+
+	public RawRecipientDataExportCommandTest(String xmlNodeName, String methodName) {
+		this.xmlNodeName = xmlNodeName;
+		this.methodName = methodName;
+	}
 
 	@Test(expected = NullPointerException.class)
 	public void testBuildXmlDoesNotAcceptNullOptions() {
@@ -303,6 +324,47 @@ public class RawRecipientDataExportCommandTest {
 
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Parameterized.Parameters(name = "{index}: isValid({0})={1}")
+	public static Iterable<Object[]> data() {
+		return Arrays
+				.asList(new Object[][] { { "<SENDING></SENDING>", "setIncludeSendingMailings" },
+						{ "<OPTIN_CONFIRMATION></OPTIN_CONFIRMATION>", "setIncludeOptinConfirmationMailings" },
+						{ "<PROFILE_CONFIRMATION></PROFILE_CONFIRMATION>", "setIncludeProfileConfirmationMailings" },
+						{ "<AUTOMATED></AUTOMATED>", "setIncludeAutomatedMailings" },
+						{ "<CAMPAIGN_ACTIVE></CAMPAIGN_ACTIVE>", "setIncludeCampaignActiveMailings" },
+						{ "<CAMPAIGN_COMPLETED></CAMPAIGN_COMPLETED>", "setIncludeCampaignCompletedMailings" },
+						{ "<CAMPAIGN_CANCELLED></CAMPAIGN_CANCELLED>", "setIncludeCampaignCancelledMailings" },
+						{ "<CAMPAIGN_SCRAPE_TEMPLATE></CAMPAIGN_SCRAPE_TEMPLATE>",
+								"setIncludeCampaignScrapeTemplateMailings" },
+						{ "<INCLUDE_TEST_MAILINGS></INCLUDE_TEST_MAILINGS>", "setIncludeTestMailings" } });
+	}
+
+	@Test
+	public void testIsValidMailingParameters() {
+		RawRecipientDataExportCommand command = new RawRecipientDataExportCommand();
+		RawRecipientDataExportOptions options = new RawRecipientDataExportOptions();
+		java.lang.reflect.Method method;
+		try {
+			method = options.getClass().getMethod(methodName, boolean.class);
+			method.invoke(options, true);
+
+			command.buildXmlRequest(options);
+			String testString = command.getXML();
+			Source test = Input.fromString(testString).build();
+
+			// get control XML
+			String controlString = defaultRequest.replace("<SENT_MAILINGS/>", "<SENT_MAILINGS/>" + xmlNodeName);
+			Source control = Input.fromString(controlString).build();
+
+			Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+			Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+
+		} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
