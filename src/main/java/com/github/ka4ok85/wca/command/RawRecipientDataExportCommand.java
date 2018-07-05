@@ -380,7 +380,7 @@ public class RawRecipientDataExportCommand
 
 		rawRecipientDataExportResponse.setRemoteFileName(remoteFileName);
 		rawRecipientDataExportResponse.setDescription(description);
-		rawRecipientDataExportResponse.setJobId(jobResponse.getJobId());
+		rawRecipientDataExportResponse.setJobId(jobPollingContainer.getJobId());
 		rawRecipientDataExportResponse.setEventTypes(eventTypes);
 		rawRecipientDataExportResponse.setExportedRowCount(exportedRowCount);
 		rawRecipientDataExportResponse.setFileEncoding(fileEncoding);

@@ -22,7 +22,6 @@ import org.junit.runners.Parameterized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.xmlunit.builder.DiffBuilder;
@@ -30,15 +29,11 @@ import org.xmlunit.builder.Input;
 import org.xmlunit.diff.Diff;
 
 import com.github.ka4ok85.wca.config.SpringConfig;
-import com.github.ka4ok85.wca.constants.ExportFormat;
 import com.github.ka4ok85.wca.constants.FileEncoding;
-import com.github.ka4ok85.wca.constants.ListExportType;
 import com.github.ka4ok85.wca.constants.Visibility;
-import com.github.ka4ok85.wca.options.ExportListOptions;
-import com.github.ka4ok85.wca.options.GetSentMailingsForListOptions;
 import com.github.ka4ok85.wca.options.RawRecipientDataExportOptions;
-import com.github.ka4ok85.wca.response.ExportListResponse;
 import com.github.ka4ok85.wca.response.JobResponse;
+import com.github.ka4ok85.wca.response.RawRecipientDataExportResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.JobPollingContainer;
 import com.github.ka4ok85.wca.utils.DateTimeRange;
@@ -365,6 +360,76 @@ public class RawRecipientDataExportCommandTest {
 				| NoSuchMethodException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Test
+	public void testBuildXmlHonorsExportColumns() {
+		// get XML from command
+		RawRecipientDataExportCommand command = new RawRecipientDataExportCommand();
+		RawRecipientDataExportOptions options = new RawRecipientDataExportOptions();
+		List<String> columns = new ArrayList<String>();
+		columns.add("Column A");
+		columns.add("Column B");
+		options.setColumns(columns);
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String columnsString = "<COLUMNS>";
+		for (String column : columns) {
+			columnsString = columnsString + "<COLUMN><NAME>" + column + "</NAME></COLUMN>";
+		}
+
+		columnsString = columnsString + "</COLUMNS>";
+		String controlString = defaultRequest.replace("<ALL_EVENT_TYPES/>", "<ALL_EVENT_TYPES/>" + columnsString);
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test
+	public void testReadResponse() {
+		RawRecipientDataExportCommand command = context.getBean(RawRecipientDataExportCommand.class);
+		RawRecipientDataExportOptions options = new RawRecipientDataExportOptions();
+		Long jobId = 34L;
+		JobPollingContainer jobPollingContainer = new JobPollingContainer();
+		jobPollingContainer.setJobId(jobId);
+		Map<String, String> parameters = new HashMap<String, String>();
+		String filePath = "/path/to/file.csv";
+		parameters.put("FILE_PATH", filePath);
+		jobPollingContainer.setParameters(parameters);
+
+		String jobDescription = "String Job Description";
+		String eventTypes = "Test List";
+		Long exportedRowCount = 55L;
+		String mailingTypes = "";
+
+		Integer timeZone = 4;
+		String fileEncoding = "iso-8859-1";
+		JobResponse jobResponse = new JobResponse();
+		jobResponse.setJobDescription(jobDescription);
+		Map<String, String> jobParameters = new HashMap<String, String>();
+		jobParameters.put("EVENT_TYPES", eventTypes);
+		jobParameters.put("FILE_ENCODING", fileEncoding);
+		jobParameters.put("EXPORTED_ROW_COUNT", exportedRowCount.toString());
+		jobParameters.put("MAILING_TYPE_ARRAY", mailingTypes);
+		jobParameters.put("TIME_ZONE", timeZone.toString());
+		jobResponse.setParameters(jobParameters);
+
+		ResponseContainer<RawRecipientDataExportResponse> responseContainer = command.readResponse(jobPollingContainer,
+				jobResponse, options);
+		RawRecipientDataExportResponse response = responseContainer.getResposne();
+
+		assertEquals(response.getDescription(), jobDescription);
+		assertEquals(response.getFileEncoding(), FileEncoding.ISO_8859_1);
+		assertEquals(response.getEventTypes(), eventTypes);
+		assertEquals(response.getExportedRowCount(), exportedRowCount);
+		assertEquals(response.getMailingTypes(), mailingTypes);
+		assertEquals(response.getJobId(), jobId);
+		assertEquals(response.getTimeZone(), timeZone);
+		assertEquals(response.getRemoteFileName(), filePath);
 	}
 
 }
