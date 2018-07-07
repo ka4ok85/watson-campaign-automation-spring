@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.github.ka4ok85.wca.command.AddContactToContactListCommand;
 import com.github.ka4ok85.wca.command.AddContactToProgramCommand;
+import com.github.ka4ok85.wca.command.AddListColumnCommand;
 import com.github.ka4ok85.wca.command.AddRecipientCommand;
 import com.github.ka4ok85.wca.command.CalculateQueryCommand;
 import com.github.ka4ok85.wca.command.CreateContactListCommand;
@@ -43,6 +44,7 @@ import com.github.ka4ok85.wca.oauth.OAuthClient;
 import com.github.ka4ok85.wca.oauth.OAuthClientImplementation;
 import com.github.ka4ok85.wca.options.AddContactToContactListOptions;
 import com.github.ka4ok85.wca.options.AddContactToProgramOptions;
+import com.github.ka4ok85.wca.options.AddListColumnOptions;
 import com.github.ka4ok85.wca.options.AddRecipientOptions;
 import com.github.ka4ok85.wca.options.CalculateQueryOptions;
 import com.github.ka4ok85.wca.options.CreateContactListOptions;
@@ -77,6 +79,7 @@ import com.github.ka4ok85.wca.options.SelectRecipientDataOptions;
 import com.github.ka4ok85.wca.options.UpdateRecipientOptions;
 import com.github.ka4ok85.wca.response.AddContactToContactListResponse;
 import com.github.ka4ok85.wca.response.AddContactToProgramResponse;
+import com.github.ka4ok85.wca.response.AddListColumnResponse;
 import com.github.ka4ok85.wca.response.AddRecipientResponse;
 import com.github.ka4ok85.wca.response.CalculateQueryResponse;
 import com.github.ka4ok85.wca.response.CreateContactListResponse;
@@ -463,6 +466,15 @@ public class Engage {
 		rawRecipientDataExport.setoAuthClient(oAuthClient);
 		rawRecipientDataExport.setSftp(sftp);
 		ResponseContainer<RawRecipientDataExportResponse> result = rawRecipientDataExport.executeCommand(options);
+
+		return result;
+	}
+
+	public ResponseContainer<AddListColumnResponse> addListColumn(AddListColumnOptions options) {
+		AddListColumnCommand addListColumn = getApplicationContext().getBean(AddListColumnCommand.class);
+		addListColumn.setoAuthClient(oAuthClient);
+		addListColumn.setSftp(sftp);
+		ResponseContainer<AddListColumnResponse> result = addListColumn.executeCommand(options);
 
 		return result;
 	}
