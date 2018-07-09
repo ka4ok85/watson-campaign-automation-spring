@@ -90,6 +90,97 @@ public class AddRecipientCommandTest {
 	}
 
 	@Test
+	public void testBuildXmlHonorsEmptySyncFields() {
+		// get XML from command
+		AddRecipientCommand command = new AddRecipientCommand();
+		AddRecipientOptions options = new AddRecipientOptions(1L);
+		Map<String, String> keyColumns = new HashMap<String, String>();
+		keyColumns.put("Email", "test1@github.com");
+		keyColumns.put("customerID", "123");
+		options.setColumns(keyColumns);
+
+		List<Long> contactLists = new ArrayList<Long>();
+		contactLists.add(23L);
+		options.setContactLists(contactLists);
+
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlStringPart = String.join(System.getProperty("line.separator"),
+				"<SEND_AUTOREPLY>FALSE</SEND_AUTOREPLY>", "<SYNC_FIELDS>", "<SYNC_FIELD>", "<NAME>",
+				"<![CDATA[Email]]>", "</NAME>", "<VALUE>", "<![CDATA[test2@github.com]]>", "</VALUE>", "</SYNC_FIELD>",
+				"</SYNC_FIELDS>");
+
+		String controlString = defaultRequest.replace(controlStringPart, "<SEND_AUTOREPLY>FALSE</SEND_AUTOREPLY>");
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test
+	public void testBuildXmlHonorsEmptyColumns() {
+		// get XML from command
+		AddRecipientCommand command = new AddRecipientCommand();
+		AddRecipientOptions options = new AddRecipientOptions(1L);
+
+		Map<String, String> syncFields = new HashMap<String, String>();
+		syncFields.put("Email", "test2@github.com");
+		options.setSyncFields(syncFields);
+
+		List<Long> contactLists = new ArrayList<Long>();
+		contactLists.add(23L);
+		options.setContactLists(contactLists);
+
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlStringPart = String.join(System.getProperty("line.separator"), "</SYNC_FIELDS>", "<COLUMN>",
+				"<NAME>", "<![CDATA[Email]]>", "</NAME>", "<VALUE>", "<![CDATA[test1@github.com]]>", "</VALUE>",
+				"</COLUMN>", "<COLUMN>", "<NAME>", "<![CDATA[customerID]]>", "</NAME>", "<VALUE>", "<![CDATA[123]]>",
+				"</VALUE>", "</COLUMN>");
+
+		String controlString = defaultRequest.replace(controlStringPart, "</SYNC_FIELDS>");
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test
+	public void testBuildXmlHonorsEmptyContactLists() {
+		// get XML from command
+		AddRecipientCommand command = new AddRecipientCommand();
+		AddRecipientOptions options = new AddRecipientOptions(1L);
+		Map<String, String> keyColumns = new HashMap<String, String>();
+		keyColumns.put("Email", "test1@github.com");
+		keyColumns.put("customerID", "123");
+		options.setColumns(keyColumns);
+
+		Map<String, String> syncFields = new HashMap<String, String>();
+		syncFields.put("Email", "test2@github.com");
+		options.setSyncFields(syncFields);
+
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlStringPart = String.join(System.getProperty("line.separator"), "</COLUMN>", "<CONTACT_LISTS>",
+				"<CONTACT_LIST_ID>23</CONTACT_LIST_ID>", "</CONTACT_LISTS>");
+
+		String controlString = defaultRequest.replace(controlStringPart, "</COLUMN>");
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test
 	public void testBuildXmlHonorsAllowHtml() {
 		// get XML from command
 		AddRecipientCommand command = new AddRecipientCommand();
@@ -294,4 +385,22 @@ public class AddRecipientCommandTest {
 		assertTrue(response.isVisitorAssociation());
 	}
 
+	@Test
+	public void testReadResponseHonorsMissingVisitorAssociationNode()
+			throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
+		AddRecipientCommand command = context.getBean(AddRecipientCommand.class);
+		AddRecipientOptions options = new AddRecipientOptions(1L);
+
+		Long recipientId = 7821525927L;
+		String envelope = "<RESULT><SUCCESS>TRUE</SUCCESS><RecipientId>" + recipientId.toString()
+				+ "</RecipientId><ORGANIZATION_ID>6d230b87-14af455a8ca-4097dfa4559ed783ss6bfeed2dffc966</ORGANIZATION_ID></RESULT>";
+		Element resultNode = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+				.parse(new ByteArrayInputStream(envelope.getBytes())).getDocumentElement();
+
+		ResponseContainer<AddRecipientResponse> responseContainer = command.readResponse(resultNode, options);
+		AddRecipientResponse response = responseContainer.getResposne();
+
+		assertEquals(response.getRecipientId(), recipientId);
+		assertFalse(response.isVisitorAssociation());
+	}
 }
