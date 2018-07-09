@@ -39,6 +39,7 @@ import com.github.ka4ok85.wca.command.PurgeTableCommand;
 import com.github.ka4ok85.wca.command.RemoveRecipientCommand;
 import com.github.ka4ok85.wca.command.SelectRecipientDataCommand;
 import com.github.ka4ok85.wca.command.UpdateRecipientCommand;
+import com.github.ka4ok85.wca.command.SetColumnValueCommand;
 import com.github.ka4ok85.wca.config.SpringConfig;
 import com.github.ka4ok85.wca.oauth.OAuthClient;
 import com.github.ka4ok85.wca.oauth.OAuthClientImplementation;
@@ -76,6 +77,7 @@ import com.github.ka4ok85.wca.options.PurgeTableOptions;
 import com.github.ka4ok85.wca.options.RawRecipientDataExportOptions;
 import com.github.ka4ok85.wca.options.RemoveRecipientOptions;
 import com.github.ka4ok85.wca.options.SelectRecipientDataOptions;
+import com.github.ka4ok85.wca.options.SetColumnValueOptions;
 import com.github.ka4ok85.wca.options.UpdateRecipientOptions;
 import com.github.ka4ok85.wca.response.AddContactToContactListResponse;
 import com.github.ka4ok85.wca.response.AddContactToProgramResponse;
@@ -112,6 +114,7 @@ import com.github.ka4ok85.wca.response.RawRecipientDataExportResponse;
 import com.github.ka4ok85.wca.response.RemoveRecipientResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.SelectRecipientDataResponse;
+import com.github.ka4ok85.wca.response.SetColumnValueResponse;
 import com.github.ka4ok85.wca.response.UpdateRecipientResponse;
 import com.github.ka4ok85.wca.sftp.SFTP;
 
@@ -475,6 +478,15 @@ public class Engage {
 		addListColumn.setoAuthClient(oAuthClient);
 		addListColumn.setSftp(sftp);
 		ResponseContainer<AddListColumnResponse> result = addListColumn.executeCommand(options);
+
+		return result;
+	}
+
+	public ResponseContainer<SetColumnValueResponse> setColumnValue(SetColumnValueOptions options) {
+		SetColumnValueCommand setColumnValue = getApplicationContext().getBean(SetColumnValueCommand.class);
+		setColumnValue.setoAuthClient(oAuthClient);
+		setColumnValue.setSftp(sftp);
+		ResponseContainer<SetColumnValueResponse> result = setColumnValue.executeCommand(options);
 
 		return result;
 	}
