@@ -105,6 +105,46 @@ public class SetColumnValueCommandTest {
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
 
+	@Test(expected = RuntimeException.class)
+	public void testBuildXmlDoesNotAcceptNullListId() {
+		// get XML from command
+		SetColumnValueCommand command = new SetColumnValueCommand();
+		SetColumnValueOptions options = new SetColumnValueOptions(null, "test column", ColumnValueAction.RESET);
+		command.buildXmlRequest(options);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testBuildXmlDoesNotAcceptBadListId() {
+		// get XML from command
+		SetColumnValueCommand command = new SetColumnValueCommand();
+		SetColumnValueOptions options = new SetColumnValueOptions(-10L, "test column", ColumnValueAction.RESET);
+		command.buildXmlRequest(options);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testBuildXmlDoesNotAcceptNullColumnName() {
+		// get XML from command
+		SetColumnValueCommand command = new SetColumnValueCommand();
+		SetColumnValueOptions options = new SetColumnValueOptions(1L, null, ColumnValueAction.RESET);
+		command.buildXmlRequest(options);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testBuildXmlDoesNotAcceptBadColumnName() {
+		// get XML from command
+		SetColumnValueCommand command = new SetColumnValueCommand();
+		SetColumnValueOptions options = new SetColumnValueOptions(1L, "", ColumnValueAction.RESET);
+		command.buildXmlRequest(options);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testBuildXmlDoesNotAcceptNullColumnValue() {
+		// get XML from command
+		SetColumnValueCommand command = new SetColumnValueCommand();
+		SetColumnValueOptions options = new SetColumnValueOptions(1L, "test column", null);
+		command.buildXmlRequest(options);
+	}
+
 	@Test
 	public void testReadResponse() {
 		SetColumnValueCommand command = context.getBean(SetColumnValueCommand.class);
