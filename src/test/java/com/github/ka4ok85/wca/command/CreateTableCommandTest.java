@@ -88,6 +88,32 @@ public class CreateTableCommandTest {
 	}
 
 	@Test
+	public void testBuildXmlHonorsEmptyColumns() {
+		// get XML from command
+		CreateTableCommand command = new CreateTableCommand();
+		CreateTableOptions options = new CreateTableOptions("test RT");
+
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlStringPart = String.join(System.getProperty("line.separator"), "<TABLE_NAME>test RT</TABLE_NAME>",
+				"<COLUMNS>", "<COLUMN>", "<NAME>", "<![CDATA[column1]]>", "</NAME>", "<TYPE>", "<![CDATA[TEXT]]>",
+				"</TYPE>", "<IS_REQUIRED>true</IS_REQUIRED>", "<KEY_COLUMN>true</KEY_COLUMN>",
+				"<DEFAULT_VALUE>test default value</DEFAULT_VALUE>", "</COLUMN>", "<COLUMN>", "<NAME>",
+				"<![CDATA[column2]]>", "</NAME>", "<TYPE>", "<![CDATA[SELECTION]]>", "</TYPE>", "<SELECTION_VALUES>",
+				"<VALUE>", "<![CDATA[selection value 1]]>", "</VALUE>", "<VALUE>", "<![CDATA[selection value 2]]>",
+				"</VALUE>", "</SELECTION_VALUES>", "</COLUMN>", "</COLUMNS>");
+
+		String controlString = defaultRequest.replace(controlStringPart, "<TABLE_NAME>test RT</TABLE_NAME>");
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test
 	public void testReadResponse()
 			throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
 		CreateTableCommand command = context.getBean(CreateTableCommand.class);

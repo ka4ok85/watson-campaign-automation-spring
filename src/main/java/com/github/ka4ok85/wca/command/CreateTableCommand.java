@@ -33,7 +33,8 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
  * synchronous client-side HTTP access.
  * </p>
  * <p>
- * <strong>ATTN: </strong>No way to specify Visibility. RTs is created in Shared Folder
+ * <strong>ATTN: </strong>No way to specify Visibility. RTs is created in Shared
+ * Folder
  * </p>
  * 
  * @author Evgeny Makovetsky
@@ -103,8 +104,7 @@ public class CreateTableCommand extends AbstractInstantCommand<CreateTableRespon
 					addChildNode(defaultValueColumn, column);
 				}
 
-				if (tableColumn.getType().equals(RelationalTableColumnType.SELECTION)
-						&& tableColumn.getSelectionValues().size() > 0) {
+				if (tableColumn.getType().equals(RelationalTableColumnType.SELECTION)) {
 					Element selectionValues = doc.createElement("SELECTION_VALUES");
 					addChildNode(selectionValues, column);
 					for (String selection : tableColumn.getSelectionValues()) {
