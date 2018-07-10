@@ -63,7 +63,7 @@ public class GetFolderPathCommand extends AbstractInstantCommand<GetFolderPathRe
 			Element folderId = doc.createElement("FOLDER_ID");
 			folderId.setTextContent(options.getFolderId());
 			addChildNode(folderId, currentNode);
-		} else if (options.getObjectId() != null) {
+		} else {
 			Element objectId = doc.createElement("OBJECT_ID");
 			objectId.setTextContent(options.getObjectId().toString());
 			addChildNode(objectId, currentNode);
