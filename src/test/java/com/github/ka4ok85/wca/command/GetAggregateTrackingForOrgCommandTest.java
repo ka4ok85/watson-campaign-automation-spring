@@ -77,6 +77,75 @@ public class GetAggregateTrackingForOrgCommandTest {
 	}
 
 	@Test
+	public void testBuildXmlHonorsTopDomain() {
+		// get XML from command
+		GetAggregateTrackingForOrgCommand command = new GetAggregateTrackingForOrgCommand();
+		LocalDateTime startDate = LocalDateTime.of(2010, 02, 01, 0, 03, 04);
+		LocalDateTime endDate = LocalDateTime.of(2018, 05, 01, 23, 54, 55);
+		DateTimeRange range = new DateTimeRange(startDate, endDate);
+		GetAggregateTrackingForOrgOptions options = new GetAggregateTrackingForOrgOptions(range);
+		options.setTopDomain(true);
+
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest.replace("<INBOX_MONITORING>TRUE</INBOX_MONITORING>", "")
+				.replace("<PER_CLICK>TRUE</PER_CLICK>", "");
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test
+	public void testBuildXmlHonorsInboxMonitoring() {
+		// get XML from command
+		GetAggregateTrackingForOrgCommand command = new GetAggregateTrackingForOrgCommand();
+		LocalDateTime startDate = LocalDateTime.of(2010, 02, 01, 0, 03, 04);
+		LocalDateTime endDate = LocalDateTime.of(2018, 05, 01, 23, 54, 55);
+		DateTimeRange range = new DateTimeRange(startDate, endDate);
+		GetAggregateTrackingForOrgOptions options = new GetAggregateTrackingForOrgOptions(range);
+		options.setInboxMonitoring(true);
+
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest.replace("<TOP_DOMAIN>TRUE</TOP_DOMAIN>", "")
+				.replace("<PER_CLICK>TRUE</PER_CLICK>", "");
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test
+	public void testBuildXmlHonorsPerClick() {
+		// get XML from command
+		GetAggregateTrackingForOrgCommand command = new GetAggregateTrackingForOrgCommand();
+		LocalDateTime startDate = LocalDateTime.of(2010, 02, 01, 0, 03, 04);
+		LocalDateTime endDate = LocalDateTime.of(2018, 05, 01, 23, 54, 55);
+		DateTimeRange range = new DateTimeRange(startDate, endDate);
+		GetAggregateTrackingForOrgOptions options = new GetAggregateTrackingForOrgOptions(range);
+		options.setPerClick(true);
+
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest.replace("<TOP_DOMAIN>TRUE</TOP_DOMAIN>", "")
+				.replace("<INBOX_MONITORING>TRUE</INBOX_MONITORING>", "");
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test
 	public void testBuildXmlHonorsVisibilityPrivate() {
 		// get XML from command
 		GetAggregateTrackingForOrgCommand command = new GetAggregateTrackingForOrgCommand();
