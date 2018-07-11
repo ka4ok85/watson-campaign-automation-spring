@@ -260,6 +260,25 @@ public class ExportListCommandTest {
 	}
 
 	@Test
+	public void testBuildXmlHonorsZeroExportColumns() {
+		// get XML from command
+		ExportListCommand command = new ExportListCommand();
+		ExportListOptions options = new ExportListOptions(1L);
+		List<String> exportColumns = new ArrayList<String>();
+		options.setExportColumns(exportColumns);
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest;
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test
 	public void testReadResponse() {
 		ExportListCommand command = context.getBean(ExportListCommand.class);
 
