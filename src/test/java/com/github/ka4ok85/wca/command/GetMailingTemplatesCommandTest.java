@@ -131,6 +131,32 @@ public class GetMailingTemplatesCommandTest {
 	}
 
 	@Test
+	public void testBuildXmlHonorsDateRange() {
+		// get XML from command
+		GetMailingTemplatesCommand command = new GetMailingTemplatesCommand();
+		GetMailingTemplatesOptions options = new GetMailingTemplatesOptions();
+		LocalDateTime lastModifiedStartDate = LocalDateTime.of(2018, 2, 3, 14, 45, 24);
+		LocalDateTime lastModifiedEndDate = LocalDateTime.of(2019, 2, 3, 14, 45, 24);
+		options.setLastModifiedStartDate(lastModifiedStartDate);
+		options.setLastModifiedEndDate(lastModifiedEndDate);
+
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
+		String controlString = defaultRequest.replace("</VISIBILITY>",
+				"</VISIBILITY><LAST_MODIFIED_START_DATE>" + lastModifiedStartDate.format(formatter)
+						+ "</LAST_MODIFIED_START_DATE><LAST_MODIFIED_END_DATE>" + lastModifiedEndDate.format(formatter)
+						+ "</LAST_MODIFIED_END_DATE>");
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test
 	public void testBuildXmlHonorsCrmEnabled() {
 		// get XML from command
 		GetMailingTemplatesCommand command = new GetMailingTemplatesCommand();
@@ -200,6 +226,43 @@ public class GetMailingTemplatesCommandTest {
 		assertEquals(response.getMailingTempaltes().get(0).getUserId(), userId);
 		assertEquals(response.getMailingTempaltes().get(0).getVisibility(), visibility);
 		assertEquals(response.getMailingTempaltes().get(0).isAllowCrmBlock(), allowCrmBlock);
+		assertEquals(response.getMailingTempaltes().get(0).isFlaggedForBackup(), flaggedForBackup);
+	}
+
+	@Test
+	public void testReadResponseHonorsBlankNodes()
+			throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
+		GetMailingTemplatesCommand command = context.getBean(GetMailingTemplatesCommand.class);
+		GetMailingTemplatesOptions options = new GetMailingTemplatesOptions();
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy K:mm a");
+		String userId = "6d230b87-14af455a8d5-4097dfa4559ed783d26bfeed2dffc966";
+		String mailingName = "Pref Center Mailing";
+		LocalDateTime lastModified = LocalDateTime.of(2017, 2, 3, 15, 34);
+		String subject = "Pref center";
+		Visibility visibility = Visibility.SHARED;
+		Long mailingId = 343652L;
+		Boolean flaggedForBackup = true;
+
+		String envelope = "<RESULT><SUCCESS>TRUE</SUCCESS><MAILING_TEMPLATE><MAILING_ID>" + mailingId
+				+ "</MAILING_ID><MAILING_NAME>" + mailingName + "</MAILING_NAME><SUBJECT>" + subject
+				+ "</SUBJECT><LAST_MODIFIED>" + lastModified.format(formatter) + "</LAST_MODIFIED><VISIBILITY>"
+				+ visibility + "</VISIBILITY><USER_ID>" + userId + "</USER_ID><FLAGGED_FOR_BACKUP>" + flaggedForBackup
+				+ "</FLAGGED_FOR_BACKUP></MAILING_TEMPLATE></RESULT>";
+		Element resultNode = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+				.parse(new ByteArrayInputStream(envelope.getBytes())).getDocumentElement();
+
+		ResponseContainer<GetMailingTemplatesResponse> responseContainer = command.readResponse(resultNode, options);
+		GetMailingTemplatesResponse response = responseContainer.getResposne();
+
+		assertEquals(response.getMailingTempaltes().size(), 1);
+
+		assertEquals(response.getMailingTempaltes().get(0).getLastModified(), lastModified);
+		assertEquals(response.getMailingTempaltes().get(0).getMailingId(), mailingId);
+		assertEquals(response.getMailingTempaltes().get(0).getMailingName(), mailingName);
+		assertEquals(response.getMailingTempaltes().get(0).getSubject(), subject);
+		assertEquals(response.getMailingTempaltes().get(0).getUserId(), userId);
+		assertEquals(response.getMailingTempaltes().get(0).getVisibility(), visibility);
 		assertEquals(response.getMailingTempaltes().get(0).isFlaggedForBackup(), flaggedForBackup);
 	}
 }
