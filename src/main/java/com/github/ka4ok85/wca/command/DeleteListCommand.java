@@ -53,11 +53,11 @@ public class DeleteListCommand extends AbstractJobCommand<DeleteListResponse, De
 		Element methodElement = doc.createElement(apiMethodName);
 		currentNode = addChildNode(methodElement, null);
 
-		if (options.getListId() != null && options.getListId() > 0) {
+		if (options.getListId() != null) {
 			Element listID = doc.createElement("LIST_ID");
 			listID.setTextContent(options.getListId().toString());
 			addChildNode(listID, currentNode);
-		} else if (options.getListName() != null && !options.getListName().isEmpty()) {
+		} else {
 			Element listName = doc.createElement("LIST_NAME");
 			listName.setTextContent(options.getListName());
 			addChildNode(listName, currentNode);
