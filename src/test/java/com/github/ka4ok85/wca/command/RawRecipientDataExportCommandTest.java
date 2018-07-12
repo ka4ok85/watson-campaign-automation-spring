@@ -90,6 +90,34 @@ public class RawRecipientDataExportCommandTest {
 	}
 
 	@Test
+	public void testBuildXmlHonorsDoNotIncludeChildren() {
+		// get XML from command
+		RawRecipientDataExportCommand command = new RawRecipientDataExportCommand();
+		RawRecipientDataExportOptions options = new RawRecipientDataExportOptions();
+		Long listId = 3L;
+		options.setListId(listId);
+		options.setIncludeChildren(false);
+		options.setMoveToFtp(false);
+		options.setIncludeSentMailings(false);
+
+		List<String> columns = new ArrayList<String>();
+		options.setColumns(columns);
+
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest
+				.replace("<RawRecipientDataExport>", "<RawRecipientDataExport><LIST_ID>" + listId + "</LIST_ID>")
+				.replace("<MOVE_TO_FTP/>", "").replace("<SENT_MAILINGS/>", "");
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test
 	public void testBuildXmlHonorsMailingReportId() {
 		// get XML from command
 		RawRecipientDataExportCommand command = new RawRecipientDataExportCommand();
@@ -108,6 +136,29 @@ public class RawRecipientDataExportCommandTest {
 		// get control XML
 		String controlString = defaultRequest.replace("<RawRecipientDataExport>",
 				"<RawRecipientDataExport><MAILING><MAILING_ID>5</MAILING_ID><REPORT_ID>6</REPORT_ID></MAILING>");
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test
+	public void testBuildXmlHonorsMailingReportWithoutKeys() {
+		// get XML from command
+		RawRecipientDataExportCommand command = new RawRecipientDataExportCommand();
+		RawRecipientDataExportOptions options = new RawRecipientDataExportOptions();
+		List<HashMap<String, Long>> mailingReportId = new ArrayList<HashMap<String, Long>>();
+		HashMap<String, Long> map = new HashMap<String, Long>();
+		mailingReportId.add(map);
+		options.setMailingReportId(mailingReportId);
+
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest.replace("<RawRecipientDataExport>",
+				"<RawRecipientDataExport><MAILING></MAILING>");
 		Source control = Input.fromString(controlString).build();
 
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
