@@ -64,11 +64,10 @@ public class RawRecipientDataExportCommand
 		Element methodElement = doc.createElement(apiMethodName);
 		currentNode = addChildNode(methodElement, null);
 
-		if (options.getMailingReportId() != null && options.getMailingReportId().size() > 0) {
+		if (options.getMailingReportId() != null) {
 			for (HashMap<String, Long> mailingReportId : options.getMailingReportId()) {
 				Element mailingNode = doc.createElement("MAILING");
 				addChildNode(mailingNode, currentNode);
-
 				if (mailingReportId.containsKey("mailingId")) {
 					Element mailingIdNode = doc.createElement("MAILING_ID");
 					mailingIdNode.setTextContent(mailingReportId.get("mailingId").toString());
@@ -93,6 +92,7 @@ public class RawRecipientDataExportCommand
 			Element listID = doc.createElement("LIST_ID");
 			listID.setTextContent(options.getListId().toString());
 			addChildNode(listID, currentNode);
+
 			if (options.isIncludeChildren()) {
 				Element includeChildren = doc.createElement("INCLUDE_CHILDREN");
 				addChildNode(includeChildren, currentNode);

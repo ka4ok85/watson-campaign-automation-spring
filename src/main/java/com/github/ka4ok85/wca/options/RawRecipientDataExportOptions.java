@@ -1,6 +1,5 @@
 package com.github.ka4ok85.wca.options;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,7 +10,7 @@ import com.github.ka4ok85.wca.utils.DateTimeRange;
 
 public class RawRecipientDataExportOptions extends AbstractOptions {
 
-	private List<HashMap<String, Long>> mailingReportId = new ArrayList<HashMap<String, Long>>();
+	private List<HashMap<String, Long>> mailingReportId;
 	private Long campaignId;
 	private Long listId;
 	private boolean includeChildren = false;
@@ -93,7 +92,7 @@ public class RawRecipientDataExportOptions extends AbstractOptions {
 			throw new RuntimeException("You can't specify MailingId if you already specified Campaign or List");
 		}
 
-		if (mailingReportId.size() < 1) {
+		if (mailingReportId == null || mailingReportId.size() < 1) {
 			throw new RuntimeException("You must provide at least one MailingId.");
 		}
 
@@ -105,7 +104,7 @@ public class RawRecipientDataExportOptions extends AbstractOptions {
 	}
 
 	public void setCampaignId(Long campaignId) {
-		if (!mailingReportId.isEmpty() || listId != null) {
+		if ((mailingReportId != null && !mailingReportId.isEmpty()) || listId != null) {
 			throw new RuntimeException("You can't specify CampaignId if you already specified Mailings or List");
 		}
 
@@ -121,7 +120,7 @@ public class RawRecipientDataExportOptions extends AbstractOptions {
 	}
 
 	public void setListId(Long listId) {
-		if (!mailingReportId.isEmpty() || campaignId != null) {
+		if ((mailingReportId != null && !mailingReportId.isEmpty()) || campaignId != null) {
 			throw new RuntimeException("You can't specify ListId if you already specified Mailings or Campaigns");
 		}
 
