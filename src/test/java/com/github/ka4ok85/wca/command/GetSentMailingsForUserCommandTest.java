@@ -272,6 +272,65 @@ public class GetSentMailingsForUserCommandTest {
 	}
 
 	@Test
+	public void testReadResponseHonorsBlankNode()
+			throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
+		GetSentMailingsForUserCommand command = context.getBean(GetSentMailingsForUserCommand.class);
+		LocalDateTime startDate = LocalDateTime.of(2017, 05, 01, 0, 0, 0);
+		LocalDateTime endDate = LocalDateTime.of(2018, 05, 01, 0, 0, 0);
+		DateTimeRange dateTimeRange = new DateTimeRange(startDate, endDate);
+		GetSentMailingsForUserOptions options = new GetSentMailingsForUserOptions(dateTimeRange);
+
+		Long mailingId = 1L;
+		Long reportId = 2L;
+		String scheduledTS = "2018-04-03 20:00:54.0";
+		String mailingName = "Test MailingName";
+		String listName = "Test ListName";
+		Long listId = 3L;
+		String userName = "Test UserName";
+		String sentTS = "2018-04-03 20:00:57.0";
+		Long numSent = 4L;
+		String subject = "Test Subject";
+		String visibility = "Private";
+		Long parentTemplateId = 5L;
+		String tag1 = "tag 1";
+		String tag2 = "tag 2";
+		String tag3 = "tag 3";
+
+		String envelope = "<RESULT><SUCCESS>TRUE</SUCCESS><Mailing><MailingId>" + mailingId + "</MailingId><ReportId>"
+				+ reportId + "</ReportId><ScheduledTS>" + scheduledTS + "</ScheduledTS><MailingName>" + mailingName
+				+ "</MailingName><ListName>" + listName + "</ListName><ListId>" + listId + "</ListId><UserName>"
+				+ userName + "</UserName><SentTS>" + sentTS + "</SentTS><NumSent>" + numSent + "</NumSent><Subject>"
+				+ subject + "</Subject><Visibility>" + visibility + "</Visibility><ParentTemplateId>" + parentTemplateId
+				+ "</ParentTemplateId><Tags><Tag>" + tag1 + "</Tag><Tag>" + tag2 + "</Tag><Tag>" + tag3
+				+ "</Tag></Tags></Mailing></RESULT>";
+		Element resultNode = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+				.parse(new ByteArrayInputStream(envelope.getBytes())).getDocumentElement();
+
+		ResponseContainer<GetSentMailingsForUserResponse> responseContainer = command.readResponse(resultNode, options);
+		GetSentMailingsForUserResponse response = responseContainer.getResposne();
+
+		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.0");
+		assertEquals(response.getSentMailings().size(), 1);
+		assertEquals(response.getSentMailings().get(0).getListId(), listId);
+		assertEquals(response.getSentMailings().get(0).getListName(), listName);
+		assertEquals(response.getSentMailings().get(0).getMailingId(), mailingId);
+		assertEquals(response.getSentMailings().get(0).getMailingName(), mailingName);
+		assertEquals(response.getSentMailings().get(0).getNumSent(), numSent);
+		assertEquals(response.getSentMailings().get(0).getParentTemplateId(), parentTemplateId);
+		assertEquals(response.getSentMailings().get(0).getReportId(), reportId);
+		assertEquals(response.getSentMailings().get(0).getScheduledDateTime(),
+				LocalDateTime.parse(scheduledTS, formatter));
+		assertEquals(response.getSentMailings().get(0).getSentDateTime(), LocalDateTime.parse(sentTS, formatter));
+		assertEquals(response.getSentMailings().get(0).getSubject(), subject);
+		assertEquals(response.getSentMailings().get(0).getUserName(), userName);
+		assertEquals(response.getSentMailings().get(0).getVisibility(), Visibility.getVisibilityByAlias(visibility));
+		assertEquals(response.getSentMailings().get(0).getTags().size(), 3);
+		assertEquals(response.getSentMailings().get(0).getTags().get(0), tag1);
+		assertEquals(response.getSentMailings().get(0).getTags().get(1), tag2);
+		assertEquals(response.getSentMailings().get(0).getTags().get(2), tag3);
+	}
+
+	@Test
 	public void testReadResponseHonorsMailingCountOnly()
 			throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
 		GetSentMailingsForUserCommand command = context.getBean(GetSentMailingsForUserCommand.class);
