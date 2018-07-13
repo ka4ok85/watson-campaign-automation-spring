@@ -28,10 +28,11 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.RelationalTableRecordFailure;
 
 /**
- * <strong>Class for interacting with WCA DeleteRelationalTableData API.</strong> It builds
- * XML request for DeleteRelationalTableData API using
- * {@link com.github.ka4ok85.wca.options.DeleteRelationalTableDataOptions} and reads response
- * into {@link com.github.ka4ok85.wca.response.DeleteRelationalTableDataResponse}.
+ * <strong>Class for interacting with WCA DeleteRelationalTableData
+ * API.</strong> It builds XML request for DeleteRelationalTableData API using
+ * {@link com.github.ka4ok85.wca.options.DeleteRelationalTableDataOptions} and
+ * reads response into
+ * {@link com.github.ka4ok85.wca.response.DeleteRelationalTableDataResponse}.
  * <p>
  * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
  * synchronous client-side HTTP access.
@@ -72,7 +73,7 @@ public class DeleteRelationalTableDataCommand
 			Element rows = doc.createElement("ROWS");
 			addChildNode(rows, currentNode);
 			for (Map<String, String> tableRow : options.getRows()) {
-				if (tableRow == null || tableRow.size() == 0) {
+				if (tableRow.size() == 0) {
 					throw new RuntimeException("Row can not be empty");
 				}
 
