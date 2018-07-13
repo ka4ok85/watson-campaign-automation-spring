@@ -1,6 +1,9 @@
 package com.github.ka4ok85.wca.command;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
@@ -36,6 +39,7 @@ import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.RawRecipientDataExportResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.JobPollingContainer;
+import com.github.ka4ok85.wca.sftp.SFTP;
 import com.github.ka4ok85.wca.utils.DateTimeRange;
 
 @RunWith(value = Parameterized.class)
@@ -443,7 +447,11 @@ public class RawRecipientDataExportCommandTest {
 	@Test
 	public void testReadResponse() {
 		RawRecipientDataExportCommand command = context.getBean(RawRecipientDataExportCommand.class);
+		SFTP sftp = mock(SFTP.class);
+		command.setSftp(sftp);
 		RawRecipientDataExportOptions options = new RawRecipientDataExportOptions();
+		String localAbsoluteFilePath = "/local/path/data.csv";
+		options.setLocalAbsoluteFilePath(localAbsoluteFilePath);
 		Long jobId = 34L;
 		JobPollingContainer jobPollingContainer = new JobPollingContainer();
 		jobPollingContainer.setJobId(jobId);
@@ -481,6 +489,55 @@ public class RawRecipientDataExportCommandTest {
 		assertEquals(response.getJobId(), jobId);
 		assertEquals(response.getTimeZone(), timeZone);
 		assertEquals(response.getRemoteFileName(), filePath);
+		verify(sftp, times(1)).download(filePath, localAbsoluteFilePath);
 	}
 
+	@Test
+	public void testReadResponseHonorsNoMoveToFtp() {
+		RawRecipientDataExportCommand command = context.getBean(RawRecipientDataExportCommand.class);
+		SFTP sftp = mock(SFTP.class);
+		command.setSftp(sftp);
+		RawRecipientDataExportOptions options = new RawRecipientDataExportOptions();
+		String localAbsoluteFilePath = "/local/path/data.csv";
+		options.setLocalAbsoluteFilePath(localAbsoluteFilePath);
+		options.setMoveToFtp(false);
+		Long jobId = 34L;
+		JobPollingContainer jobPollingContainer = new JobPollingContainer();
+		jobPollingContainer.setJobId(jobId);
+		Map<String, String> parameters = new HashMap<String, String>();
+		String filePath = "/path/to/file.csv";
+		parameters.put("FILE_PATH", filePath);
+		jobPollingContainer.setParameters(parameters);
+
+		String jobDescription = "String Job Description";
+		String eventTypes = "Test List";
+		Long exportedRowCount = 55L;
+		String mailingTypes = "";
+
+		Integer timeZone = 4;
+		String fileEncoding = "iso-8859-1";
+		JobResponse jobResponse = new JobResponse();
+		jobResponse.setJobDescription(jobDescription);
+		Map<String, String> jobParameters = new HashMap<String, String>();
+		jobParameters.put("EVENT_TYPES", eventTypes);
+		jobParameters.put("FILE_ENCODING", fileEncoding);
+		jobParameters.put("EXPORTED_ROW_COUNT", exportedRowCount.toString());
+		jobParameters.put("MAILING_TYPE_ARRAY", mailingTypes);
+		jobParameters.put("TIME_ZONE", timeZone.toString());
+		jobResponse.setParameters(jobParameters);
+
+		ResponseContainer<RawRecipientDataExportResponse> responseContainer = command.readResponse(jobPollingContainer,
+				jobResponse, options);
+		RawRecipientDataExportResponse response = responseContainer.getResposne();
+
+		assertEquals(response.getDescription(), jobDescription);
+		assertEquals(response.getFileEncoding(), FileEncoding.ISO_8859_1);
+		assertEquals(response.getEventTypes(), eventTypes);
+		assertEquals(response.getExportedRowCount(), exportedRowCount);
+		assertEquals(response.getMailingTypes(), mailingTypes);
+		assertEquals(response.getJobId(), jobId);
+		assertEquals(response.getTimeZone(), timeZone);
+		assertEquals(response.getRemoteFileName(), filePath);
+		verify(sftp, times(0)).download(filePath, localAbsoluteFilePath);
+	}
 }
