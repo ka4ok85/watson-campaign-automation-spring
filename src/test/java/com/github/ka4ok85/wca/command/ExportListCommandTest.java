@@ -1,6 +1,9 @@
 package com.github.ka4ok85.wca.command;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,6 +34,7 @@ import com.github.ka4ok85.wca.response.ExportListResponse;
 import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.JobPollingContainer;
+import com.github.ka4ok85.wca.sftp.SFTP;
 import com.github.ka4ok85.wca.utils.DateTimeRange;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -281,8 +285,11 @@ public class ExportListCommandTest {
 	@Test
 	public void testReadResponse() {
 		ExportListCommand command = context.getBean(ExportListCommand.class);
-
+		SFTP sftp = mock(SFTP.class);
+		command.setSftp(sftp);
 		ExportListOptions options = new ExportListOptions(1L);
+		String localAbsoluteFilePath = "/local/path/data.csv";
+		options.setLocalAbsoluteFilePath(localAbsoluteFilePath);
 
 		JobPollingContainer jobPollingContainer = new JobPollingContainer();
 		jobPollingContainer.setJobId(10L);
@@ -309,5 +316,6 @@ public class ExportListCommandTest {
 		assertEquals(response.getFileEncoding(), FileEncoding.ISO_8859_1);
 		assertEquals(response.getListName(), listName);
 		assertEquals(response.getRemoteFileName(), filePath);
+		verify(sftp, times(1)).download(filePath, localAbsoluteFilePath);
 	}
 }
