@@ -280,4 +280,23 @@ public class UpdateRecipientCommandTest {
 		assertEquals(response.getRecipientId(), recipientId);
 		assertTrue(response.isVisitorAssociation());
 	}
+
+	@Test
+	public void testReadResponseHonorsMissingVisitorAssociationNode()
+			throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
+		UpdateRecipientCommand command = context.getBean(UpdateRecipientCommand.class);
+		UpdateRecipientOptions options = new UpdateRecipientOptions(1L);
+
+		Long recipientId = 7821525927L;
+		String envelope = "<RESULT><SUCCESS>TRUE</SUCCESS><RecipientId>" + recipientId.toString()
+				+ "</RecipientId><ORGANIZATION_ID>6d230b87-14af455a8ca-4097dfa4559ed783ss6bfeed2dffc966</ORGANIZATION_ID></RESULT>";
+		Element resultNode = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+				.parse(new ByteArrayInputStream(envelope.getBytes())).getDocumentElement();
+
+		ResponseContainer<UpdateRecipientResponse> responseContainer = command.readResponse(resultNode, options);
+		UpdateRecipientResponse response = responseContainer.getResposne();
+
+		assertEquals(response.getRecipientId(), recipientId);
+		assertFalse(response.isVisitorAssociation());
+	}
 }
