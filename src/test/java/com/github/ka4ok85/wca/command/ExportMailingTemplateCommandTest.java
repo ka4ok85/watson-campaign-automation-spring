@@ -1,6 +1,9 @@
 package com.github.ka4ok85.wca.command;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -27,6 +30,7 @@ import com.github.ka4ok85.wca.config.SpringConfig;
 import com.github.ka4ok85.wca.options.ExportMailingTemplateOptions;
 import com.github.ka4ok85.wca.response.ExportMailingTemplateResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
+import com.github.ka4ok85.wca.sftp.SFTP;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { SpringConfig.class })
@@ -89,7 +93,11 @@ public class ExportMailingTemplateCommandTest {
 	public void testReadResponse()
 			throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
 		ExportMailingTemplateCommand command = context.getBean(ExportMailingTemplateCommand.class);
+		SFTP sftp = mock(SFTP.class);
+		command.setSftp(sftp);
 		ExportMailingTemplateOptions options = new ExportMailingTemplateOptions(1L);
+		String localAbsoluteFilePath = "/local/path/data.csv";
+		options.setLocalAbsoluteFilePath(localAbsoluteFilePath);
 
 		String remoteFileName = "SOME_PATH";
 		String envelope = "<RESULT><SUCCESS>TRUE</SUCCESS><FILE_PATH>" + remoteFileName + "</FILE_PATH></RESULT>";
@@ -100,6 +108,7 @@ public class ExportMailingTemplateCommandTest {
 		ExportMailingTemplateResponse response = responseContainer.getResposne();
 
 		assertEquals(response.getRemoteFileName(), remoteFileName);
+		verify(sftp, times(1)).download(remoteFileName, localAbsoluteFilePath);
 	}
 
 }
