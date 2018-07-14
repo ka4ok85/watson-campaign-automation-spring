@@ -1,23 +1,35 @@
 package com.github.ka4ok85.wca.command;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.transform.Source;
+
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.xmlunit.builder.DiffBuilder;
+import org.xmlunit.builder.Input;
+import org.xmlunit.diff.Diff;
 
 import com.github.ka4ok85.wca.config.SpringConfig;
+import com.github.ka4ok85.wca.constants.FileEncoding;
 import com.github.ka4ok85.wca.options.ImportListOptions;
 import com.github.ka4ok85.wca.response.ImportListResponse;
 import com.github.ka4ok85.wca.response.JobResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.containers.JobPollingContainer;
+import com.github.ka4ok85.wca.sftp.SFTP;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { SpringConfig.class })
@@ -27,19 +39,45 @@ public class ImportListCommandTest {
 	@Autowired
 	ApplicationContext context;
 
+	private String defaultRequest = String.join(System.getProperty("line.separator"),
+			"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>", "<Envelope>", "<Body>", "<ImportList>",
+			"<MAP_FILE>testmap.xml</MAP_FILE>", "<SOURCE_FILE>testsource.csv</SOURCE_FILE>",
+			"<FILE_ENCODING>iso-8859-1</FILE_ENCODING>", "</ImportList>", "</Body>", "</Envelope>");
+
 	@Test
-	public void testDummy() {
-		assertTrue(true);
+	public void testBuildXmlDefaultRequest() {
+		// get XML from command
+		ImportListCommand command = new ImportListCommand();
+		SFTP sftp = mock(SFTP.class);
+		command.setSftp(sftp);
+		ImportListOptions options = mock(ImportListOptions.class);
+
+		when(options.getMapFile()).thenReturn("testmap.xml");
+		when(options.getSourceFile()).thenReturn("testsource.csv");
+		when(options.getFileEncoding()).thenReturn(FileEncoding.ISO_8859_1);
+
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest;
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+		verify(options, times(2)).getMapFile();
+		verify(options, times(2)).getSourceFile();
+		verify(options, times(1)).getFileEncoding();
+
+		verify(sftp, times(1)).upload(options.getMapFile(), options.getMapFile());
+		verify(sftp, times(1)).upload(options.getSourceFile(), options.getSourceFile());
 	}
-	// TODO: add mocks
-	/*
+
 	@Test
 	public void testReadResponse() {
 		ImportListCommand command = context.getBean(ImportListCommand.class);
-
-		ImportListOptions options = new ImportListOptions(
-				"src\\main\\java\\com\\github\\ka4ok85\\wca\\command\\ImportListCommand.java",
-				"src\\test\\java\\com\\github\\ka4ok85\\wca\\command\\ImportListCommandTest.java");
+		ImportListOptions options = mock(ImportListOptions.class);
 
 		JobPollingContainer jobPollingContainer = new JobPollingContainer();
 		jobPollingContainer.setJobId(10L);
@@ -106,5 +144,4 @@ public class ImportListCommandTest {
 		assertEquals(response.isSmsConsent(), Boolean.valueOf(totalValidNumber));
 		assertEquals(response.getListProgramLists(), listProgramLists);
 	}
-	*/
 }
