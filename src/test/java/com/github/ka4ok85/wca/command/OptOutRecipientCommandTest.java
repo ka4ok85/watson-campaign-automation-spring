@@ -93,6 +93,45 @@ public class OptOutRecipientCommandTest {
 	}
 
 	@Test(expected = RuntimeException.class)
+	public void testBuildXmlHonorsRequiresRecipientId() {
+		// get XML from command
+		OptOutRecipientCommand command = new OptOutRecipientCommand();
+		OptOutRecipientOptions options = new OptOutRecipientOptions(1L);
+		String jobId = "test-job";
+		options.setJobId(jobId);
+		Long mailingId = 2L;
+		options.setMailingId(mailingId);
+		options.setRecipientId(null);
+		command.buildXmlRequest(options);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testBuildXmlHonorsRequiresMailingId() {
+		// get XML from command
+		OptOutRecipientCommand command = new OptOutRecipientCommand();
+		OptOutRecipientOptions options = new OptOutRecipientOptions(1L);
+		String jobId = "test-job";
+		options.setJobId(jobId);
+		options.setMailingId(null);
+		String recipientId = "test-recipient-id";
+		options.setRecipientId(recipientId);
+		command.buildXmlRequest(options);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testBuildXmlHonorsRequiresJobId() {
+		// get XML from command
+		OptOutRecipientCommand command = new OptOutRecipientCommand();
+		OptOutRecipientOptions options = new OptOutRecipientOptions(1L);
+		options.setJobId(null);
+		Long mailingId = 2L;
+		options.setMailingId(mailingId);
+		String recipientId = "test-recipient-id";
+		options.setRecipientId(recipientId);
+		command.buildXmlRequest(options);
+	}
+
+	@Test(expected = RuntimeException.class)
 	public void testBuildXmlHonorsRequiresEmailOrRecipientId() {
 		// get XML from command
 		OptOutRecipientCommand command = new OptOutRecipientCommand();
