@@ -74,6 +74,46 @@ public class DoubleOptInRecipientCommandTest {
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
 
+	@Test(expected = RuntimeException.class)
+	public void testBuildXmlRequiresColumns() {
+		// get XML from command
+		DoubleOptInRecipientCommand command = new DoubleOptInRecipientCommand();
+		DoubleOptInRecipientOptions options = new DoubleOptInRecipientOptions(1L);
+
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest;
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testBuildXmlRequiresEMAILColumn() {
+		// get XML from command
+		DoubleOptInRecipientCommand command = new DoubleOptInRecipientCommand();
+		DoubleOptInRecipientOptions options = new DoubleOptInRecipientOptions(1L);
+		Map<String, String> keyColumns = new HashMap<String, String>();
+		keyColumns.put("email", "test1@github.com");
+		keyColumns.put("customerID", "123");
+		options.setColumns(keyColumns);
+
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest;
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
 	@Test
 	public void testReadResponse()
 			throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
