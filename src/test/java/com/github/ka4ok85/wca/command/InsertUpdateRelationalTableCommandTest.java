@@ -31,6 +31,7 @@ import org.xmlunit.diff.Diff;
 
 import com.github.ka4ok85.wca.config.SpringConfig;
 import com.github.ka4ok85.wca.options.InsertUpdateRelationalTableOptions;
+import com.github.ka4ok85.wca.response.InsertUpdateRelationalTableResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -79,4 +80,75 @@ public class InsertUpdateRelationalTableCommandTest {
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
+
+	@Test(expected = RuntimeException.class)
+	public void testBuildXmlRequiresRows() {
+		// get XML from command
+		InsertUpdateRelationalTableCommand command = new InsertUpdateRelationalTableCommand();
+		InsertUpdateRelationalTableOptions options = new InsertUpdateRelationalTableOptions(1L);
+
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest;
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testBuildXmlDoesNotAllowTooManyRows() {
+		// get XML from command
+		InsertUpdateRelationalTableCommand command = new InsertUpdateRelationalTableCommand();
+		InsertUpdateRelationalTableOptions options = new InsertUpdateRelationalTableOptions(1L);
+
+		List<Map<String, String>> rows = new ArrayList<Map<String, String>>();
+		for (int i = 0; i <= 100; i++) {
+			Map<String, String> row1 = new HashMap<String, String>();
+			row1.put("CUSTOMER_ID", "4");
+			row1.put("RT_Identifier", "5");
+			rows.add(row1);
+		}
+
+		options.setRows(rows);
+
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest;
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testBuildXmlDoesNotAllow() {
+		// get XML from command
+		InsertUpdateRelationalTableCommand command = new InsertUpdateRelationalTableCommand();
+		InsertUpdateRelationalTableOptions options = new InsertUpdateRelationalTableOptions(1L);
+
+		List<Map<String, String>> rows = new ArrayList<Map<String, String>>();
+		Map<String, String> row1 = new HashMap<String, String>();
+		rows.add(row1);
+
+		options.setRows(rows);
+
+		command.buildXmlRequest(options);
+		String testString = command.getXML();
+		Source test = Input.fromString(testString).build();
+
+		// get control XML
+		String controlString = defaultRequest;
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+
 }

@@ -79,7 +79,7 @@ public class InsertUpdateRelationalTableCommand
 			Element rows = doc.createElement("ROWS");
 			addChildNode(rows, currentNode);
 			for (Map<String, String> tableRow : options.getRows()) {
-				if (tableRow == null || tableRow.size() == 0) {
+				if (tableRow.size() == 0) {
 					throw new RuntimeException("Row can not be empty");
 				}
 
