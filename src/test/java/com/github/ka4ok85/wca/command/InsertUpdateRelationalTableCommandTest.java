@@ -1,8 +1,6 @@
 package com.github.ka4ok85.wca.command;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -151,4 +149,29 @@ public class InsertUpdateRelationalTableCommandTest {
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
 
+	@Test
+	public void testReadResponse()
+			throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
+		InsertUpdateRelationalTableCommand command = context.getBean(InsertUpdateRelationalTableCommand.class);
+		InsertUpdateRelationalTableOptions options = new InsertUpdateRelationalTableOptions(1L);
+
+		String failureType = "transient";
+		String failureDescription = "Error saving row";
+		String columnName1 = "event_date";
+		String columnValue1 = "05/30/2014";
+		String columnName2 = "event_registered_date";
+		String columnValue2 = "04/23/2014";
+		String envelope = "<RESULT><SUCCESS>TRUE</SUCCESS><FAILURES>" + "<FAILURE failure_type='" + failureType
+				+ "' description='" + failureDescription + "'>" + "<COLUMN name='" + columnName1 + "'>" + columnValue1
+				+ "</COLUMN>" + "<COLUMN name='" + columnName2 + "'>" + columnValue2 + "</COLUMN>"
+				+ "</FAILURE></FAILURES></RESULT>";
+		Element resultNode = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+				.parse(new ByteArrayInputStream(envelope.getBytes())).getDocumentElement();
+
+		ResponseContainer<InsertUpdateRelationalTableResponse> responseContainer = command.readResponse(resultNode,
+				options);
+		InsertUpdateRelationalTableResponse response = responseContainer.getResposne();
+
+		assertEquals(response.getFailures().size(), 1);
+	}
 }
