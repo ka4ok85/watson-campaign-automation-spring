@@ -18,6 +18,7 @@ import com.github.ka4ok85.wca.exceptions.BadApiResultException;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
 import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.options.AbstractOptions;
+import com.github.ka4ok85.wca.options.JobOptions;
 import com.github.ka4ok85.wca.processor.JobProcessor;
 import com.github.ka4ok85.wca.response.AbstractResponse;
 import com.github.ka4ok85.wca.response.JobResponse;
@@ -44,8 +45,8 @@ abstract public class AbstractJobCommand<T extends AbstractResponse, V extends A
 
 		JobPollingContainer jobPollingContainer = readStartPollingResponse(resultNode);
 
-		JobResponse jobResponse = JobProcessor.waitUntilJobIsCompleted(jobPollingContainer.getJobId(), oAuthClient,
-				sftp);
+		JobResponse jobResponse = JobProcessor.waitUntilJobIsCompleted(new JobOptions(jobPollingContainer.getJobId()), oAuthClient,
+				sftp, new WaitForJobCommand());
 
 		return readResponse(jobPollingContainer, jobResponse, options);
 	}
