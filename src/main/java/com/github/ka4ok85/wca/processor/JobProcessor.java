@@ -14,8 +14,8 @@ import com.github.ka4ok85.wca.sftp.SFTP;
 
 public class JobProcessor {
 
-	private static final int maxExecutionTime = 86400;
-	private static final int jobCheckInterval = 10;
+	private static int maxExecutionTime = 86400;
+	private static int jobCheckInterval = 10;
 
 	private static final Logger log = LoggerFactory.getLogger(JobProcessor.class);
 
@@ -58,4 +58,13 @@ public class JobProcessor {
 
 		return null;
 	}
+
+	public static void setMaxExecutionTime(int maxExecutionTime) {
+		JobProcessor.maxExecutionTime = maxExecutionTime;
+	}
+
+	public static void setJobCheckInterval(int jobCheckInterval) {
+		JobProcessor.jobCheckInterval = jobCheckInterval;
+	}
+
 }
