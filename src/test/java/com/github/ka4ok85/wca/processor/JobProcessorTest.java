@@ -1,5 +1,7 @@
 package com.github.ka4ok85.wca.processor;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -8,6 +10,7 @@ import org.junit.Test;
 import com.github.ka4ok85.wca.command.WaitForJobCommand;
 import com.github.ka4ok85.wca.constants.JobStatus;
 import com.github.ka4ok85.wca.exceptions.EngageApiException;
+import com.github.ka4ok85.wca.exceptions.JobBadStateException;
 import com.github.ka4ok85.wca.oauth.OAuthClient;
 import com.github.ka4ok85.wca.options.JobOptions;
 import com.github.ka4ok85.wca.response.JobResponse;
@@ -28,7 +31,8 @@ public class JobProcessorTest {
 		ResponseContainer<JobResponse> responseContainer = new ResponseContainer<JobResponse>(jobResponse);
 
 		when(command.executeCommand(options)).thenReturn(responseContainer);
-		JobProcessor.waitUntilJobIsCompleted(options, oAuthClient, sftp, command);
+		JobResponse response = JobProcessor.waitUntilJobIsCompleted(options, oAuthClient, sftp, command);
+		assertEquals(response, jobResponse);
 	}
 
 	@Test(expected = EngageApiException.class)
@@ -46,5 +50,62 @@ public class JobProcessorTest {
 
 		when(command.executeCommand(options)).thenReturn(responseContainer);
 		JobProcessor.waitUntilJobIsCompleted(options, oAuthClient, sftp, command);
+	}
+
+	@Test(expected = JobBadStateException.class)
+	public void testWaitUntilJobIsCompletedCancelledResponse() {
+		OAuthClient oAuthClient = null;
+		SFTP sftp = new SFTP(oAuthClient);
+		Long jobId = 1L;
+		JobOptions options = new JobOptions(jobId);
+
+		WaitForJobCommand command = mock(WaitForJobCommand.class);
+
+		JobResponse jobResponse = new JobResponse();
+		jobResponse.setJobStatus(JobStatus.CANCELED);
+		ResponseContainer<JobResponse> responseContainer = new ResponseContainer<JobResponse>(jobResponse);
+
+		when(command.executeCommand(options)).thenReturn(responseContainer);
+		JobProcessor.waitUntilJobIsCompleted(options, oAuthClient, sftp, command);
+	}
+
+	@Test
+	public void testWaitUntilJobIsCompletedRunning() {
+		OAuthClient oAuthClient = null;
+		SFTP sftp = new SFTP(oAuthClient);
+		Long jobId = 1L;
+		JobOptions options = new JobOptions(jobId);
+
+		WaitForJobCommand command = mock(WaitForJobCommand.class);
+
+		JobResponse jobResponse = new JobResponse();
+		jobResponse.setJobStatus(JobStatus.RUNNING);
+		ResponseContainer<JobResponse> responseContainer = new ResponseContainer<JobResponse>(jobResponse);
+
+		when(command.executeCommand(options)).thenReturn(responseContainer);
+		JobProcessor.setJobCheckInterval(1);
+		JobProcessor.setMaxExecutionTime(5);
+		JobResponse response = JobProcessor.waitUntilJobIsCompleted(options, oAuthClient, sftp, command);
+		assertNull(response);
+	}
+
+	@Test
+	public void testWaitUntilJobIsCompletedWaiting() {
+		OAuthClient oAuthClient = null;
+		SFTP sftp = new SFTP(oAuthClient);
+		Long jobId = 1L;
+		JobOptions options = new JobOptions(jobId);
+
+		WaitForJobCommand command = mock(WaitForJobCommand.class);
+
+		JobResponse jobResponse = new JobResponse();
+		jobResponse.setJobStatus(JobStatus.WAITING);
+		ResponseContainer<JobResponse> responseContainer = new ResponseContainer<JobResponse>(jobResponse);
+
+		when(command.executeCommand(options)).thenReturn(responseContainer);
+		JobProcessor.setJobCheckInterval(1);
+		JobProcessor.setMaxExecutionTime(5);
+		JobResponse response = JobProcessor.waitUntilJobIsCompleted(options, oAuthClient, sftp, command);
+		assertNull(response);
 	}
 }
