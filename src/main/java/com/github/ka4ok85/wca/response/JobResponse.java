@@ -58,10 +58,6 @@ public class JobResponse extends AbstractResponse {
 		return (jobStatus == JobStatus.RUNNING);
 	}
 
-	public boolean isComplete() {
-		return (jobStatus == JobStatus.COMPLETE);
-	}
-
 	public boolean isWaiting() {
 		return (jobStatus == JobStatus.WAITING);
 	}
