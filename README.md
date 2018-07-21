@@ -23,3 +23,8 @@ compile group: 'com.github.ka4ok85', name: 'watson-campaign-automation-spring', 
     <version>0.0.3</version>
 </dependency>
 ```
+
+# Authentication
+Use oAuth authentication mechanism. Log into WCA and request your *ClientId*, *ClientSecret* and *RefreshToken*. All three values are required for accessing WCA API.
+
+Library does **NOT** support password authentication mechanism due to security concerns.
