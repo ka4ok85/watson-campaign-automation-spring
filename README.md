@@ -27,4 +27,11 @@ compile group: 'com.github.ka4ok85', name: 'watson-campaign-automation-spring', 
 # Authentication
 Use oAuth authentication mechanism. Log into WCA and request your *ClientId*, *ClientSecret* and *RefreshToken*. All three values are required for accessing WCA API.
 
+#### Getting *ClientId* and *ClientSecret*
+1. Log into WCA.
+2. Go to Menu *Settings* -> *Organization Settings*.
+3. Click on *Application Account Access*.
+4. Click on *Add Application* button and follow instructions.
+
+
 Library does **NOT** support password authentication mechanism due to security concerns.
