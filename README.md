@@ -33,5 +33,11 @@ Use oAuth authentication mechanism. Log into WCA and request your *ClientId*, *C
 3. Click on *Application Account Access*.
 4. Click on *Add Application* button and follow instructions.
 
+#### Getting *RefreshToken*
+1. Log into WCA.
+2. Go to Menu *Settings* -> *Organization Settings*.
+3. Click on *Application Account Access*.
+4. Click on *Add Account Access* button and follow instructions. Choose Application you have added when requested *ClientId* and *ClientSecret*.
+
 
 Library does **NOT** support password authentication mechanism due to security concerns.
