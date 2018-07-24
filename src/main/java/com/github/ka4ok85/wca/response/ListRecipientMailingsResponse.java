@@ -23,7 +23,7 @@ public class ListRecipientMailingsResponse extends AbstractResponse {
 
 	@Override
 	public String toString() {
-		return "ListRecipientMailingsResponse []";
+		return "ListRecipientMailingsResponse [mailings=" + mailings + "]";
 	}
 
 }
