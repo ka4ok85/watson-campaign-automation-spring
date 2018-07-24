@@ -41,3 +41,16 @@ Use oAuth authentication mechanism. Log into WCA and request your *ClientId*, *C
 
 
 Library does **NOT** support password authentication mechanism due to security concerns.
+
+
+# Usage
+Every API has 2 corresponding classes:
+1. *Options* - input parameters for API.
+2. *Response* - API output parameters.
+
+In order to call API please follow these instructions:
+
+1. Initiate corresponding *Options* object.
+2. Path *Options* object to *Engage* method which has the same name as API.
+3. Read *Response* produced by method from step #2.
+
