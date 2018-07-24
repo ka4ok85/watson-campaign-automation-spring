@@ -54,3 +54,25 @@ In order to call API please follow these instructions:
 2. Path *Options* object to *Engage* method which has the same name as API.
 3. Read *Response* produced by method from step #2.
 
+#### Spring Boot
+1. Add required values to *application.properties*
+```
+podNumber=1
+clientId=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+clientSecret=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+refreshToken=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+```
+
+2. Autowire *Engage* service
+```java
+@Autowired
+private Engage engage;
+```
+
+3. Use *Engage* service
+```java
+ExportListOptions options = new ExportListOptions(66912L);
+ResponseContainer<ExportListResponse> response = engage.exportList(options);
+System.out.println(response.getResposne());
+```
+
