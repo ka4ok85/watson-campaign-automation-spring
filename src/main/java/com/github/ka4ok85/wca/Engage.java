@@ -31,8 +31,10 @@ import com.github.ka4ok85.wca.command.GetSentMailingsForListCommand;
 import com.github.ka4ok85.wca.command.GetSentMailingsForOrgCommand;
 import com.github.ka4ok85.wca.command.GetSentMailingsForUserCommand;
 import com.github.ka4ok85.wca.command.ImportListCommand;
+import com.github.ka4ok85.wca.command.ImportTableCommand;
 import com.github.ka4ok85.wca.command.InsertUpdateRelationalTableCommand;
 import com.github.ka4ok85.wca.command.JoinTableCommand;
+import com.github.ka4ok85.wca.command.ListRecipientMailingsCommand;
 import com.github.ka4ok85.wca.command.OptOutRecipientCommand;
 import com.github.ka4ok85.wca.command.PurgeDataCommand;
 import com.github.ka4ok85.wca.command.PurgeTableCommand;
@@ -69,8 +71,10 @@ import com.github.ka4ok85.wca.options.GetSentMailingsForListOptions;
 import com.github.ka4ok85.wca.options.GetSentMailingsForOrgOptions;
 import com.github.ka4ok85.wca.options.GetSentMailingsForUserOptions;
 import com.github.ka4ok85.wca.options.ImportListOptions;
+import com.github.ka4ok85.wca.options.ImportTableOptions;
 import com.github.ka4ok85.wca.options.InsertUpdateRelationalTableOptions;
 import com.github.ka4ok85.wca.options.JoinTableOptions;
+import com.github.ka4ok85.wca.options.ListRecipientMailingsOptions;
 import com.github.ka4ok85.wca.options.OptOutRecipientOptions;
 import com.github.ka4ok85.wca.options.PurgeDataOptions;
 import com.github.ka4ok85.wca.options.PurgeTableOptions;
@@ -105,8 +109,10 @@ import com.github.ka4ok85.wca.response.GetSentMailingsForListResponse;
 import com.github.ka4ok85.wca.response.GetSentMailingsForOrgResponse;
 import com.github.ka4ok85.wca.response.GetSentMailingsForUserResponse;
 import com.github.ka4ok85.wca.response.ImportListResponse;
+import com.github.ka4ok85.wca.response.ImportTableResponse;
 import com.github.ka4ok85.wca.response.InsertUpdateRelationalTableResponse;
 import com.github.ka4ok85.wca.response.JoinTableResponse;
+import com.github.ka4ok85.wca.response.ListRecipientMailingsResponse;
 import com.github.ka4ok85.wca.response.OptOutRecipientResponse;
 import com.github.ka4ok85.wca.response.PurgeDataResponse;
 import com.github.ka4ok85.wca.response.PurgeTableResponse;
@@ -487,6 +493,26 @@ public class Engage {
 		setColumnValue.setoAuthClient(oAuthClient);
 		setColumnValue.setSftp(sftp);
 		ResponseContainer<SetColumnValueResponse> result = setColumnValue.executeCommand(options);
+
+		return result;
+	}
+
+	public ResponseContainer<ImportTableResponse> importTable(ImportTableOptions options) {
+		ImportTableCommand importTable = getApplicationContext().getBean(ImportTableCommand.class);
+		importTable.setoAuthClient(oAuthClient);
+		importTable.setSftp(sftp);
+		ResponseContainer<ImportTableResponse> result = importTable.executeCommand(options);
+
+		return result;
+	}
+
+	public ResponseContainer<ListRecipientMailingsResponse> listRecipientMailings(
+			ListRecipientMailingsOptions options) {
+		ListRecipientMailingsCommand listRecipientMailings = getApplicationContext()
+				.getBean(ListRecipientMailingsCommand.class);
+		listRecipientMailings.setoAuthClient(oAuthClient);
+		listRecipientMailings.setSftp(sftp);
+		ResponseContainer<ListRecipientMailingsResponse> result = listRecipientMailings.executeCommand(options);
 
 		return result;
 	}
