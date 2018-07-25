@@ -63,13 +63,21 @@ clientSecret=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 refreshToken=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ```
 
-2. Autowire *Engage* service
+2. Import *SpringConfig* class
+```java
+import org.springframework.context.annotation.Import;
+import com.github.ka4ok85.wca.config.SpringConfig;
+
+@Import(SpringConfig.class)
+```
+
+3. Autowire *Engage* service
 ```java
 @Autowired
 private Engage engage;
 ```
 
-3. Use *Engage* service
+4. Use *Engage* service
 ```java
 ExportListOptions options = new ExportListOptions(66912L);
 ResponseContainer<ExportListResponse> response = engage.exportList(options);
