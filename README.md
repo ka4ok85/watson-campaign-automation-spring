@@ -84,3 +84,23 @@ ResponseContainer<ExportListResponse> response = engage.exportList(options);
 System.out.println(response.getResposne());
 ```
 
+#### Java
+1. Import *SpringConfig* class
+```java
+import org.springframework.context.annotation.Import;
+import com.github.ka4ok85.wca.config.SpringConfig;
+
+@Import(SpringConfig.class)
+```
+
+2. Init *Engage* service instance
+```java
+Engage engage = new Engage(1, "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx");
+```
+
+3. Use *Engage* service
+```java
+ExportListOptions options = new ExportListOptions(66912L);
+ResponseContainer<ExportListResponse> response = engage.exportList(options);
+System.out.println(response.getResposne());
+```
