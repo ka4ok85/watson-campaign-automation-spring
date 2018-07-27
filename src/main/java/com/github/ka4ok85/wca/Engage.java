@@ -41,6 +41,7 @@ import com.github.ka4ok85.wca.command.PurgeTableCommand;
 import com.github.ka4ok85.wca.command.RemoveRecipientCommand;
 import com.github.ka4ok85.wca.command.SelectRecipientDataCommand;
 import com.github.ka4ok85.wca.command.UpdateRecipientCommand;
+import com.github.ka4ok85.wca.command.WebTrackingDataExportCommand;
 import com.github.ka4ok85.wca.command.SetColumnValueCommand;
 import com.github.ka4ok85.wca.config.SpringConfig;
 import com.github.ka4ok85.wca.oauth.OAuthClient;
@@ -83,6 +84,7 @@ import com.github.ka4ok85.wca.options.RemoveRecipientOptions;
 import com.github.ka4ok85.wca.options.SelectRecipientDataOptions;
 import com.github.ka4ok85.wca.options.SetColumnValueOptions;
 import com.github.ka4ok85.wca.options.UpdateRecipientOptions;
+import com.github.ka4ok85.wca.options.WebTrackingDataExportOptions;
 import com.github.ka4ok85.wca.response.AddContactToContactListResponse;
 import com.github.ka4ok85.wca.response.AddContactToProgramResponse;
 import com.github.ka4ok85.wca.response.AddListColumnResponse;
@@ -122,6 +124,7 @@ import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.SelectRecipientDataResponse;
 import com.github.ka4ok85.wca.response.SetColumnValueResponse;
 import com.github.ka4ok85.wca.response.UpdateRecipientResponse;
+import com.github.ka4ok85.wca.response.WebTrackingDataExportResponse;
 import com.github.ka4ok85.wca.sftp.SFTP;
 
 import org.springframework.retry.annotation.*;
@@ -513,6 +516,17 @@ public class Engage {
 		listRecipientMailings.setoAuthClient(oAuthClient);
 		listRecipientMailings.setSftp(sftp);
 		ResponseContainer<ListRecipientMailingsResponse> result = listRecipientMailings.executeCommand(options);
+
+		return result;
+	}
+
+	public ResponseContainer<WebTrackingDataExportResponse> webTrackingDataExport(
+			WebTrackingDataExportOptions options) {
+		WebTrackingDataExportCommand webTrackingDataExport = getApplicationContext()
+				.getBean(WebTrackingDataExportCommand.class);
+		webTrackingDataExport.setoAuthClient(oAuthClient);
+		webTrackingDataExport.setSftp(sftp);
+		ResponseContainer<WebTrackingDataExportResponse> result = webTrackingDataExport.executeCommand(options);
 
 		return result;
 	}
