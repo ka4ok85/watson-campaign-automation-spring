@@ -9,6 +9,7 @@ public class WebTrackingDataExportResponse extends AbstractResponse {
 
 	private Long jobId;
 	private String description;
+	private String remoteFileName;
 
 	public Long getJobId() {
 		return jobId;
@@ -26,9 +27,18 @@ public class WebTrackingDataExportResponse extends AbstractResponse {
 		this.description = description;
 	}
 
+	public String getRemoteFileName() {
+		return remoteFileName;
+	}
+
+	public void setRemoteFileName(String remoteFileName) {
+		this.remoteFileName = remoteFileName;
+	}
+
 	@Override
 	public String toString() {
-		return "WebTrackingDataExportResponse [jobId=" + jobId + ", description=" + description + "]";
+		return "WebTrackingDataExportResponse [jobId=" + jobId + ", description=" + description + ", remoteFileName="
+				+ remoteFileName + "]";
 	}
 
 }
