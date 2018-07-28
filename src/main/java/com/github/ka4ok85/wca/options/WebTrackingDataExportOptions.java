@@ -3,7 +3,7 @@ package com.github.ka4ok85.wca.options;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.github.ka4ok85.wca.constants.ExportFormat;
+import com.github.ka4ok85.wca.constants.ExportFormatWebTrackingDataExport;
 import com.github.ka4ok85.wca.constants.FileEncoding;
 
 public class WebTrackingDataExportOptions extends AbstractOptions {
@@ -13,7 +13,7 @@ public class WebTrackingDataExportOptions extends AbstractOptions {
 	private List<Long> domains;
 	private List<Long> sites;
 	private Long databaseId;
-	private ExportFormat exportFormat = ExportFormat.CSV;
+	private ExportFormatWebTrackingDataExport exportFormat = ExportFormatWebTrackingDataExport.CSV;
 	private String exportFileName;
 	private FileEncoding fileEncoding = FileEncoding.UTF_8;
 	private boolean moveToFTP = true;
@@ -70,11 +70,11 @@ public class WebTrackingDataExportOptions extends AbstractOptions {
 		this.databaseId = databaseId;
 	}
 
-	public ExportFormat getExportFormat() {
+	public ExportFormatWebTrackingDataExport getExportFormat() {
 		return exportFormat;
 	}
 
-	public void setExportFormat(ExportFormat exportFormat) {
+	public void setExportFormat(ExportFormatWebTrackingDataExport exportFormat) {
 		this.exportFormat = exportFormat;
 	}
 
