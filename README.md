@@ -104,3 +104,7 @@ ExportListOptions options = new ExportListOptions(66912L);
 ResponseContainer<ExportListResponse> response = engage.exportList(options);
 System.out.println(response.getResposne());
 ```
+
+
+# Convenience Functionality
+Besides easy access to WCA XML API Library provides additional convenience functionality. Please find more details below. 
