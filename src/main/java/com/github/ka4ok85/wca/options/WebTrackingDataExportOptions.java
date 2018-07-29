@@ -29,6 +29,7 @@ public class WebTrackingDataExportOptions extends AbstractOptions {
 	private boolean eventCustom = false;
 
 	private List<String> columns;
+	private String localAbsoluteFilePath;
 
 	public LocalDateTime getEventStartDate() {
 		return eventStartDate;
@@ -182,6 +183,14 @@ public class WebTrackingDataExportOptions extends AbstractOptions {
 		this.columns = columns;
 	}
 
+	public String getLocalAbsoluteFilePath() {
+		return localAbsoluteFilePath;
+	}
+
+	public void setLocalAbsoluteFilePath(String localAbsoluteFilePath) {
+		this.localAbsoluteFilePath = localAbsoluteFilePath;
+	}
+
 	@Override
 	public String toString() {
 		return "WebTrackingDataExportOptions [eventStartDate=" + eventStartDate + ", eventEndDate=" + eventEndDate
@@ -191,7 +200,7 @@ public class WebTrackingDataExportOptions extends AbstractOptions {
 				+ ", eventPageView=" + eventPageView + ", eventClick=" + eventClick + ", eventFormSubmit="
 				+ eventFormSubmit + ", eventDownload=" + eventDownload + ", eventMedia=" + eventMedia
 				+ ", eventShareToSocial=" + eventShareToSocial + ", eventCustom=" + eventCustom + ", columns=" + columns
-				+ "]";
+				+ ", localAbsoluteFilePath=" + localAbsoluteFilePath + "]";
 	}
 
 }
