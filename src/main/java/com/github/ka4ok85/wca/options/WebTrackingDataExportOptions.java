@@ -124,6 +124,10 @@ public class WebTrackingDataExportOptions extends AbstractOptions {
 	}
 
 	public void setEventSiteVisit(boolean eventSiteVisit) {
+		if (eventSiteVisit == true) {
+			allEventTypes = false;
+		}
+
 		this.eventSiteVisit = eventSiteVisit;
 	}
 
@@ -132,6 +136,10 @@ public class WebTrackingDataExportOptions extends AbstractOptions {
 	}
 
 	public void setEventPageView(boolean eventPageView) {
+		if (eventPageView == true) {
+			allEventTypes = false;
+		}
+
 		this.eventPageView = eventPageView;
 	}
 
@@ -140,6 +148,10 @@ public class WebTrackingDataExportOptions extends AbstractOptions {
 	}
 
 	public void setEventClick(boolean eventClick) {
+		if (eventClick == true) {
+			allEventTypes = false;
+		}
+
 		this.eventClick = eventClick;
 	}
 
@@ -148,6 +160,10 @@ public class WebTrackingDataExportOptions extends AbstractOptions {
 	}
 
 	public void setEventFormSubmit(boolean eventFormSubmit) {
+		if (eventFormSubmit == true) {
+			allEventTypes = false;
+		}
+
 		this.eventFormSubmit = eventFormSubmit;
 	}
 
@@ -156,6 +172,10 @@ public class WebTrackingDataExportOptions extends AbstractOptions {
 	}
 
 	public void setEventDownload(boolean eventDownload) {
+		if (eventDownload == true) {
+			allEventTypes = false;
+		}
+
 		this.eventDownload = eventDownload;
 	}
 
@@ -164,6 +184,10 @@ public class WebTrackingDataExportOptions extends AbstractOptions {
 	}
 
 	public void setEventMedia(boolean eventMedia) {
+		if (eventMedia == true) {
+			allEventTypes = false;
+		}
+
 		this.eventMedia = eventMedia;
 	}
 
@@ -172,6 +196,10 @@ public class WebTrackingDataExportOptions extends AbstractOptions {
 	}
 
 	public void setEventShareToSocial(boolean eventShareToSocial) {
+		if (eventShareToSocial == true) {
+			allEventTypes = false;
+		}
+
 		this.eventShareToSocial = eventShareToSocial;
 	}
 
@@ -180,6 +208,10 @@ public class WebTrackingDataExportOptions extends AbstractOptions {
 	}
 
 	public void setEventCustom(boolean eventCustom) {
+		if (eventCustom == true) {
+			allEventTypes = false;
+		}
+
 		this.eventCustom = eventCustom;
 	}
 
