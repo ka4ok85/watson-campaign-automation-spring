@@ -62,9 +62,8 @@ public class WebTrackingDataExportCommandTest {
 	private String defaultRequest = String.join(System.getProperty("line.separator"),
 			"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>", "<Envelope>", "<Body>",
 			"<WebTrackingDataExport>", "<EXPORT_FORMAT>0</EXPORT_FORMAT>", "<FILE_ENCODING>utf-8</FILE_ENCODING>",
-			"<MOVE_TO_FTP/>", "<ALL_EVENT_TYPES/>", "</WebTrackingDataExport>", "</Body>",
-			"</Envelope>");
-	
+			"<MOVE_TO_FTP/>", "<ALL_EVENT_TYPES/>", "</WebTrackingDataExport>", "</Body>", "</Envelope>");
+
 	public WebTrackingDataExportCommandTest(String xmlNodeName, String methodName) {
 		this.xmlNodeName = xmlNodeName;
 		this.methodName = methodName;
@@ -93,54 +92,46 @@ public class WebTrackingDataExportCommandTest {
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
-	
-	
+
 	@Parameterized.Parameters(name = "{index}: isValid({0})={1}")
 	public static Iterable<Object[]> data() {
-		return Arrays
-				.asList(new Object[][] { { "<SENDING></SENDING>", "setIncludeSendingMailings" },
-						{ "<OPTIN_CONFIRMATION></OPTIN_CONFIRMATION>", "setIncludeOptinConfirmationMailings" },
-						{ "<PROFILE_CONFIRMATION></PROFILE_CONFIRMATION>", "setIncludeProfileConfirmationMailings" },
-						{ "<AUTOMATED></AUTOMATED>", "setIncludeAutomatedMailings" },
-						{ "<CAMPAIGN_ACTIVE></CAMPAIGN_ACTIVE>", "setIncludeCampaignActiveMailings" },
-						{ "<CAMPAIGN_COMPLETED></CAMPAIGN_COMPLETED>", "setIncludeCampaignCompletedMailings" },
-						{ "<CAMPAIGN_CANCELLED></CAMPAIGN_CANCELLED>", "setIncludeCampaignCancelledMailings" },
-						{ "<CAMPAIGN_SCRAPE_TEMPLATE></CAMPAIGN_SCRAPE_TEMPLATE>",
-								"setIncludeCampaignScrapeTemplateMailings" },
-						{ "<INCLUDE_TEST_MAILINGS></INCLUDE_TEST_MAILINGS>", "setIncludeTestMailings" } });
+		return Arrays.asList(
+				new Object[][] { { "<INCLUDE_SITE_VISIT_EVENTS></INCLUDE_SITE_VISIT_EVENTS>", "setEventSiteVisit" },
+						{ "<INCLUDE_PAGE_VIEW_EVENTS></INCLUDE_PAGE_VIEW_EVENTS>", "setEventPageView" },
+						{ "<INCLUDE_CLICK_EVENTS></INCLUDE_CLICK_EVENTS>", "setEventClick" },
+						{ "<INCLUDE_FORM_SUBMIT_EVENTS></INCLUDE_FORM_SUBMIT_EVENTS>", "setEventFormSubmit" },
+						{ "<INCLUDE_DOWNLOAD_EVENTS></INCLUDE_DOWNLOAD_EVENTS>", "setEventDownload" },
+						{ "<INCLUDE_MEDIA_EVENTS></INCLUDE_MEDIA_EVENTS>", "setEventMedia" },
+						{ "<INCLUDE_SHARE_TO_SOCIAL_EVENTS></INCLUDE_SHARE_TO_SOCIAL_EVENTS>",
+								"setEventShareToSocial" },
+						{ "<INCLUDE_CUSTOM_EVENTS></INCLUDE_CUSTOM_EVENTS>", "setEventCustom" } });
 	}
-	
-	
+
 	@Test
 	public void testBuildXmlHonorsEventStartDate() {
 		// get XML from command
 		WebTrackingDataExportCommand command = new WebTrackingDataExportCommand();
 		WebTrackingDataExportOptions options = new WebTrackingDataExportOptions();
-		
+
 		LocalDateTime eventStartDate = LocalDateTime.of(2017, 2, 3, 4, 5);
 		options.setEventStartDate(eventStartDate);
-		
+
 		List<Long> domains = new ArrayList<Long>();
 		options.setDomains(domains);
-		
+
 		List<Long> sites = new ArrayList<Long>();
 		options.setSites(sites);
-		
+
 		List<String> columns = new ArrayList<String>();
 		options.setColumns(columns);
-		
-		//options.setDatabaseId(-5L);
-		//options.setExportFileName("");
-		
-		//LocalDateTime endDateTime = LocalDateTime.of(2018, 6, 7, 8, 9);
+
 		command.buildXmlRequest(options);
 		String testString = command.getXML();
 		Source test = Input.fromString(testString).build();
 
 		// get control XML
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
-		String eventRangeString = "<EVENT_DATE_START>" + eventStartDate.format(formatter)
-				+ "</EVENT_DATE_START>";
+		String eventRangeString = "<EVENT_DATE_START>" + eventStartDate.format(formatter) + "</EVENT_DATE_START>";
 		String controlString = defaultRequest.replace("<WebTrackingDataExport>",
 				"<WebTrackingDataExport>" + eventRangeString);
 		Source control = Input.fromString(controlString).build();
@@ -148,25 +139,23 @@ public class WebTrackingDataExportCommandTest {
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
-	
+
 	@Test
 	public void testBuildXmlHonorsEventEndDate() {
 		// get XML from command
 		WebTrackingDataExportCommand command = new WebTrackingDataExportCommand();
 		WebTrackingDataExportOptions options = new WebTrackingDataExportOptions();
-		
+
 		LocalDateTime eventEndDate = LocalDateTime.of(2017, 2, 3, 4, 5);
 		options.setEventEndDate(eventEndDate);
-		
-		
+
 		command.buildXmlRequest(options);
 		String testString = command.getXML();
 		Source test = Input.fromString(testString).build();
 
 		// get control XML
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
-		String eventRangeString = "<EVENT_DATE_END>" + eventEndDate.format(formatter)
-				+ "</EVENT_DATE_END>";
+		String eventRangeString = "<EVENT_DATE_END>" + eventEndDate.format(formatter) + "</EVENT_DATE_END>";
 		String controlString = defaultRequest.replace("<WebTrackingDataExport>",
 				"<WebTrackingDataExport>" + eventRangeString);
 		Source control = Input.fromString(controlString).build();
@@ -174,20 +163,19 @@ public class WebTrackingDataExportCommandTest {
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
-	
+
 	@Test
 	public void testBuildXmlHonorsDateRange() {
 		// get XML from command
 		WebTrackingDataExportCommand command = new WebTrackingDataExportCommand();
 		WebTrackingDataExportOptions options = new WebTrackingDataExportOptions();
-		
+
 		LocalDateTime eventStartDate = LocalDateTime.of(2017, 2, 3, 4, 5);
 		options.setEventStartDate(eventStartDate);
-		
+
 		LocalDateTime eventEndDate = LocalDateTime.of(2018, 2, 3, 4, 5);
 		options.setEventEndDate(eventEndDate);
-		
-		
+
 		command.buildXmlRequest(options);
 		String testString = command.getXML();
 		Source test = Input.fromString(testString).build();
@@ -195,8 +183,7 @@ public class WebTrackingDataExportCommandTest {
 		// get control XML
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
 		String eventRangeString = "<EVENT_DATE_START>" + eventStartDate.format(formatter)
-		+ "</EVENT_DATE_START><EVENT_DATE_END>" + eventEndDate.format(formatter)
-				+ "</EVENT_DATE_END>";
+				+ "</EVENT_DATE_START><EVENT_DATE_END>" + eventEndDate.format(formatter) + "</EVENT_DATE_END>";
 		String controlString = defaultRequest.replace("<WebTrackingDataExport>",
 				"<WebTrackingDataExport>" + eventRangeString);
 		Source control = Input.fromString(controlString).build();
@@ -210,27 +197,26 @@ public class WebTrackingDataExportCommandTest {
 		// get XML from command
 		WebTrackingDataExportCommand command = new WebTrackingDataExportCommand();
 		WebTrackingDataExportOptions options = new WebTrackingDataExportOptions();
-		
+
 		LocalDateTime eventStartDate = LocalDateTime.of(2018, 2, 3, 4, 5);
 		options.setEventStartDate(eventStartDate);
-		
+
 		LocalDateTime eventEndDate = LocalDateTime.of(2017, 2, 3, 4, 5);
 		options.setEventEndDate(eventEndDate);
-		
+
 		command.buildXmlRequest(options);
 	}
-	
+
 	@Test
 	public void testBuildXmlHonorsDomains() {
 		// get XML from command
 		WebTrackingDataExportCommand command = new WebTrackingDataExportCommand();
 		WebTrackingDataExportOptions options = new WebTrackingDataExportOptions();
-		
+
 		List<Long> domains = new ArrayList<Long>();
 		domains.add(123L);
 		options.setDomains(domains);
-		
-		
+
 		command.buildXmlRequest(options);
 		String testString = command.getXML();
 		Source test = Input.fromString(testString).build();
@@ -240,27 +226,27 @@ public class WebTrackingDataExportCommandTest {
 		for (Long domain : domains) {
 			domainsString = domainsString + "<DOMAIN_ID>" + domain + "</DOMAIN_ID>";
 		}
-		
+
 		domainsString = domainsString + "</DOMAINS>";
-		
+
 		String controlString = defaultRequest.replace("<WebTrackingDataExport>",
 				"<WebTrackingDataExport>" + domainsString);
 		Source control = Input.fromString(controlString).build();
-		
+
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
-	
+
 	@Test
 	public void testBuildXmlHonorsSites() {
 		// get XML from command
 		WebTrackingDataExportCommand command = new WebTrackingDataExportCommand();
 		WebTrackingDataExportOptions options = new WebTrackingDataExportOptions();
-		
+
 		List<Long> sites = new ArrayList<Long>();
 		sites.add(345L);
 		options.setSites(sites);
-		
+
 		command.buildXmlRequest(options);
 		String testString = command.getXML();
 		Source test = Input.fromString(testString).build();
@@ -270,9 +256,9 @@ public class WebTrackingDataExportCommandTest {
 		for (Long site : sites) {
 			siteString = siteString + "<SITE_ID>" + site + "</SITE_ID>";
 		}
-		
+
 		siteString = siteString + "</SITES>";
-		
+
 		String controlString = defaultRequest.replace("<WebTrackingDataExport>",
 				"<WebTrackingDataExport>" + siteString);
 		Source control = Input.fromString(controlString).build();
@@ -280,8 +266,7 @@ public class WebTrackingDataExportCommandTest {
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
-	
-	
+
 	@Test
 	public void testBuildXmlHonorsExportColumns() {
 		// get XML from command
@@ -308,70 +293,95 @@ public class WebTrackingDataExportCommandTest {
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
-	
+
 	@Test
 	public void testBuildXmlHonorsMoveToFTP() {
 		// get XML from command
 		WebTrackingDataExportCommand command = new WebTrackingDataExportCommand();
 		WebTrackingDataExportOptions options = new WebTrackingDataExportOptions();
-		
+
 		options.setMoveToFTP(false);
-		
-		
+
 		command.buildXmlRequest(options);
 		String testString = command.getXML();
 		Source test = Input.fromString(testString).build();
 
 		// get control XML
-		String controlString = defaultRequest.replace("<MOVE_TO_FTP/>",				"" );
+		String controlString = defaultRequest.replace("<MOVE_TO_FTP/>", "");
 		Source control = Input.fromString(controlString).build();
 
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
-	
+
 	@Test
 	public void testBuildXmlHonorsDatabaseId() {
 		// get XML from command
 		WebTrackingDataExportCommand command = new WebTrackingDataExportCommand();
 		WebTrackingDataExportOptions options = new WebTrackingDataExportOptions();
-		
+
 		Long databaseId = 8L;
 		options.setDatabaseId(databaseId);
-		
-		
+
 		command.buildXmlRequest(options);
 		String testString = command.getXML();
 		Source test = Input.fromString(testString).build();
 
 		// get control XML
-		String controlString = defaultRequest.replace("<WebTrackingDataExport>", "<WebTrackingDataExport><DATABASE_ID>" + databaseId + "</DATABASE_ID>" );
+		String controlString = defaultRequest.replace("<WebTrackingDataExport>",
+				"<WebTrackingDataExport><DATABASE_ID>" + databaseId + "</DATABASE_ID>");
 		Source control = Input.fromString(controlString).build();
 
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
-	
+
 	@Test
 	public void testBuildXmlHonorsExportFileName() {
 		// get XML from command
 		WebTrackingDataExportCommand command = new WebTrackingDataExportCommand();
 		WebTrackingDataExportOptions options = new WebTrackingDataExportOptions();
-		
+
 		String exportFileName = "test file.zip";
 		options.setExportFileName(exportFileName);
-		
-		
+
 		command.buildXmlRequest(options);
 		String testString = command.getXML();
 		Source test = Input.fromString(testString).build();
 
 		// get control XML
-		String controlString = defaultRequest.replace("</EXPORT_FORMAT>", "</EXPORT_FORMAT><EXPORT_FILE_NAME>" + exportFileName + "</EXPORT_FILE_NAME>" );
+		String controlString = defaultRequest.replace("</EXPORT_FORMAT>",
+				"</EXPORT_FORMAT><EXPORT_FILE_NAME>" + exportFileName + "</EXPORT_FILE_NAME>");
 		Source control = Input.fromString(controlString).build();
 
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
 		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
 	}
-	
+
+	@Test
+	public void testIsValidMailingParameters() {
+		WebTrackingDataExportCommand command = new WebTrackingDataExportCommand();
+		WebTrackingDataExportOptions options = new WebTrackingDataExportOptions();
+		java.lang.reflect.Method method;
+		try {
+			method = options.getClass().getMethod(methodName, boolean.class);
+			method.invoke(options, true);
+
+			command.buildXmlRequest(options);
+			String testString = command.getXML();
+			Source test = Input.fromString(testString).build();
+
+			// get control XML
+			String controlString = defaultRequest.replace("<ALL_EVENT_TYPES/>", xmlNodeName);
+			Source control = Input.fromString(controlString).build();
+
+			Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+			Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+
+		} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
