@@ -102,7 +102,7 @@ public class WebTrackingDataExportCommand
 			}
 		}
 
-		if (options.getDatabaseId() != null && options.getDatabaseId() > 0) {
+		if (options.getDatabaseId() != null) {
 			Element databaseId = doc.createElement("DATABASE_ID");
 			databaseId.setTextContent(options.getDatabaseId().toString());
 			addChildNode(databaseId, currentNode);
@@ -112,7 +112,7 @@ public class WebTrackingDataExportCommand
 		exportFormat.setTextContent(options.getExportFormat().value().toString());
 		addChildNode(exportFormat, currentNode);
 
-		if (options.getExportFileName() != null && options.getExportFileName().isEmpty() == false) {
+		if (options.getExportFileName() != null) {
 			Element exportFileName = doc.createElement("EXPORT_FILE_NAME");
 			exportFileName.setTextContent(options.getExportFileName());
 			addChildNode(exportFileName, currentNode);
@@ -198,6 +198,8 @@ public class WebTrackingDataExportCommand
 		String filePath = jobPollingContainer.getParameters().get("FILE_PATH");
 		String description = jobResponse.getJobDescription();
 		Long jobId = jobResponse.getJobId();
+
+
 
 		webTrackingDataExportResponse.setJobId(jobId);
 		webTrackingDataExportResponse.setDescription(description);

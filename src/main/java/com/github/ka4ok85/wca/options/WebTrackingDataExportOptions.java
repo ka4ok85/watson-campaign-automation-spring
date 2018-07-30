@@ -68,6 +68,10 @@ public class WebTrackingDataExportOptions extends AbstractOptions {
 	}
 
 	public void setDatabaseId(Long databaseId) {
+		if (databaseId == null || databaseId < 1) {
+			throw new RuntimeException("Database ID must be greater than zero. Provided Database ID = " + databaseId);
+		}
+
 		this.databaseId = databaseId;
 	}
 
@@ -84,6 +88,10 @@ public class WebTrackingDataExportOptions extends AbstractOptions {
 	}
 
 	public void setExportFileName(String exportFileName) {
+		if (exportFileName == null || exportFileName.isEmpty()) {
+			throw new RuntimeException("Export File Name must not be empty.");
+		}
+
 		this.exportFileName = exportFileName;
 	}
 
