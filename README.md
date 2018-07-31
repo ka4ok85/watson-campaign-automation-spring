@@ -107,4 +107,11 @@ System.out.println(response.getResposne());
 
 
 # Convenience Functionality
-Besides easy access to WCA XML API Library provides additional convenience functionality. Please find more details below. 
+Besides easy access to WCA XML API Library provides additional convenience functionality. Please find more details below.
+
+1. Ability to download Export File. Supported by following APIs:
+- ExportList
+- ExportMailingTemplate
+- ExportTable
+- RawRecipientDataExport
+- WebTrackingDataExport
