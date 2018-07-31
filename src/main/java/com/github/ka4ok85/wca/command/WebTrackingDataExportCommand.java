@@ -199,7 +199,10 @@ public class WebTrackingDataExportCommand
 		String description = jobResponse.getJobDescription();
 		Long jobId = jobResponse.getJobId();
 
-
+		log.debug("Generated Export File {} on SFTP", filePath);
+		if (options.getLocalAbsoluteFilePath() != null && options.isMoveToFTP() == true) {
+			sftp.download(filePath, options.getLocalAbsoluteFilePath());
+		}
 
 		webTrackingDataExportResponse.setJobId(jobId);
 		webTrackingDataExportResponse.setDescription(description);
