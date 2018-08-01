@@ -32,16 +32,12 @@ import org.xmlunit.builder.Input;
 import org.xmlunit.diff.Diff;
 
 import com.github.ka4ok85.wca.config.SpringConfig;
-import com.github.ka4ok85.wca.constants.FileEncoding;
-import com.github.ka4ok85.wca.constants.Visibility;
-import com.github.ka4ok85.wca.options.RawRecipientDataExportOptions;
 import com.github.ka4ok85.wca.options.WebTrackingDataExportOptions;
 import com.github.ka4ok85.wca.response.JobResponse;
-import com.github.ka4ok85.wca.response.RawRecipientDataExportResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
+import com.github.ka4ok85.wca.response.WebTrackingDataExportResponse;
 import com.github.ka4ok85.wca.response.containers.JobPollingContainer;
 import com.github.ka4ok85.wca.sftp.SFTP;
-import com.github.ka4ok85.wca.utils.DateTimeRange;
 
 @RunWith(value = Parameterized.class)
 @ContextConfiguration(classes = { SpringConfig.class })
@@ -384,4 +380,107 @@ public class WebTrackingDataExportCommandTest {
 		}
 	}
 
+	@Test
+	public void testReadResponse() {
+		WebTrackingDataExportCommand command = context.getBean(WebTrackingDataExportCommand.class);
+		SFTP sftp = mock(SFTP.class);
+		command.setSftp(sftp);
+
+		WebTrackingDataExportOptions options = new WebTrackingDataExportOptions();
+		String localAbsoluteFilePath = "/local/path/data.zip";
+		options.setLocalAbsoluteFilePath(localAbsoluteFilePath);
+		Long jobId = 34L;
+		JobPollingContainer jobPollingContainer = new JobPollingContainer();
+		jobPollingContainer.setJobId(jobId);
+		Map<String, String> parameters = new HashMap<String, String>();
+		String filePath = "/path/to/file.zip";
+		parameters.put("FILE_PATH", filePath);
+		jobPollingContainer.setParameters(parameters);
+
+		String jobDescription = "String Job Description";
+
+		JobResponse jobResponse = new JobResponse();
+		jobResponse.setJobDescription(jobDescription);
+		Map<String, String> jobParameters = new HashMap<String, String>();
+		jobResponse.setParameters(jobParameters);
+
+		ResponseContainer<WebTrackingDataExportResponse> responseContainer = command.readResponse(jobPollingContainer,
+				jobResponse, options);
+		WebTrackingDataExportResponse response = responseContainer.getResposne();
+
+		assertEquals(response.getDescription(), jobDescription);
+		assertEquals(response.getJobId(), jobId);
+		assertEquals(response.getRemoteFileName(), filePath);
+		verify(sftp, times(1)).download(filePath, localAbsoluteFilePath);
+	}
+
+	@Test
+	public void testReadResponseHonorsNoMoveToFtp() {
+		WebTrackingDataExportCommand command = context.getBean(WebTrackingDataExportCommand.class);
+		SFTP sftp = mock(SFTP.class);
+		command.setSftp(sftp);
+
+		WebTrackingDataExportOptions options = new WebTrackingDataExportOptions();
+		String localAbsoluteFilePath = "/local/path/data.zip";
+		options.setLocalAbsoluteFilePath(localAbsoluteFilePath);
+		options.setMoveToFTP(false);
+
+		Long jobId = 34L;
+		JobPollingContainer jobPollingContainer = new JobPollingContainer();
+		jobPollingContainer.setJobId(jobId);
+		Map<String, String> parameters = new HashMap<String, String>();
+		String filePath = "/path/to/file.zip";
+		parameters.put("FILE_PATH", filePath);
+		jobPollingContainer.setParameters(parameters);
+
+		String jobDescription = "String Job Description";
+
+		JobResponse jobResponse = new JobResponse();
+		jobResponse.setJobDescription(jobDescription);
+		Map<String, String> jobParameters = new HashMap<String, String>();
+		jobResponse.setParameters(jobParameters);
+
+		ResponseContainer<WebTrackingDataExportResponse> responseContainer = command.readResponse(jobPollingContainer,
+				jobResponse, options);
+		WebTrackingDataExportResponse response = responseContainer.getResposne();
+
+		assertEquals(response.getDescription(), jobDescription);
+		assertEquals(response.getJobId(), jobId);
+		assertEquals(response.getRemoteFileName(), filePath);
+		verify(sftp, times(0)).download(filePath, localAbsoluteFilePath);
+	}
+
+	@Test
+	public void testReadResponseHonorsBlankLocalAbsoluteFilePath() {
+		WebTrackingDataExportCommand command = context.getBean(WebTrackingDataExportCommand.class);
+		SFTP sftp = mock(SFTP.class);
+		command.setSftp(sftp);
+
+		WebTrackingDataExportOptions options = new WebTrackingDataExportOptions();
+		String localAbsoluteFilePath = "/local/path/data.zip";
+
+		Long jobId = 34L;
+		JobPollingContainer jobPollingContainer = new JobPollingContainer();
+		jobPollingContainer.setJobId(jobId);
+		Map<String, String> parameters = new HashMap<String, String>();
+		String filePath = "/path/to/file.zip";
+		parameters.put("FILE_PATH", filePath);
+		jobPollingContainer.setParameters(parameters);
+
+		String jobDescription = "String Job Description";
+
+		JobResponse jobResponse = new JobResponse();
+		jobResponse.setJobDescription(jobDescription);
+		Map<String, String> jobParameters = new HashMap<String, String>();
+		jobResponse.setParameters(jobParameters);
+
+		ResponseContainer<WebTrackingDataExportResponse> responseContainer = command.readResponse(jobPollingContainer,
+				jobResponse, options);
+		WebTrackingDataExportResponse response = responseContainer.getResposne();
+
+		assertEquals(response.getDescription(), jobDescription);
+		assertEquals(response.getJobId(), jobId);
+		assertEquals(response.getRemoteFileName(), filePath);
+		verify(sftp, times(0)).download(filePath, localAbsoluteFilePath);
+	}
 }
