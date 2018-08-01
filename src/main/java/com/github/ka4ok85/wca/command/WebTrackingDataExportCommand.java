@@ -196,8 +196,8 @@ public class WebTrackingDataExportCommand
 	public ResponseContainer<WebTrackingDataExportResponse> readResponse(JobPollingContainer jobPollingContainer,
 			JobResponse jobResponse, WebTrackingDataExportOptions options) {
 		String filePath = jobPollingContainer.getParameters().get("FILE_PATH");
+		Long jobId = jobPollingContainer.getJobId();
 		String description = jobResponse.getJobDescription();
-		Long jobId = jobResponse.getJobId();
 
 		log.debug("Generated Export File {} on SFTP", filePath);
 		if (options.getLocalAbsoluteFilePath() != null && options.isMoveToFTP() == true) {
