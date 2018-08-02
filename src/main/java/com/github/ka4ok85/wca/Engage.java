@@ -33,6 +33,7 @@ import com.github.ka4ok85.wca.command.GetSentMailingsForUserCommand;
 import com.github.ka4ok85.wca.command.ImportListCommand;
 import com.github.ka4ok85.wca.command.ImportTableCommand;
 import com.github.ka4ok85.wca.command.InsertUpdateRelationalTableCommand;
+import com.github.ka4ok85.wca.command.PreviewMailingCommand;
 import com.github.ka4ok85.wca.command.JoinTableCommand;
 import com.github.ka4ok85.wca.command.ListRecipientMailingsCommand;
 import com.github.ka4ok85.wca.command.OptOutRecipientCommand;
@@ -77,6 +78,7 @@ import com.github.ka4ok85.wca.options.InsertUpdateRelationalTableOptions;
 import com.github.ka4ok85.wca.options.JoinTableOptions;
 import com.github.ka4ok85.wca.options.ListRecipientMailingsOptions;
 import com.github.ka4ok85.wca.options.OptOutRecipientOptions;
+import com.github.ka4ok85.wca.options.PreviewMailingOptions;
 import com.github.ka4ok85.wca.options.PurgeDataOptions;
 import com.github.ka4ok85.wca.options.PurgeTableOptions;
 import com.github.ka4ok85.wca.options.RawRecipientDataExportOptions;
@@ -116,6 +118,7 @@ import com.github.ka4ok85.wca.response.InsertUpdateRelationalTableResponse;
 import com.github.ka4ok85.wca.response.JoinTableResponse;
 import com.github.ka4ok85.wca.response.ListRecipientMailingsResponse;
 import com.github.ka4ok85.wca.response.OptOutRecipientResponse;
+import com.github.ka4ok85.wca.response.PreviewMailingResponse;
 import com.github.ka4ok85.wca.response.PurgeDataResponse;
 import com.github.ka4ok85.wca.response.PurgeTableResponse;
 import com.github.ka4ok85.wca.response.RawRecipientDataExportResponse;
@@ -136,7 +139,6 @@ public class Engage {
 	private SFTP sftp;
 
 	private static AnnotationConfigApplicationContext applicationContext;
-
 	{
 		getApplicationContext();
 	}
@@ -463,10 +465,10 @@ public class Engage {
 	}
 
 	public ResponseContainer<GetFolderPathResponse> getFolderPath(GetFolderPathOptions options) {
-		GetFolderPathCommand getFolderPath = getApplicationContext().getBean(GetFolderPathCommand.class);
-		getFolderPath.setoAuthClient(oAuthClient);
-		getFolderPath.setSftp(sftp);
-		ResponseContainer<GetFolderPathResponse> result = getFolderPath.executeCommand(options);
+		GetFolderPathCommand getFolderPathBean = getApplicationContext().getBean(GetFolderPathCommand.class);
+		getFolderPathBean.setoAuthClient(oAuthClient);
+		getFolderPathBean.setSftp(sftp);
+		ResponseContainer<GetFolderPathResponse> result = getFolderPathBean.executeCommand(options);
 
 		return result;
 	}
@@ -531,6 +533,15 @@ public class Engage {
 		return result;
 	}
 
+	public ResponseContainer<PreviewMailingResponse> previewMailing(PreviewMailingOptions options) {
+		PreviewMailingCommand previewMailing = getApplicationContext().getBean(PreviewMailingCommand.class);
+		previewMailing.setoAuthClient(oAuthClient);
+		previewMailing.setSftp(sftp);
+		ResponseContainer<PreviewMailingResponse> result = previewMailing.executeCommand(options);
+
+		return result;
+	}
+
 	private static ApplicationContext getApplicationContext() {
 		if (applicationContext == null) {
 			applicationContext = new AnnotationConfigApplicationContext(SpringConfig.class);
@@ -538,4 +549,5 @@ public class Engage {
 
 		return applicationContext;
 	}
+
 }
