@@ -138,6 +138,8 @@ public class Engage {
 	private OAuthClient oAuthClient;
 	private SFTP sftp;
 
+	private GetFolderPathCommand getFolderPathBean = getApplicationContext().getBean(GetFolderPathCommand.class);
+
 	private static AnnotationConfigApplicationContext applicationContext;
 	{
 		getApplicationContext();
@@ -146,6 +148,12 @@ public class Engage {
 	public Engage(int podNumber, String clientId, String clientSecret, String refreshToken) {
 		this.oAuthClient = new OAuthClientImplementation(podNumber, clientId, clientSecret, refreshToken);
 		this.sftp = new SFTP(this.oAuthClient);
+	}
+
+	public Engage(OAuthClient oAuthClient, SFTP sftp) {
+		super();
+		this.oAuthClient = oAuthClient;
+		this.sftp = sftp;
 	}
 
 	public ResponseContainer<ExportListResponse> exportList(ExportListOptions options) {
@@ -465,7 +473,6 @@ public class Engage {
 	}
 
 	public ResponseContainer<GetFolderPathResponse> getFolderPath(GetFolderPathOptions options) {
-		GetFolderPathCommand getFolderPathBean = getApplicationContext().getBean(GetFolderPathCommand.class);
 		getFolderPathBean.setoAuthClient(oAuthClient);
 		getFolderPathBean.setSftp(sftp);
 		ResponseContainer<GetFolderPathResponse> result = getFolderPathBean.executeCommand(options);
@@ -548,6 +555,10 @@ public class Engage {
 		}
 
 		return applicationContext;
+	}
+
+	protected void setGetFolderPathBean(GetFolderPathCommand getFolderPathBean) {
+		this.getFolderPathBean = getFolderPathBean;
 	}
 
 }
