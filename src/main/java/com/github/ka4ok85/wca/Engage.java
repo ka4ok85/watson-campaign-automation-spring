@@ -139,6 +139,11 @@ public class Engage {
 	private SFTP sftp;
 
 	private GetFolderPathCommand getFolderPathBean = getApplicationContext().getBean(GetFolderPathCommand.class);
+	private ExportListCommand exportListBean = getApplicationContext().getBean(ExportListCommand.class);
+	private ExportTableCommand exportTableBean = getApplicationContext().getBean(ExportTableCommand.class);
+	private CreateContactListCommand createContactListBean = getApplicationContext()
+			.getBean(CreateContactListCommand.class);
+	private DeleteListCommand deleteListBean = getApplicationContext().getBean(DeleteListCommand.class);
 
 	private static AnnotationConfigApplicationContext applicationContext;
 	{
@@ -157,37 +162,33 @@ public class Engage {
 	}
 
 	public ResponseContainer<ExportListResponse> exportList(ExportListOptions options) {
-		ExportListCommand exportList = getApplicationContext().getBean(ExportListCommand.class);
-		exportList.setoAuthClient(oAuthClient);
-		exportList.setSftp(sftp);
-		ResponseContainer<ExportListResponse> result = exportList.executeCommand(options);
+		exportListBean.setoAuthClient(oAuthClient);
+		exportListBean.setSftp(sftp);
+		ResponseContainer<ExportListResponse> result = exportListBean.executeCommand(options);
 
 		return result;
 	}
 
 	public ResponseContainer<ExportTableResponse> exportTable(ExportTableOptions options) {
-		ExportTableCommand exportTable = getApplicationContext().getBean(ExportTableCommand.class);
-		exportTable.setoAuthClient(oAuthClient);
-		exportTable.setSftp(sftp);
-		ResponseContainer<ExportTableResponse> result = exportTable.executeCommand(options);
+		exportTableBean.setoAuthClient(oAuthClient);
+		exportTableBean.setSftp(sftp);
+		ResponseContainer<ExportTableResponse> result = exportTableBean.executeCommand(options);
 
 		return result;
 	}
 
 	public ResponseContainer<CreateContactListResponse> createContactList(CreateContactListOptions options) {
-		CreateContactListCommand createContactList = getApplicationContext().getBean(CreateContactListCommand.class);
-		createContactList.setoAuthClient(oAuthClient);
-		createContactList.setSftp(sftp);
-		ResponseContainer<CreateContactListResponse> result = createContactList.executeCommand(options);
+		createContactListBean.setoAuthClient(oAuthClient);
+		createContactListBean.setSftp(sftp);
+		ResponseContainer<CreateContactListResponse> result = createContactListBean.executeCommand(options);
 
 		return result;
 	}
 
 	public ResponseContainer<DeleteListResponse> deleteList(DeleteListOptions options) {
-		DeleteListCommand deleteList = getApplicationContext().getBean(DeleteListCommand.class);
-		deleteList.setoAuthClient(oAuthClient);
-		deleteList.setSftp(sftp);
-		ResponseContainer<DeleteListResponse> result = deleteList.executeCommand(options);
+		deleteListBean.setoAuthClient(oAuthClient);
+		deleteListBean.setSftp(sftp);
+		ResponseContainer<DeleteListResponse> result = deleteListBean.executeCommand(options);
 
 		return result;
 	}
@@ -559,6 +560,22 @@ public class Engage {
 
 	protected void setGetFolderPathBean(GetFolderPathCommand getFolderPathBean) {
 		this.getFolderPathBean = getFolderPathBean;
+	}
+
+	protected void setExportListBean(ExportListCommand exportListBean) {
+		this.exportListBean = exportListBean;
+	}
+
+	protected void setExportTableBean(ExportTableCommand exportTableBean) {
+		this.exportTableBean = exportTableBean;
+	}
+
+	protected void setCreateContactListBean(CreateContactListCommand createContactListBean) {
+		this.createContactListBean = createContactListBean;
+	}
+
+	protected void setDeleteListBean(DeleteListCommand deleteListBean) {
+		this.deleteListBean = deleteListBean;
 	}
 
 }
