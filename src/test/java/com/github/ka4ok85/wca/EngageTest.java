@@ -9,11 +9,24 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.ka4ok85.wca.command.CreateContactListCommand;
+import com.github.ka4ok85.wca.command.DeleteListCommand;
+import com.github.ka4ok85.wca.command.ExportListCommand;
+import com.github.ka4ok85.wca.command.ExportTableCommand;
 import com.github.ka4ok85.wca.command.GetFolderPathCommand;
 import com.github.ka4ok85.wca.config.SpringConfig;
 import com.github.ka4ok85.wca.constants.GetFolderPathObjectType;
+import com.github.ka4ok85.wca.constants.Visibility;
 import com.github.ka4ok85.wca.oauth.OAuthClient;
+import com.github.ka4ok85.wca.options.CreateContactListOptions;
+import com.github.ka4ok85.wca.options.DeleteListOptions;
+import com.github.ka4ok85.wca.options.ExportListOptions;
+import com.github.ka4ok85.wca.options.ExportTableOptions;
 import com.github.ka4ok85.wca.options.GetFolderPathOptions;
+import com.github.ka4ok85.wca.response.CreateContactListResponse;
+import com.github.ka4ok85.wca.response.DeleteListResponse;
+import com.github.ka4ok85.wca.response.ExportListResponse;
+import com.github.ka4ok85.wca.response.ExportTableResponse;
 import com.github.ka4ok85.wca.response.GetFolderPathResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.sftp.SFTP;
@@ -41,6 +54,87 @@ public class EngageTest {
 
 		assertEquals(responseContainer.getClass(), ResponseContainer.class);
 		assertEquals(responseContainer.getResposne().getClass(), GetFolderPathResponse.class);
+		assertEquals(responseContainer.getResposne(), response);
+	}
+
+	public void testExportList() {
+		OAuthClient oAuthClient = mock(OAuthClient.class);
+		SFTP sftp = mock(SFTP.class);
+		Engage engage = new Engage(oAuthClient, sftp);
+
+		ExportListOptions options = new ExportListOptions(1L);
+		ExportListResponse response = new ExportListResponse();
+
+		ExportListCommand exportListBean = mock(ExportListCommand.class);
+		when(exportListBean.executeCommand(options)).thenReturn(new ResponseContainer<ExportListResponse>(response));
+
+		engage.setExportListBean(exportListBean);
+
+		ResponseContainer<ExportListResponse> responseContainer = engage.exportList(options);
+
+		assertEquals(responseContainer.getClass(), ResponseContainer.class);
+		assertEquals(responseContainer.getResposne().getClass(), ExportListResponse.class);
+		assertEquals(responseContainer.getResposne(), response);
+	}
+
+	public void testExportTable() {
+		OAuthClient oAuthClient = mock(OAuthClient.class);
+		SFTP sftp = mock(SFTP.class);
+		Engage engage = new Engage(oAuthClient, sftp);
+
+		ExportTableOptions options = new ExportTableOptions(1L);
+		ExportTableResponse response = new ExportTableResponse();
+
+		ExportTableCommand exportTableBean = mock(ExportTableCommand.class);
+		when(exportTableBean.executeCommand(options)).thenReturn(new ResponseContainer<ExportTableResponse>(response));
+
+		engage.setExportTableBean(exportTableBean);
+
+		ResponseContainer<ExportTableResponse> responseContainer = engage.exportTable(options);
+
+		assertEquals(responseContainer.getClass(), ResponseContainer.class);
+		assertEquals(responseContainer.getResposne().getClass(), ExportTableResponse.class);
+		assertEquals(responseContainer.getResposne(), response);
+	}
+
+	public void testCreateContactList() {
+		OAuthClient oAuthClient = mock(OAuthClient.class);
+		SFTP sftp = mock(SFTP.class);
+		Engage engage = new Engage(oAuthClient, sftp);
+
+		CreateContactListOptions options = new CreateContactListOptions(1L, "test list", Visibility.SHARED);
+		CreateContactListResponse response = new CreateContactListResponse();
+
+		CreateContactListCommand createContactListBean = mock(CreateContactListCommand.class);
+		when(createContactListBean.executeCommand(options))
+				.thenReturn(new ResponseContainer<CreateContactListResponse>(response));
+
+		engage.setCreateContactListBean(createContactListBean);
+
+		ResponseContainer<CreateContactListResponse> responseContainer = engage.createContactList(options);
+
+		assertEquals(responseContainer.getClass(), ResponseContainer.class);
+		assertEquals(responseContainer.getResposne().getClass(), CreateContactListResponse.class);
+		assertEquals(responseContainer.getResposne(), response);
+	}
+
+	public void testDeleteList() {
+		OAuthClient oAuthClient = mock(OAuthClient.class);
+		SFTP sftp = mock(SFTP.class);
+		Engage engage = new Engage(oAuthClient, sftp);
+
+		DeleteListOptions options = new DeleteListOptions(1L);
+		DeleteListResponse response = new DeleteListResponse();
+
+		DeleteListCommand deleteListBean = mock(DeleteListCommand.class);
+		when(deleteListBean.executeCommand(options)).thenReturn(new ResponseContainer<DeleteListResponse>(response));
+
+		engage.setDeleteListBean(deleteListBean);
+
+		ResponseContainer<DeleteListResponse> responseContainer = engage.deleteList(options);
+
+		assertEquals(responseContainer.getClass(), ResponseContainer.class);
+		assertEquals(responseContainer.getResposne().getClass(), DeleteListResponse.class);
 		assertEquals(responseContainer.getResposne(), response);
 	}
 
