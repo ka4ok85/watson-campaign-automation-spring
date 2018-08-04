@@ -144,6 +144,11 @@ public class Engage {
 	private CreateContactListCommand createContactListBean = getApplicationContext()
 			.getBean(CreateContactListCommand.class);
 	private DeleteListCommand deleteListBean = getApplicationContext().getBean(DeleteListCommand.class);
+	private SelectRecipientDataCommand selectRecipientDataBean = getApplicationContext()
+			.getBean(SelectRecipientDataCommand.class);
+	private AddRecipientCommand addRecipientBean = getApplicationContext().getBean(AddRecipientCommand.class);
+	private DoubleOptInRecipientCommand doubleOptInRecipientBean = getApplicationContext()
+			.getBean(DoubleOptInRecipientCommand.class);
 
 	private static AnnotationConfigApplicationContext applicationContext;
 	{
@@ -194,30 +199,25 @@ public class Engage {
 	}
 
 	public ResponseContainer<SelectRecipientDataResponse> selectRecipientData(SelectRecipientDataOptions options) {
-		SelectRecipientDataCommand selectRecipientData = getApplicationContext()
-				.getBean(SelectRecipientDataCommand.class);
-		selectRecipientData.setoAuthClient(oAuthClient);
-		selectRecipientData.setSftp(sftp);
-		ResponseContainer<SelectRecipientDataResponse> result = selectRecipientData.executeCommand(options);
+		selectRecipientDataBean.setoAuthClient(oAuthClient);
+		selectRecipientDataBean.setSftp(sftp);
+		ResponseContainer<SelectRecipientDataResponse> result = selectRecipientDataBean.executeCommand(options);
 
 		return result;
 	}
 
 	public ResponseContainer<AddRecipientResponse> addRecipient(AddRecipientOptions options) {
-		AddRecipientCommand addRecipient = getApplicationContext().getBean(AddRecipientCommand.class);
-		addRecipient.setoAuthClient(oAuthClient);
-		addRecipient.setSftp(sftp);
-		ResponseContainer<AddRecipientResponse> result = addRecipient.executeCommand(options);
+		addRecipientBean.setoAuthClient(oAuthClient);
+		addRecipientBean.setSftp(sftp);
+		ResponseContainer<AddRecipientResponse> result = addRecipientBean.executeCommand(options);
 
 		return result;
 	}
 
 	public ResponseContainer<DoubleOptInRecipientResponse> doubleOptInRecipient(DoubleOptInRecipientOptions options) {
-		DoubleOptInRecipientCommand doubleOptInRecipient = getApplicationContext()
-				.getBean(DoubleOptInRecipientCommand.class);
-		doubleOptInRecipient.setoAuthClient(oAuthClient);
-		doubleOptInRecipient.setSftp(sftp);
-		ResponseContainer<DoubleOptInRecipientResponse> result = doubleOptInRecipient.executeCommand(options);
+		doubleOptInRecipientBean.setoAuthClient(oAuthClient);
+		doubleOptInRecipientBean.setSftp(sftp);
+		ResponseContainer<DoubleOptInRecipientResponse> result = doubleOptInRecipientBean.executeCommand(options);
 
 		return result;
 	}
@@ -576,6 +576,18 @@ public class Engage {
 
 	protected void setDeleteListBean(DeleteListCommand deleteListBean) {
 		this.deleteListBean = deleteListBean;
+	}
+
+	protected void setSelectRecipientDataBean(SelectRecipientDataCommand selectRecipientDataBean) {
+		this.selectRecipientDataBean = selectRecipientDataBean;
+	}
+
+	protected void setAddRecipientBean(AddRecipientCommand addRecipientBean) {
+		this.addRecipientBean = addRecipientBean;
+	}
+
+	protected void setDoubleOptInRecipientBean(DoubleOptInRecipientCommand doubleOptInRecipientBean) {
+		this.doubleOptInRecipientBean = doubleOptInRecipientBean;
 	}
 
 }
