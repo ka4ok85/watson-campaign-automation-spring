@@ -115,3 +115,11 @@ Besides easy access to WCA XML API Library provides additional convenience funct
 - ExportTable
 - RawRecipientDataExport
 - WebTrackingDataExport
+
+Following code snippet will download ExportList API result file to your local machine:
+
+```java
+ExportListOptions options = new ExportListOptions(1L);
+options.setLocalAbsoluteFilePath("c:\\data\\export_list.csv");
+ResponseContainer<ExportListResponse> response = engage.exportList(options);
+```
