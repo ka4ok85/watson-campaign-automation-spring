@@ -57,6 +57,7 @@ public class EngageTest {
 		assertEquals(responseContainer.getResposne(), response);
 	}
 
+	@Test
 	public void testExportList() {
 		OAuthClient oAuthClient = mock(OAuthClient.class);
 		SFTP sftp = mock(SFTP.class);
@@ -77,6 +78,7 @@ public class EngageTest {
 		assertEquals(responseContainer.getResposne(), response);
 	}
 
+	@Test
 	public void testExportTable() {
 		OAuthClient oAuthClient = mock(OAuthClient.class);
 		SFTP sftp = mock(SFTP.class);
@@ -97,6 +99,7 @@ public class EngageTest {
 		assertEquals(responseContainer.getResposne(), response);
 	}
 
+	@Test
 	public void testCreateContactList() {
 		OAuthClient oAuthClient = mock(OAuthClient.class);
 		SFTP sftp = mock(SFTP.class);
@@ -118,6 +121,7 @@ public class EngageTest {
 		assertEquals(responseContainer.getResposne(), response);
 	}
 
+	@Test
 	public void testDeleteList() {
 		OAuthClient oAuthClient = mock(OAuthClient.class);
 		SFTP sftp = mock(SFTP.class);
