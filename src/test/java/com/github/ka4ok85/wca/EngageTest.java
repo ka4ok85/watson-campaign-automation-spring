@@ -9,26 +9,35 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.ka4ok85.wca.command.AddRecipientCommand;
 import com.github.ka4ok85.wca.command.CreateContactListCommand;
 import com.github.ka4ok85.wca.command.DeleteListCommand;
+import com.github.ka4ok85.wca.command.DoubleOptInRecipientCommand;
 import com.github.ka4ok85.wca.command.ExportListCommand;
 import com.github.ka4ok85.wca.command.ExportTableCommand;
 import com.github.ka4ok85.wca.command.GetFolderPathCommand;
+import com.github.ka4ok85.wca.command.SelectRecipientDataCommand;
 import com.github.ka4ok85.wca.config.SpringConfig;
 import com.github.ka4ok85.wca.constants.GetFolderPathObjectType;
 import com.github.ka4ok85.wca.constants.Visibility;
 import com.github.ka4ok85.wca.oauth.OAuthClient;
+import com.github.ka4ok85.wca.options.AddRecipientOptions;
 import com.github.ka4ok85.wca.options.CreateContactListOptions;
 import com.github.ka4ok85.wca.options.DeleteListOptions;
+import com.github.ka4ok85.wca.options.DoubleOptInRecipientOptions;
 import com.github.ka4ok85.wca.options.ExportListOptions;
 import com.github.ka4ok85.wca.options.ExportTableOptions;
 import com.github.ka4ok85.wca.options.GetFolderPathOptions;
+import com.github.ka4ok85.wca.options.SelectRecipientDataOptions;
+import com.github.ka4ok85.wca.response.AddRecipientResponse;
 import com.github.ka4ok85.wca.response.CreateContactListResponse;
 import com.github.ka4ok85.wca.response.DeleteListResponse;
+import com.github.ka4ok85.wca.response.DoubleOptInRecipientResponse;
 import com.github.ka4ok85.wca.response.ExportListResponse;
 import com.github.ka4ok85.wca.response.ExportTableResponse;
 import com.github.ka4ok85.wca.response.GetFolderPathResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
+import com.github.ka4ok85.wca.response.SelectRecipientDataResponse;
 import com.github.ka4ok85.wca.sftp.SFTP;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -139,6 +148,71 @@ public class EngageTest {
 
 		assertEquals(responseContainer.getClass(), ResponseContainer.class);
 		assertEquals(responseContainer.getResposne().getClass(), DeleteListResponse.class);
+		assertEquals(responseContainer.getResposne(), response);
+	}
+
+	@Test
+	public void testSelectRecipientData() {
+		OAuthClient oAuthClient = mock(OAuthClient.class);
+		SFTP sftp = mock(SFTP.class);
+		Engage engage = new Engage(oAuthClient, sftp);
+
+		SelectRecipientDataOptions options = new SelectRecipientDataOptions(1L);
+		SelectRecipientDataResponse response = new SelectRecipientDataResponse();
+		SelectRecipientDataCommand selectRecipientDataBean = mock(SelectRecipientDataCommand.class);
+		when(selectRecipientDataBean.executeCommand(options))
+				.thenReturn(new ResponseContainer<SelectRecipientDataResponse>(response));
+
+		engage.setSelectRecipientDataBean(selectRecipientDataBean);
+
+		ResponseContainer<SelectRecipientDataResponse> responseContainer = engage.selectRecipientData(options);
+
+		assertEquals(responseContainer.getClass(), ResponseContainer.class);
+		assertEquals(responseContainer.getResposne().getClass(), SelectRecipientDataResponse.class);
+		assertEquals(responseContainer.getResposne(), response);
+	}
+
+	@Test
+	public void testAddRecipient() {
+		OAuthClient oAuthClient = mock(OAuthClient.class);
+		SFTP sftp = mock(SFTP.class);
+		Engage engage = new Engage(oAuthClient, sftp);
+
+		AddRecipientOptions options = new AddRecipientOptions(1L);
+		AddRecipientResponse response = new AddRecipientResponse();
+
+		AddRecipientCommand addRecipientBean = mock(AddRecipientCommand.class);
+		when(addRecipientBean.executeCommand(options))
+				.thenReturn(new ResponseContainer<AddRecipientResponse>(response));
+
+		engage.setAddRecipientBean(addRecipientBean);
+
+		ResponseContainer<AddRecipientResponse> responseContainer = engage.addRecipient(options);
+
+		assertEquals(responseContainer.getClass(), ResponseContainer.class);
+		assertEquals(responseContainer.getResposne().getClass(), AddRecipientResponse.class);
+		assertEquals(responseContainer.getResposne(), response);
+	}
+
+	@Test
+	public void testDoubleOptInRecipient() {
+		OAuthClient oAuthClient = mock(OAuthClient.class);
+		SFTP sftp = mock(SFTP.class);
+		Engage engage = new Engage(oAuthClient, sftp);
+
+		DoubleOptInRecipientOptions options = new DoubleOptInRecipientOptions(1L);
+		DoubleOptInRecipientResponse response = new DoubleOptInRecipientResponse();
+
+		DoubleOptInRecipientCommand doubleOptInRecipientBean = mock(DoubleOptInRecipientCommand.class);
+		when(doubleOptInRecipientBean.executeCommand(options))
+				.thenReturn(new ResponseContainer<DoubleOptInRecipientResponse>(response));
+
+		engage.setDoubleOptInRecipientBean(doubleOptInRecipientBean);
+
+		ResponseContainer<DoubleOptInRecipientResponse> responseContainer = engage.doubleOptInRecipient(options);
+
+		assertEquals(responseContainer.getClass(), ResponseContainer.class);
+		assertEquals(responseContainer.getResposne().getClass(), DoubleOptInRecipientResponse.class);
 		assertEquals(responseContainer.getResposne(), response);
 	}
 
