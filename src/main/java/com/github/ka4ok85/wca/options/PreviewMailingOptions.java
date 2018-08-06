@@ -1,5 +1,8 @@
 package com.github.ka4ok85.wca.options;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 public class PreviewMailingOptions extends AbstractOptions {
 
 	private final Long mailingId;
@@ -18,6 +21,13 @@ public class PreviewMailingOptions extends AbstractOptions {
 	}
 
 	public void setRecipientEmail(String recipientEmail) {
+		try {
+			InternetAddress emailAddr = new InternetAddress(recipientEmail);
+			emailAddr.validate();
+		} catch (AddressException ex) {
+			throw new RuntimeException("Bad Recipient Email: " + recipientEmail);
+		}
+
 		this.recipientEmail = recipientEmail;
 	}
 
