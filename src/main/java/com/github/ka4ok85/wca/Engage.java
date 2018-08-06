@@ -152,6 +152,9 @@ public class Engage {
 	private UpdateRecipientCommand updateRecipientBean = getApplicationContext().getBean(UpdateRecipientCommand.class);
 	private OptOutRecipientCommand optOutRecipientBean = getApplicationContext().getBean(OptOutRecipientCommand.class);
 	private RemoveRecipientCommand removeRecipientBean = getApplicationContext().getBean(RemoveRecipientCommand.class);
+	private GetListsCommand getListsBean = getApplicationContext().getBean(GetListsCommand.class);
+	private CreateTableCommand createTableBean = getApplicationContext().getBean(CreateTableCommand.class);
+	private JoinTableCommand joinTableBean = getApplicationContext().getBean(JoinTableCommand.class);
 
 	private static AnnotationConfigApplicationContext applicationContext;
 	{
@@ -250,28 +253,25 @@ public class Engage {
 	}
 
 	public ResponseContainer<GetListsResponse> getLists(GetListsOptions options) {
-		GetListsCommand getLists = getApplicationContext().getBean(GetListsCommand.class);
-		getLists.setoAuthClient(oAuthClient);
-		getLists.setSftp(sftp);
-		ResponseContainer<GetListsResponse> result = getLists.executeCommand(options);
+		getListsBean.setoAuthClient(oAuthClient);
+		getListsBean.setSftp(sftp);
+		ResponseContainer<GetListsResponse> result = getListsBean.executeCommand(options);
 
 		return result;
 	}
 
 	public ResponseContainer<CreateTableResponse> createTable(CreateTableOptions options) {
-		CreateTableCommand createTable = getApplicationContext().getBean(CreateTableCommand.class);
-		createTable.setoAuthClient(oAuthClient);
-		createTable.setSftp(sftp);
-		ResponseContainer<CreateTableResponse> result = createTable.executeCommand(options);
+		createTableBean.setoAuthClient(oAuthClient);
+		createTableBean.setSftp(sftp);
+		ResponseContainer<CreateTableResponse> result = createTableBean.executeCommand(options);
 
 		return result;
 	}
 
 	public ResponseContainer<JoinTableResponse> joinTable(JoinTableOptions options) {
-		JoinTableCommand joinTable = getApplicationContext().getBean(JoinTableCommand.class);
-		joinTable.setoAuthClient(oAuthClient);
-		joinTable.setSftp(sftp);
-		ResponseContainer<JoinTableResponse> result = joinTable.executeCommand(options);
+		joinTableBean.setoAuthClient(oAuthClient);
+		joinTableBean.setSftp(sftp);
+		ResponseContainer<JoinTableResponse> result = joinTableBean.executeCommand(options);
 
 		return result;
 	}
@@ -600,6 +600,18 @@ public class Engage {
 
 	protected void setRemoveRecipientBean(RemoveRecipientCommand removeRecipientBean) {
 		this.removeRecipientBean = removeRecipientBean;
+	}
+
+	protected void setGetListsBean(GetListsCommand getListsBean) {
+		this.getListsBean = getListsBean;
+	}
+
+	protected void setCreateTableBean(CreateTableCommand createTableBean) {
+		this.createTableBean = createTableBean;
+	}
+
+	protected void setJoinTableBean(JoinTableCommand joinTableBean) {
+		this.joinTableBean = joinTableBean;
 	}
 
 }
