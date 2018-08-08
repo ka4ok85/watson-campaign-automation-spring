@@ -1,7 +1,21 @@
 package com.github.ka4ok85.wca.utils;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import com.github.ka4ok85.wca.constants.ImportFileFormat;
 import com.github.ka4ok85.wca.constants.ImportMapperAction;
@@ -22,6 +36,10 @@ public class ImportMapper {
 	private List<String> syncFields = new ArrayList<String>();
 	private List<ImportMapperListColumn> columns = new ArrayList<ImportMapperListColumn>();
 	private List<Long> contactLists = new ArrayList<Long>();
+	
+	
+	private Document doc;
+	private Node currentNode;
 
 	public ImportMapper(ImportMapperAction importMapperAction, Visibility visibility) {
 		super();
@@ -154,4 +172,117 @@ public class ImportMapper {
 		this.contactLists = contactLists;
 	}
 
+	
+	
+	
+	public void generateFile(String fileName) {
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder;
+		try {
+			docBuilder = docFactory.newDocumentBuilder();
+			doc = docBuilder.newDocument();
+			currentNode = doc;
+
+			Element rootElement = doc.createElement("LIST_IMPORT");
+			currentNode = addChildNode(rootElement, null);
+			
+			Element listInfoElement = doc.createElement("LIST_INFO");
+			addChildNode(listInfoElement, null);
+			
+			Element actionElement = doc.createElement("ACTION");
+			actionElement.setTextContent(importMapperAction.value());
+			addChildNode(actionElement, listInfoElement);
+			
+			Element listTypeElement = doc.createElement("LIST_TYPE");
+			listTypeElement.setTextContent(listType.value().toString());
+			addChildNode(listTypeElement, listInfoElement);
+			
+			if (listName != null) {
+				Element listNameElement = doc.createElement("LIST_NAME");
+				listNameElement.setTextContent(listName);
+				addChildNode(listNameElement, listInfoElement);
+			}
+			
+			if (listId != null) {
+				Element listIdElement = doc.createElement("LIST_ID");
+				listIdElement.setTextContent(listId.toString());
+				addChildNode(listIdElement, listInfoElement);
+			}
+			
+			if (listId != null) {
+				Element listIdElement = doc.createElement("LIST_ID");
+				listIdElement.setTextContent(listId.toString());
+				addChildNode(listIdElement, listInfoElement);
+			}
+			
+			if (parentFolderPath != null) {
+				Element parentFolderPathElement = doc.createElement("PARENT_FOLDER_PATH");
+				parentFolderPathElement.setTextContent(parentFolderPath);
+				addChildNode(parentFolderPathElement, listInfoElement);
+			}
+			
+			Element fileFormatElement = doc.createElement("FILE_TYPE");
+			fileFormatElement.setTextContent(fileFormat.value().toString());
+			addChildNode(fileFormatElement, listInfoElement);
+			
+			if (hasHeaders) {
+				Element hasHeadersElement = doc.createElement("HASHEADERS");
+				hasHeadersElement.setTextContent("true");
+				addChildNode(hasHeadersElement, listInfoElement);
+			}
+			
+			if (isEncodedAsMd5) {
+				Element isEncodedAsMd5Element = doc.createElement("ENCODED_AS_MD5");
+				isEncodedAsMd5Element.setTextContent("true");
+				addChildNode(isEncodedAsMd5Element, listInfoElement);
+			}
+			
+			
+			String out = getXML();
+			System.out.println(out);
+			
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	protected Node addChildNode(Node childNode, Node parentNode) {
+		if (parentNode == null) {
+			this.currentNode.appendChild(childNode);
+		} else {
+			parentNode.appendChild(childNode);
+		}
+
+		return childNode;
+	}
+	
+	protected String getXML() {
+		DOMSource domSource = new DOMSource(doc);
+		StringWriter writer = new StringWriter();
+		StreamResult result = new StreamResult(writer);
+		TransformerFactory tf = TransformerFactory.newInstance();
+		Transformer transformer;
+		try {
+			transformer = tf.newTransformer();
+			transformer.transform(domSource, result);
+		} catch (TransformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return writer.toString();
+	}
+
+	@Override
+	public String toString() {
+		return "ImportMapper [importMapperAction=" + importMapperAction + ", listType=" + listType + ", listName="
+				+ listName + ", listId=" + listId + ", visibility=" + visibility + ", parentFolderPath="
+				+ parentFolderPath + ", fileFormat=" + fileFormat + ", hasHeaders=" + hasHeaders + ", isEncodedAsMd5="
+				+ isEncodedAsMd5 + ", syncFields=" + syncFields + ", columns=" + columns + ", contactLists="
+				+ contactLists + "]";
+	}
+
+	
+	
 }
