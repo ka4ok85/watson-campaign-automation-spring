@@ -155,6 +155,11 @@ public class Engage {
 	private GetListsCommand getListsBean = getApplicationContext().getBean(GetListsCommand.class);
 	private CreateTableCommand createTableBean = getApplicationContext().getBean(CreateTableCommand.class);
 	private JoinTableCommand joinTableBean = getApplicationContext().getBean(JoinTableCommand.class);
+	private InsertUpdateRelationalTableCommand insertUpdateRelationalTableBean = getApplicationContext()
+			.getBean(InsertUpdateRelationalTableCommand.class);
+	private DeleteRelationalTableDataCommand deleteRelationalTableDataBean = getApplicationContext()
+			.getBean(DeleteRelationalTableDataCommand.class);
+	private PurgeTableCommand purgeTableBean = getApplicationContext().getBean(PurgeTableCommand.class);
 
 	private static AnnotationConfigApplicationContext applicationContext;
 	{
@@ -278,11 +283,9 @@ public class Engage {
 
 	public ResponseContainer<InsertUpdateRelationalTableResponse> insertUpdateRelationalTable(
 			InsertUpdateRelationalTableOptions options) {
-		InsertUpdateRelationalTableCommand insertUpdateRelationalTable = getApplicationContext()
-				.getBean(InsertUpdateRelationalTableCommand.class);
-		insertUpdateRelationalTable.setoAuthClient(oAuthClient);
-		insertUpdateRelationalTable.setSftp(sftp);
-		ResponseContainer<InsertUpdateRelationalTableResponse> result = insertUpdateRelationalTable
+		insertUpdateRelationalTableBean.setoAuthClient(oAuthClient);
+		insertUpdateRelationalTableBean.setSftp(sftp);
+		ResponseContainer<InsertUpdateRelationalTableResponse> result = insertUpdateRelationalTableBean
 				.executeCommand(options);
 
 		return result;
@@ -290,20 +293,18 @@ public class Engage {
 
 	public ResponseContainer<DeleteRelationalTableDataResponse> deleteRelationalTableData(
 			DeleteRelationalTableDataOptions options) {
-		DeleteRelationalTableDataCommand deleteRelationalTableData = getApplicationContext()
-				.getBean(DeleteRelationalTableDataCommand.class);
-		deleteRelationalTableData.setoAuthClient(oAuthClient);
-		deleteRelationalTableData.setSftp(sftp);
-		ResponseContainer<DeleteRelationalTableDataResponse> result = deleteRelationalTableData.executeCommand(options);
+		deleteRelationalTableDataBean.setoAuthClient(oAuthClient);
+		deleteRelationalTableDataBean.setSftp(sftp);
+		ResponseContainer<DeleteRelationalTableDataResponse> result = deleteRelationalTableDataBean
+				.executeCommand(options);
 
 		return result;
 	}
 
 	public ResponseContainer<PurgeTableResponse> purgeTable(PurgeTableOptions options) {
-		PurgeTableCommand purgeTable = getApplicationContext().getBean(PurgeTableCommand.class);
-		purgeTable.setoAuthClient(oAuthClient);
-		purgeTable.setSftp(sftp);
-		ResponseContainer<PurgeTableResponse> result = purgeTable.executeCommand(options);
+		purgeTableBean.setoAuthClient(oAuthClient);
+		purgeTableBean.setSftp(sftp);
+		ResponseContainer<PurgeTableResponse> result = purgeTableBean.executeCommand(options);
 
 		return result;
 	}
@@ -612,6 +613,19 @@ public class Engage {
 
 	protected void setJoinTableBean(JoinTableCommand joinTableBean) {
 		this.joinTableBean = joinTableBean;
+	}
+
+	protected void setInsertUpdateRelationalTableBean(
+			InsertUpdateRelationalTableCommand insertUpdateRelationalTableBean) {
+		this.insertUpdateRelationalTableBean = insertUpdateRelationalTableBean;
+	}
+
+	protected void setDeleteRelationalTableDataBean(DeleteRelationalTableDataCommand deleteRelationalTableDataBean) {
+		this.deleteRelationalTableDataBean = deleteRelationalTableDataBean;
+	}
+
+	protected void setPurgeTableBean(PurgeTableCommand purgeTableBean) {
+		this.purgeTableBean = purgeTableBean;
 	}
 
 }
