@@ -47,15 +47,15 @@ public class ImportMapper {
 		this.visibility = visibility;
 	}
 
-	protected ImportMapperAction getImportMapperAction() {
+	public ImportMapperAction getImportMapperAction() {
 		return importMapperAction;
 	}
 
-	protected ListType getListType() {
+	public ListType getListType() {
 		return listType;
 	}
 
-	protected void setListType(ListType listType) {
+	public void setListType(ListType listType) {
 		if (listType != ListType.DATABASES || listType != ListType.SUPPRESSION_LISTS
 				|| listType != ListType.SEED_LISTS) {
 			throw new RuntimeException("Only Database, Suppression or Seed List supported");
@@ -64,11 +64,11 @@ public class ImportMapper {
 		this.listType = listType;
 	}
 
-	protected String getListName() {
+	public String getListName() {
 		return listName;
 	}
 
-	protected void setListName(String listName) {
+	public void setListName(String listName) {
 		if (listName == null || listName.trim().isEmpty()) {
 			throw new RuntimeException("List Name must be non-empty String. Provided List Name = " + listName);
 		}
@@ -81,11 +81,11 @@ public class ImportMapper {
 		this.listId = null;
 	}
 
-	protected Long getListId() {
+	public Long getListId() {
 		return listId;
 	}
 
-	protected void setListId(Long listId) {
+	public void setListId(Long listId) {
 		if (listId == null || listId < 1) {
 			throw new RuntimeException("List ID must be greater than zero. Provided List ID = " + listId);
 		}
@@ -98,11 +98,11 @@ public class ImportMapper {
 		this.listName = null;
 	}
 
-	protected String getParentFolderPath() {
+	public String getParentFolderPath() {
 		return parentFolderPath;
 	}
 
-	protected void setParentFolderPath(String parentFolderPath) {
+	public void setParentFolderPath(String parentFolderPath) {
 		if (parentFolderPath == null || parentFolderPath.trim().isEmpty()) {
 			throw new RuntimeException(
 					"Parent Folder Path must be non-empty String. Provided Parent Folder Path = " + parentFolderPath);
@@ -116,15 +116,15 @@ public class ImportMapper {
 		this.listId = null;
 	}
 
-	protected Visibility getVisibility() {
+	public Visibility getVisibility() {
 		return visibility;
 	}
 
-	protected ImportFileFormat getFileFormat() {
+	public ImportFileFormat getFileFormat() {
 		return fileFormat;
 	}
 
-	protected void setFileFormat(ImportFileFormat fileFormat) {
+	public void setFileFormat(ImportFileFormat fileFormat) {
 		if (fileFormat == null) {
 			throw new RuntimeException("File Format can not be null");
 		}
@@ -132,43 +132,47 @@ public class ImportMapper {
 		this.fileFormat = fileFormat;
 	}
 
-	protected boolean isHasHeaders() {
+	public boolean isHasHeaders() {
 		return hasHeaders;
 	}
 
-	protected void setHasHeaders(boolean hasHeaders) {
+	public void setHasHeaders(boolean hasHeaders) {
 		this.hasHeaders = hasHeaders;
 	}
 
-	protected boolean isEncodedAsMd5() {
+	public boolean isEncodedAsMd5() {
 		return isEncodedAsMd5;
 	}
 
-	protected void setEncodedAsMd5(boolean isEncodedAsMd5) {
+	public void setEncodedAsMd5(boolean isEncodedAsMd5) {
 		this.isEncodedAsMd5 = isEncodedAsMd5;
 	}
 
-	protected List<String> getSyncFields() {
+	public List<String> getSyncFields() {
 		return syncFields;
 	}
 
-	protected void setSyncFields(List<String> syncFields) {
+	public void setSyncFields(List<String> syncFields) {
+		if (syncFields == null) {
+			throw new RuntimeException("Sync Fields can not be null");
+		}
+
 		this.syncFields = syncFields;
 	}
 
-	protected List<ImportMapperListColumn> getColumns() {
+	public List<ImportMapperListColumn> getColumns() {
 		return columns;
 	}
 
-	protected void setColumns(List<ImportMapperListColumn> columns) {
+	public void setColumns(List<ImportMapperListColumn> columns) {
 		this.columns = columns;
 	}
 
-	protected List<Long> getContactLists() {
+	public List<Long> getContactLists() {
 		return contactLists;
 	}
 
-	protected void setContactLists(List<Long> contactLists) {
+	public void setContactLists(List<Long> contactLists) {
 		this.contactLists = contactLists;
 	}
 
@@ -237,6 +241,21 @@ public class ImportMapper {
 				addChildNode(isEncodedAsMd5Element, listInfoElement);
 			}
 			
+			if (syncFields.size() > 0) {
+				Element syncFieldsElement = doc.createElement("SYNC_FIELDS");
+				addChildNode(syncFieldsElement, currentNode);
+				for (String syncField : syncFields) {
+					Element syncFieldElement = doc.createElement("SYNC_FIELD");
+					addChildNode(syncFieldElement, syncFieldsElement);
+					
+					Element syncFieldNameElement = doc.createElement("NAME");
+					syncFieldNameElement.setTextContent(syncField);
+					addChildNode(syncFieldNameElement, syncFieldElement);
+				}
+				
+
+			}
+			
 			
 			String out = getXML();
 			System.out.println(out);
@@ -247,7 +266,7 @@ public class ImportMapper {
 		
 	}
 
-	protected Node addChildNode(Node childNode, Node parentNode) {
+	public Node addChildNode(Node childNode, Node parentNode) {
 		if (parentNode == null) {
 			this.currentNode.appendChild(childNode);
 		} else {
@@ -257,7 +276,7 @@ public class ImportMapper {
 		return childNode;
 	}
 	
-	protected String getXML() {
+	public String getXML() {
 		DOMSource domSource = new DOMSource(doc);
 		StringWriter writer = new StringWriter();
 		StreamResult result = new StreamResult(writer);
