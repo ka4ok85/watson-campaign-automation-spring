@@ -332,6 +332,16 @@ public class ImportMapper {
 				}
 			}
 			
+			if (contactLists.size() > 0) {
+				Element contactListsElement = doc.createElement("CONTACT_LISTS");
+				addChildNode(contactListsElement, currentNode);
+				for (Long contactList : contactLists) {
+					Element contactListElement = doc.createElement("CONTACT_LIST_ID");
+					contactListElement.setTextContent(contactList.toString());
+					addChildNode(contactListElement, contactListsElement);
+				}
+			}
+			
 			
 			String out = getXML();
 			System.out.println(out);
