@@ -16,13 +16,16 @@ import com.github.ka4ok85.wca.command.AddRecipientCommand;
 import com.github.ka4ok85.wca.command.CreateContactListCommand;
 import com.github.ka4ok85.wca.command.CreateTableCommand;
 import com.github.ka4ok85.wca.command.DeleteListCommand;
+import com.github.ka4ok85.wca.command.DeleteRelationalTableDataCommand;
 import com.github.ka4ok85.wca.command.DoubleOptInRecipientCommand;
 import com.github.ka4ok85.wca.command.ExportListCommand;
 import com.github.ka4ok85.wca.command.ExportTableCommand;
 import com.github.ka4ok85.wca.command.GetFolderPathCommand;
 import com.github.ka4ok85.wca.command.GetListsCommand;
+import com.github.ka4ok85.wca.command.InsertUpdateRelationalTableCommand;
 import com.github.ka4ok85.wca.command.JoinTableCommand;
 import com.github.ka4ok85.wca.command.OptOutRecipientCommand;
+import com.github.ka4ok85.wca.command.PurgeTableCommand;
 import com.github.ka4ok85.wca.command.RemoveRecipientCommand;
 import com.github.ka4ok85.wca.command.SelectRecipientDataCommand;
 import com.github.ka4ok85.wca.command.UpdateRecipientCommand;
@@ -34,13 +37,16 @@ import com.github.ka4ok85.wca.options.AddRecipientOptions;
 import com.github.ka4ok85.wca.options.CreateContactListOptions;
 import com.github.ka4ok85.wca.options.CreateTableOptions;
 import com.github.ka4ok85.wca.options.DeleteListOptions;
+import com.github.ka4ok85.wca.options.DeleteRelationalTableDataOptions;
 import com.github.ka4ok85.wca.options.DoubleOptInRecipientOptions;
 import com.github.ka4ok85.wca.options.ExportListOptions;
 import com.github.ka4ok85.wca.options.ExportTableOptions;
 import com.github.ka4ok85.wca.options.GetFolderPathOptions;
 import com.github.ka4ok85.wca.options.GetListsOptions;
+import com.github.ka4ok85.wca.options.InsertUpdateRelationalTableOptions;
 import com.github.ka4ok85.wca.options.JoinTableOptions;
 import com.github.ka4ok85.wca.options.OptOutRecipientOptions;
+import com.github.ka4ok85.wca.options.PurgeTableOptions;
 import com.github.ka4ok85.wca.options.RemoveRecipientOptions;
 import com.github.ka4ok85.wca.options.SelectRecipientDataOptions;
 import com.github.ka4ok85.wca.options.UpdateRecipientOptions;
@@ -48,13 +54,16 @@ import com.github.ka4ok85.wca.response.AddRecipientResponse;
 import com.github.ka4ok85.wca.response.CreateContactListResponse;
 import com.github.ka4ok85.wca.response.CreateTableResponse;
 import com.github.ka4ok85.wca.response.DeleteListResponse;
+import com.github.ka4ok85.wca.response.DeleteRelationalTableDataResponse;
 import com.github.ka4ok85.wca.response.DoubleOptInRecipientResponse;
 import com.github.ka4ok85.wca.response.ExportListResponse;
 import com.github.ka4ok85.wca.response.ExportTableResponse;
 import com.github.ka4ok85.wca.response.GetFolderPathResponse;
 import com.github.ka4ok85.wca.response.GetListsResponse;
+import com.github.ka4ok85.wca.response.InsertUpdateRelationalTableResponse;
 import com.github.ka4ok85.wca.response.JoinTableResponse;
 import com.github.ka4ok85.wca.response.OptOutRecipientResponse;
+import com.github.ka4ok85.wca.response.PurgeTableResponse;
 import com.github.ka4ok85.wca.response.RemoveRecipientResponse;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.SelectRecipientDataResponse;
@@ -366,6 +375,74 @@ public class EngageTest {
 
 		assertEquals(responseContainer.getClass(), ResponseContainer.class);
 		assertEquals(responseContainer.getResposne().getClass(), JoinTableResponse.class);
+		assertEquals(responseContainer.getResposne(), response);
+	}
+
+	@Test
+	public void testInsertUpdateRelationalTable() {
+		OAuthClient oAuthClient = mock(OAuthClient.class);
+		SFTP sftp = mock(SFTP.class);
+		Engage engage = new Engage(oAuthClient, sftp);
+
+		InsertUpdateRelationalTableOptions options = new InsertUpdateRelationalTableOptions(1L);
+		InsertUpdateRelationalTableResponse response = new InsertUpdateRelationalTableResponse();
+
+		InsertUpdateRelationalTableCommand insertUpdateRelationalTableBean = mock(
+				InsertUpdateRelationalTableCommand.class);
+		when(insertUpdateRelationalTableBean.executeCommand(options))
+				.thenReturn(new ResponseContainer<InsertUpdateRelationalTableResponse>(response));
+
+		engage.setInsertUpdateRelationalTableBean(insertUpdateRelationalTableBean);
+
+		ResponseContainer<InsertUpdateRelationalTableResponse> responseContainer = engage
+				.insertUpdateRelationalTable(options);
+
+		assertEquals(responseContainer.getClass(), ResponseContainer.class);
+		assertEquals(responseContainer.getResposne().getClass(), InsertUpdateRelationalTableResponse.class);
+		assertEquals(responseContainer.getResposne(), response);
+	}
+
+	@Test
+	public void testDeleteRelationalTableData() {
+		OAuthClient oAuthClient = mock(OAuthClient.class);
+		SFTP sftp = mock(SFTP.class);
+		Engage engage = new Engage(oAuthClient, sftp);
+
+		DeleteRelationalTableDataOptions options = new DeleteRelationalTableDataOptions(1L);
+		DeleteRelationalTableDataResponse response = new DeleteRelationalTableDataResponse();
+
+		DeleteRelationalTableDataCommand deleteRelationalTableDataBean = mock(DeleteRelationalTableDataCommand.class);
+		when(deleteRelationalTableDataBean.executeCommand(options))
+				.thenReturn(new ResponseContainer<DeleteRelationalTableDataResponse>(response));
+
+		engage.setDeleteRelationalTableDataBean(deleteRelationalTableDataBean);
+
+		ResponseContainer<DeleteRelationalTableDataResponse> responseContainer = engage
+				.deleteRelationalTableData(options);
+
+		assertEquals(responseContainer.getClass(), ResponseContainer.class);
+		assertEquals(responseContainer.getResposne().getClass(), DeleteRelationalTableDataResponse.class);
+		assertEquals(responseContainer.getResposne(), response);
+	}
+
+	@Test
+	public void testPurgeTable() {
+		OAuthClient oAuthClient = mock(OAuthClient.class);
+		SFTP sftp = mock(SFTP.class);
+		Engage engage = new Engage(oAuthClient, sftp);
+
+		PurgeTableOptions options = new PurgeTableOptions();
+		PurgeTableResponse response = new PurgeTableResponse();
+
+		PurgeTableCommand purgeTableBean = mock(PurgeTableCommand.class);
+		when(purgeTableBean.executeCommand(options)).thenReturn(new ResponseContainer<PurgeTableResponse>(response));
+
+		engage.setPurgeTableBean(purgeTableBean);
+
+		ResponseContainer<PurgeTableResponse> responseContainer = engage.purgeTable(options);
+
+		assertEquals(responseContainer.getClass(), ResponseContainer.class);
+		assertEquals(responseContainer.getResposne().getClass(), PurgeTableResponse.class);
 		assertEquals(responseContainer.getResposne(), response);
 	}
 
