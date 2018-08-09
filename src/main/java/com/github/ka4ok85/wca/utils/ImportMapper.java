@@ -284,10 +284,12 @@ public class ImportMapper {
 					columnIsKeyElement.setTextContent(Boolean.toString(column.isKeyColumn()));
 					addChildNode(columnIsKeyElement, columnElement);
 					
-					Element columnDefaultValueElement = doc.createElement("DEFAULT_VALUE");
-					cdata = doc.createCDATASection(column.getDefaultValue());
-					columnDefaultValueElement.appendChild(cdata);
-					addChildNode(columnDefaultValueElement, columnElement);
+					if (column.getDefaultValue() != null) {
+						Element columnDefaultValueElement = doc.createElement("DEFAULT_VALUE");
+						cdata = doc.createCDATASection(column.getDefaultValue());
+						columnDefaultValueElement.appendChild(cdata);
+						addChildNode(columnDefaultValueElement, columnElement);
+					}
 					
 					
 					if (column.getListColumnType().equals(ListColumnType.SELECTION)) {
@@ -300,6 +302,32 @@ public class ImportMapper {
 							addChildNode(selectionValueElement, selectionValuesElement);
 						}
 					}
+					
+				}
+			}
+			
+			if (columns.size() > 0) {
+				Element mappingElement = doc.createElement("MAPPING");
+				addChildNode(mappingElement, currentNode);
+				int index = 0;
+				for (ImportMapperListColumn column : columns) {
+					index++;
+					
+					Element columnElement = doc.createElement("COLUMN");
+					addChildNode(columnElement, mappingElement);
+					
+					Element columnIndexElement = doc.createElement("INDEX");
+					columnIndexElement.setTextContent(String.valueOf(index));
+					addChildNode(columnIndexElement, columnElement);
+					
+					Element columnNameElement = doc.createElement("NAME");
+					CDATASection cdata = doc.createCDATASection(column.getName());
+					columnNameElement.appendChild(cdata);
+					addChildNode(columnNameElement, columnElement);
+					
+					Element columnIncludeElement = doc.createElement("INCLUDE");
+					columnIncludeElement.setTextContent(Boolean.toString(column.isIncluded()));
+					addChildNode(columnIncludeElement, columnElement);
 					
 				}
 			}
