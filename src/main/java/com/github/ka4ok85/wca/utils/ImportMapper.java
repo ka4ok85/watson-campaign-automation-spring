@@ -13,12 +13,14 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.github.ka4ok85.wca.constants.ImportFileFormat;
 import com.github.ka4ok85.wca.constants.ImportMapperAction;
+import com.github.ka4ok85.wca.constants.ListColumnType;
 import com.github.ka4ok85.wca.constants.ListType;
 import com.github.ka4ok85.wca.constants.Visibility;
 
@@ -165,6 +167,10 @@ public class ImportMapper {
 	}
 
 	public void setColumns(List<ImportMapperListColumn> columns) {
+		if (columns == null) {
+			throw new RuntimeException("Columns can not be null");
+		}
+		
 		this.columns = columns;
 	}
 
@@ -252,8 +258,50 @@ public class ImportMapper {
 					syncFieldNameElement.setTextContent(syncField);
 					addChildNode(syncFieldNameElement, syncFieldElement);
 				}
-				
-
+			}
+			
+			if (columns.size() > 0) {
+				Element columnsElement = doc.createElement("COLUMNS");
+				addChildNode(columnsElement, currentNode);
+				for (ImportMapperListColumn column : columns) {
+					Element columnElement = doc.createElement("COLUMN");
+					addChildNode(columnElement, columnsElement);
+					
+					Element columnNameElement = doc.createElement("NAME");
+					CDATASection cdata = doc.createCDATASection(column.getName());
+					columnNameElement.appendChild(cdata);
+					addChildNode(columnNameElement, columnElement);
+					
+					Element columnTypeElement = doc.createElement("TYPE");
+					columnTypeElement.setTextContent(column.getListColumnType().value().toString());
+					addChildNode(columnTypeElement, columnElement);
+					
+					Element columnIsRequiredElement = doc.createElement("IS_REQUIRED");
+					columnIsRequiredElement.setTextContent(Boolean.toString(column.isRequired()));
+					addChildNode(columnIsRequiredElement, columnElement);
+					
+					Element columnIsKeyElement = doc.createElement("KEY_COLUMN");
+					columnIsKeyElement.setTextContent(Boolean.toString(column.isKeyColumn()));
+					addChildNode(columnIsKeyElement, columnElement);
+					
+					Element columnDefaultValueElement = doc.createElement("DEFAULT_VALUE");
+					cdata = doc.createCDATASection(column.getDefaultValue());
+					columnDefaultValueElement.appendChild(cdata);
+					addChildNode(columnDefaultValueElement, columnElement);
+					
+					
+					if (column.getListColumnType().equals(ListColumnType.SELECTION)) {
+						Element selectionValuesElement = doc.createElement("SELECTION_VALUES");
+						addChildNode(selectionValuesElement, columnElement);
+						for (String selection : column.getSelectionValues()) {
+							Element selectionValueElement = doc.createElement("VALUE");
+							cdata = doc.createCDATASection(selection);
+							selectionValueElement.appendChild(cdata);
+							addChildNode(selectionValueElement, selectionValuesElement);
+						}
+					}
+					
+				}
 			}
 			
 			
