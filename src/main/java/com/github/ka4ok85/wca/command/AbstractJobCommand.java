@@ -31,6 +31,7 @@ abstract public class AbstractJobCommand<T extends AbstractResponse, V extends A
 
 	private String jobIdPath = "JOB_ID";
 	private String jobParametersPath = "*";
+	private boolean allowRetry = true;
 
 	public abstract ResponseContainer<T> readResponse(JobPollingContainer jobPollingContainer, JobResponse jobResponse,
 			V options);
@@ -46,7 +47,7 @@ abstract public class AbstractJobCommand<T extends AbstractResponse, V extends A
 		JobPollingContainer jobPollingContainer = readStartPollingResponse(resultNode);
 
 		JobResponse jobResponse = JobProcessor.waitUntilJobIsCompleted(new JobOptions(jobPollingContainer.getJobId()), oAuthClient,
-				sftp, new WaitForJobCommand());
+				sftp, new WaitForJobCommand(), allowRetry);
 
 		return readResponse(jobPollingContainer, jobResponse, options);
 	}
@@ -91,4 +92,10 @@ abstract public class AbstractJobCommand<T extends AbstractResponse, V extends A
 	public void setJobParametersPath(String jobParametersPath) {
 		this.jobParametersPath = jobParametersPath;
 	}
+
+	protected void setAllowRetry(boolean allowRetry) {
+		this.allowRetry = allowRetry;
+	}
+	
+	
 }
