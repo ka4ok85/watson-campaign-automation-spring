@@ -20,7 +20,7 @@ public class JobProcessor {
 	private static final Logger log = LoggerFactory.getLogger(JobProcessor.class);
 
 	public static JobResponse waitUntilJobIsCompleted(final JobOptions options, OAuthClient oAuthClient, SFTP sftp,
-			final WaitForJobCommand command) {
+			final WaitForJobCommand command, boolean allowRetry) {
 		command.setoAuthClient(oAuthClient);
 		command.setSftp(sftp);
 
@@ -31,9 +31,15 @@ public class JobProcessor {
 
 			log.debug("Current Execution Time for JOB ID {} is {} seconds", options.getJobId(),
 					currentApiExecutionTime);
+
 			if (response.isError()) {
 				// TODO: access error file
-				throw new EngageApiException("WaitForJobCommand failure: " + response.getJobDescription());
+				if (allowRetry) {
+					throw new EngageApiException("WaitForJobCommand failure: " + response.getJobDescription());
+				} else {
+					throw new RuntimeException(
+							"Non-retryable WaitForJobCommand failure: " + response.getJobDescription());
+				}
 			}
 
 			if (response.isCanceled()) {

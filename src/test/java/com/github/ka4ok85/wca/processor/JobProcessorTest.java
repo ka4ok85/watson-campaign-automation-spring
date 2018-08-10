@@ -31,7 +31,7 @@ public class JobProcessorTest {
 		ResponseContainer<JobResponse> responseContainer = new ResponseContainer<JobResponse>(jobResponse);
 
 		when(command.executeCommand(options)).thenReturn(responseContainer);
-		JobResponse response = JobProcessor.waitUntilJobIsCompleted(options, oAuthClient, sftp, command);
+		JobResponse response = JobProcessor.waitUntilJobIsCompleted(options, oAuthClient, sftp, command, false);
 		assertEquals(response, jobResponse);
 	}
 
@@ -49,7 +49,7 @@ public class JobProcessorTest {
 		ResponseContainer<JobResponse> responseContainer = new ResponseContainer<JobResponse>(jobResponse);
 
 		when(command.executeCommand(options)).thenReturn(responseContainer);
-		JobProcessor.waitUntilJobIsCompleted(options, oAuthClient, sftp, command);
+		JobProcessor.waitUntilJobIsCompleted(options, oAuthClient, sftp, command, false);
 	}
 
 	@Test(expected = JobBadStateException.class)
@@ -66,7 +66,7 @@ public class JobProcessorTest {
 		ResponseContainer<JobResponse> responseContainer = new ResponseContainer<JobResponse>(jobResponse);
 
 		when(command.executeCommand(options)).thenReturn(responseContainer);
-		JobProcessor.waitUntilJobIsCompleted(options, oAuthClient, sftp, command);
+		JobProcessor.waitUntilJobIsCompleted(options, oAuthClient, sftp, command, false);
 	}
 
 	@Test
@@ -85,7 +85,7 @@ public class JobProcessorTest {
 		when(command.executeCommand(options)).thenReturn(responseContainer);
 		JobProcessor.setJobCheckInterval(1);
 		JobProcessor.setMaxExecutionTime(5);
-		JobResponse response = JobProcessor.waitUntilJobIsCompleted(options, oAuthClient, sftp, command);
+		JobResponse response = JobProcessor.waitUntilJobIsCompleted(options, oAuthClient, sftp, command, false);
 		assertNull(response);
 	}
 
@@ -105,7 +105,7 @@ public class JobProcessorTest {
 		when(command.executeCommand(options)).thenReturn(responseContainer);
 		JobProcessor.setJobCheckInterval(1);
 		JobProcessor.setMaxExecutionTime(5);
-		JobResponse response = JobProcessor.waitUntilJobIsCompleted(options, oAuthClient, sftp, command);
+		JobResponse response = JobProcessor.waitUntilJobIsCompleted(options, oAuthClient, sftp, command, false);
 		assertNull(response);
 	}
 }
