@@ -1,6 +1,10 @@
 package com.github.ka4ok85.wca.utils;
 
+import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,8 +42,7 @@ public class ImportMapper {
 	private List<String> syncFields = new ArrayList<String>();
 	private List<ImportMapperListColumn> columns = new ArrayList<ImportMapperListColumn>();
 	private List<Long> contactLists = new ArrayList<Long>();
-	
-	
+
 	private Document doc;
 	private Node currentNode;
 
@@ -170,7 +173,7 @@ public class ImportMapper {
 		if (columns == null) {
 			throw new RuntimeException("Columns can not be null");
 		}
-		
+
 		this.columns = columns;
 	}
 
@@ -182,10 +185,18 @@ public class ImportMapper {
 		this.contactLists = contactLists;
 	}
 
-	
-	
-	
-	public void generateFile(String fileName) {
+	public void generateMapFile(String filePath) {
+		String xml = generateXMLString();
+
+		try {
+			Files.write(Paths.get(filePath), xml.getBytes(), StandardOpenOption.CREATE);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+
+	public String generateXMLString() {
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder;
 		try {
@@ -195,103 +206,102 @@ public class ImportMapper {
 
 			Element rootElement = doc.createElement("LIST_IMPORT");
 			currentNode = addChildNode(rootElement, null);
-			
+
 			Element listInfoElement = doc.createElement("LIST_INFO");
 			addChildNode(listInfoElement, null);
-			
+
 			Element actionElement = doc.createElement("ACTION");
 			actionElement.setTextContent(importMapperAction.value());
 			addChildNode(actionElement, listInfoElement);
-			
+
 			Element listTypeElement = doc.createElement("LIST_TYPE");
 			listTypeElement.setTextContent(listType.value().toString());
 			addChildNode(listTypeElement, listInfoElement);
-			
+
 			if (listName != null) {
 				Element listNameElement = doc.createElement("LIST_NAME");
 				listNameElement.setTextContent(listName);
 				addChildNode(listNameElement, listInfoElement);
 			}
-			
+
 			if (listId != null) {
 				Element listIdElement = doc.createElement("LIST_ID");
 				listIdElement.setTextContent(listId.toString());
 				addChildNode(listIdElement, listInfoElement);
 			}
-			
+
 			if (listId != null) {
 				Element listIdElement = doc.createElement("LIST_ID");
 				listIdElement.setTextContent(listId.toString());
 				addChildNode(listIdElement, listInfoElement);
 			}
-			
+
 			if (parentFolderPath != null) {
 				Element parentFolderPathElement = doc.createElement("PARENT_FOLDER_PATH");
 				parentFolderPathElement.setTextContent(parentFolderPath);
 				addChildNode(parentFolderPathElement, listInfoElement);
 			}
-			
+
 			Element fileFormatElement = doc.createElement("FILE_TYPE");
 			fileFormatElement.setTextContent(fileFormat.value().toString());
 			addChildNode(fileFormatElement, listInfoElement);
-			
+
 			if (hasHeaders) {
 				Element hasHeadersElement = doc.createElement("HASHEADERS");
 				hasHeadersElement.setTextContent("true");
 				addChildNode(hasHeadersElement, listInfoElement);
 			}
-			
+
 			if (isEncodedAsMd5) {
 				Element isEncodedAsMd5Element = doc.createElement("ENCODED_AS_MD5");
 				isEncodedAsMd5Element.setTextContent("true");
 				addChildNode(isEncodedAsMd5Element, listInfoElement);
 			}
-			
+
 			if (syncFields.size() > 0) {
 				Element syncFieldsElement = doc.createElement("SYNC_FIELDS");
 				addChildNode(syncFieldsElement, currentNode);
 				for (String syncField : syncFields) {
 					Element syncFieldElement = doc.createElement("SYNC_FIELD");
 					addChildNode(syncFieldElement, syncFieldsElement);
-					
+
 					Element syncFieldNameElement = doc.createElement("NAME");
 					syncFieldNameElement.setTextContent(syncField);
 					addChildNode(syncFieldNameElement, syncFieldElement);
 				}
 			}
-			
+
 			if (columns.size() > 0) {
 				Element columnsElement = doc.createElement("COLUMNS");
 				addChildNode(columnsElement, currentNode);
 				for (ImportMapperListColumn column : columns) {
 					Element columnElement = doc.createElement("COLUMN");
 					addChildNode(columnElement, columnsElement);
-					
+
 					Element columnNameElement = doc.createElement("NAME");
 					CDATASection cdata = doc.createCDATASection(column.getName());
 					columnNameElement.appendChild(cdata);
 					addChildNode(columnNameElement, columnElement);
-					
+
 					Element columnTypeElement = doc.createElement("TYPE");
 					columnTypeElement.setTextContent(column.getListColumnType().value().toString());
 					addChildNode(columnTypeElement, columnElement);
-					
+
 					Element columnIsRequiredElement = doc.createElement("IS_REQUIRED");
 					columnIsRequiredElement.setTextContent(Boolean.toString(column.isRequired()));
 					addChildNode(columnIsRequiredElement, columnElement);
-					
+
 					Element columnIsKeyElement = doc.createElement("KEY_COLUMN");
 					columnIsKeyElement.setTextContent(Boolean.toString(column.isKeyColumn()));
 					addChildNode(columnIsKeyElement, columnElement);
-					
+
 					if (column.getDefaultValue() != null) {
 						Element columnDefaultValueElement = doc.createElement("DEFAULT_VALUE");
 						cdata = doc.createCDATASection(column.getDefaultValue());
 						columnDefaultValueElement.appendChild(cdata);
 						addChildNode(columnDefaultValueElement, columnElement);
 					}
-					
-					
+
 					if (column.getListColumnType().equals(ListColumnType.SELECTION)) {
 						Element selectionValuesElement = doc.createElement("SELECTION_VALUES");
 						addChildNode(selectionValuesElement, columnElement);
@@ -302,36 +312,35 @@ public class ImportMapper {
 							addChildNode(selectionValueElement, selectionValuesElement);
 						}
 					}
-					
+
 				}
 			}
-			
+
 			if (columns.size() > 0) {
 				Element mappingElement = doc.createElement("MAPPING");
 				addChildNode(mappingElement, currentNode);
 				int index = 0;
 				for (ImportMapperListColumn column : columns) {
 					index++;
-					
+
 					Element columnElement = doc.createElement("COLUMN");
 					addChildNode(columnElement, mappingElement);
-					
+
 					Element columnIndexElement = doc.createElement("INDEX");
 					columnIndexElement.setTextContent(String.valueOf(index));
 					addChildNode(columnIndexElement, columnElement);
-					
+
 					Element columnNameElement = doc.createElement("NAME");
 					CDATASection cdata = doc.createCDATASection(column.getName());
 					columnNameElement.appendChild(cdata);
 					addChildNode(columnNameElement, columnElement);
-					
+
 					Element columnIncludeElement = doc.createElement("INCLUDE");
 					columnIncludeElement.setTextContent(Boolean.toString(column.isIncluded()));
 					addChildNode(columnIncludeElement, columnElement);
-					
 				}
 			}
-			
+
 			if (contactLists.size() > 0) {
 				Element contactListsElement = doc.createElement("CONTACT_LISTS");
 				addChildNode(contactListsElement, currentNode);
@@ -341,15 +350,13 @@ public class ImportMapper {
 					addChildNode(contactListElement, contactListsElement);
 				}
 			}
-			
-			
-			String out = getXML();
-			System.out.println(out);
-			
+
+			return getXML();
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
+			return null;
 		}
-		
+
 	}
 
 	public Node addChildNode(Node childNode, Node parentNode) {
@@ -361,7 +368,7 @@ public class ImportMapper {
 
 		return childNode;
 	}
-	
+
 	public String getXML() {
 		DOMSource domSource = new DOMSource(doc);
 		StringWriter writer = new StringWriter();
@@ -388,6 +395,4 @@ public class ImportMapper {
 				+ contactLists + "]";
 	}
 
-	
-	
 }
