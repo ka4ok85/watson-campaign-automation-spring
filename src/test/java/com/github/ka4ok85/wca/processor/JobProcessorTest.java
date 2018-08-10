@@ -36,7 +36,24 @@ public class JobProcessorTest {
 	}
 
 	@Test(expected = EngageApiException.class)
-	public void testWaitUntilJobIsCompletedErrorResponse() {
+	public void testWaitUntilJobIsCompletedErrorResponseRetryable() {
+		OAuthClient oAuthClient = null;
+		SFTP sftp = new SFTP(oAuthClient);
+		Long jobId = 1L;
+		JobOptions options = new JobOptions(jobId);
+
+		WaitForJobCommand command = mock(WaitForJobCommand.class);
+
+		JobResponse jobResponse = new JobResponse();
+		jobResponse.setJobStatus(JobStatus.ERROR);
+		ResponseContainer<JobResponse> responseContainer = new ResponseContainer<JobResponse>(jobResponse);
+
+		when(command.executeCommand(options)).thenReturn(responseContainer);
+		JobProcessor.waitUntilJobIsCompleted(options, oAuthClient, sftp, command, true);
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void testWaitUntilJobIsCompletedErrorResponseNonRetryable() {
 		OAuthClient oAuthClient = null;
 		SFTP sftp = new SFTP(oAuthClient);
 		Long jobId = 1L;
