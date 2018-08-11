@@ -101,6 +101,7 @@ public class ImportMapper {
 
 		this.listId = listId;
 		this.listName = null;
+		this.parentFolderPath = null;
 	}
 
 	public String getParentFolderPath() {
@@ -182,6 +183,14 @@ public class ImportMapper {
 	}
 
 	public void setContactLists(List<Long> contactLists) {
+		if (contactLists == null) {
+			throw new RuntimeException("Contact Lists can not be null");
+		}
+
+		if (importMapperAction == ImportMapperAction.CREATE || importMapperAction == ImportMapperAction.OPT_OUT) {
+			throw new RuntimeException("Contact Lists can not be specified for Create and Opt Out actions");
+		}
+
 		this.contactLists = contactLists;
 	}
 
