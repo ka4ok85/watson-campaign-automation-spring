@@ -51,6 +51,8 @@ public class ImportListCommand extends AbstractJobCommand<ImportListResponse, Im
 	public void buildXmlRequest(ImportListOptions options) {
 		Objects.requireNonNull(options, "ImportListOptions must not be null");
 
+		setAllowRetry(false);
+
 		Element methodElement = doc.createElement(apiMethodName);
 		currentNode = addChildNode(methodElement, null);
 
