@@ -52,25 +52,13 @@ public class ImportMapper {
 		this.visibility = visibility;
 	}
 
-	public ImportMapperAction getImportMapperAction() {
-		return importMapperAction;
-	}
-
-	public ListType getListType() {
-		return listType;
-	}
-
 	public void setListType(ListType listType) {
-		if (listType != ListType.DATABASES || listType != ListType.SUPPRESSION_LISTS
-				|| listType != ListType.SEED_LISTS) {
+		if (listType != ListType.DATABASES && listType != ListType.SUPPRESSION_LISTS
+				&& listType != ListType.SEED_LISTS) {
 			throw new RuntimeException("Only Database, Suppression or Seed List supported");
 		}
 
 		this.listType = listType;
-	}
-
-	public String getListName() {
-		return listName;
 	}
 
 	public void setListName(String listName) {
@@ -84,10 +72,6 @@ public class ImportMapper {
 
 		this.listName = listName;
 		this.listId = null;
-	}
-
-	public Long getListId() {
-		return listId;
 	}
 
 	public void setListId(Long listId) {
@@ -104,10 +88,6 @@ public class ImportMapper {
 		this.parentFolderPath = null;
 	}
 
-	public String getParentFolderPath() {
-		return parentFolderPath;
-	}
-
 	public void setParentFolderPath(String parentFolderPath) {
 		if (parentFolderPath == null || parentFolderPath.trim().isEmpty()) {
 			throw new RuntimeException(
@@ -122,14 +102,6 @@ public class ImportMapper {
 		this.listId = null;
 	}
 
-	public Visibility getVisibility() {
-		return visibility;
-	}
-
-	public ImportFileFormat getFileFormat() {
-		return fileFormat;
-	}
-
 	public void setFileFormat(ImportFileFormat fileFormat) {
 		if (fileFormat == null) {
 			throw new RuntimeException("File Format can not be null");
@@ -138,24 +110,12 @@ public class ImportMapper {
 		this.fileFormat = fileFormat;
 	}
 
-	public boolean isHasHeaders() {
-		return hasHeaders;
-	}
-
 	public void setHasHeaders(boolean hasHeaders) {
 		this.hasHeaders = hasHeaders;
 	}
 
-	public boolean isEncodedAsMd5() {
-		return isEncodedAsMd5;
-	}
-
 	public void setEncodedAsMd5(boolean isEncodedAsMd5) {
 		this.isEncodedAsMd5 = isEncodedAsMd5;
-	}
-
-	public List<String> getSyncFields() {
-		return syncFields;
 	}
 
 	public void setSyncFields(List<String> syncFields) {
@@ -166,20 +126,12 @@ public class ImportMapper {
 		this.syncFields = syncFields;
 	}
 
-	public List<ImportMapperListColumn> getColumns() {
-		return columns;
-	}
-
 	public void setColumns(List<ImportMapperListColumn> columns) {
 		if (columns == null) {
 			throw new RuntimeException("Columns can not be null");
 		}
 
 		this.columns = columns;
-	}
-
-	public List<Long> getContactLists() {
-		return contactLists;
 	}
 
 	public void setContactLists(List<Long> contactLists) {
