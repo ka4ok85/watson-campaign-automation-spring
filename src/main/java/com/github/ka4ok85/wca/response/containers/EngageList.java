@@ -87,7 +87,7 @@ public class EngageList {
 	}
 
 	public void setLastModifiedDate(String lastModifiedText) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy K:mm a");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy h:mm a");
 		this.lastModifiedDate = LocalDateTime.parse(lastModifiedText, formatter);
 	}
 
