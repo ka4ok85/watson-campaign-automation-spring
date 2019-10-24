@@ -104,7 +104,7 @@ public class GetListMetaDataCommand extends AbstractInstantCommand<GetListMetaDa
 		List<ListColumnLimited> columns = new ArrayList<ListColumnLimited>();
 		List<String> keyColumns = new ArrayList<String>();
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy K:mm a");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy h:mm a");
 		try {
 			id = Long.parseLong(((Node) xpath.evaluate("ID", resultNode, XPathConstants.NODE)).getTextContent());
 			name = ((Node) xpath.evaluate("NAME", resultNode, XPathConstants.NODE)).getTextContent();

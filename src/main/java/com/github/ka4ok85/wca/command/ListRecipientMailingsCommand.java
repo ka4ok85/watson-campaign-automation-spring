@@ -89,7 +89,7 @@ public class ListRecipientMailingsCommand
 		XPath xpath = factory.newXPath();
 
 		List<RecipientMailing> mailings = new ArrayList<RecipientMailing>();
-		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy K:mm a");
+		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy h:mm a");
 		try {
 			NodeList mailingsNode = (NodeList) xpath.evaluate("Mailing", resultNode, XPathConstants.NODESET);
 			Node mailingNode;

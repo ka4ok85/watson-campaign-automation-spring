@@ -73,7 +73,7 @@ public class GetListMetaDataCommandTest {
 		GetListMetaDataCommand command = context.getBean(GetListMetaDataCommand.class);
 		GetListMetaDataOptions options = new GetListMetaDataOptions(1L);
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy K:mm a");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy h:mm a");
 		Long id = 1L;
 		String name = "test mailing";
 		Long numOptOuts = 2L;

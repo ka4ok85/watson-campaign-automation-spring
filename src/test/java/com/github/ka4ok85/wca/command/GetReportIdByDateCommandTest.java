@@ -96,7 +96,7 @@ public class GetReportIdByDateCommandTest {
 		assertEquals(mailings.size(), 2);
 		assertEquals(mailings.get(0).getReportId(), reportId1);
 		assertEquals(mailings.get(1).getReportId(), reportId2);
-		final DateTimeFormatter responseFormatter = DateTimeFormatter.ofPattern("M/d/yy K:mm a");
+		final DateTimeFormatter responseFormatter = DateTimeFormatter.ofPattern("M/d/yy h:mm a");
 		assertEquals(mailings.get(0).getSentDateTime(), LocalDateTime.parse(datetime1, responseFormatter));
 		assertEquals(mailings.get(1).getSentDateTime(), LocalDateTime.parse(datetime2, responseFormatter));
 	}

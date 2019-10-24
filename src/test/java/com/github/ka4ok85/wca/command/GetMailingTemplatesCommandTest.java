@@ -195,7 +195,7 @@ public class GetMailingTemplatesCommandTest {
 		GetMailingTemplatesCommand command = context.getBean(GetMailingTemplatesCommand.class);
 		GetMailingTemplatesOptions options = new GetMailingTemplatesOptions();
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy K:mm a");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy h:mm a");
 		String userId = "6d230b87-14af455a8d5-4097dfa4559ed783d26bfeed2dffc966";
 		String mailingName = "Pref Center Mailing";
 		LocalDateTime lastModified = LocalDateTime.of(2017, 2, 3, 15, 34);
@@ -235,7 +235,7 @@ public class GetMailingTemplatesCommandTest {
 		GetMailingTemplatesCommand command = context.getBean(GetMailingTemplatesCommand.class);
 		GetMailingTemplatesOptions options = new GetMailingTemplatesOptions();
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy K:mm a");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy h:mm a");
 		String userId = "6d230b87-14af455a8d5-4097dfa4559ed783d26bfeed2dffc966";
 		String mailingName = "Pref Center Mailing";
 		LocalDateTime lastModified = LocalDateTime.of(2017, 2, 3, 15, 34);

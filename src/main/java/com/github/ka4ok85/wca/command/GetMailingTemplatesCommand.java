@@ -113,7 +113,7 @@ public class GetMailingTemplatesCommand
 		List<MailingTemplate> mailingTempaltes = new ArrayList<MailingTemplate>();
 
 		try {
-			DateTimeFormatter formatterUs = DateTimeFormatter.ofPattern("M/d/yy K:mm a");
+			DateTimeFormatter formatterUs = DateTimeFormatter.ofPattern("M/d/yy h:mm a");
 			NodeList mailingsNode = (NodeList) xpath.evaluate("MAILING_TEMPLATE", resultNode, XPathConstants.NODESET);
 			Node mailingNode;
 			for (int i = 0; i < mailingsNode.getLength(); i++) {

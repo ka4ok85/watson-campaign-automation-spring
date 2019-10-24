@@ -100,7 +100,7 @@ public class ListRecipientMailingsCommandTest {
 		ResponseContainer<ListRecipientMailingsResponse> responseContainer = command.readResponse(resultNode, options);
 		ListRecipientMailingsResponse response = responseContainer.getResposne();
 
-		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy K:mm a");
+		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy h:mm a");
 		assertEquals(response.getMailings().size(), 1);
 		assertEquals(response.getMailings().get(0).getMailingId(), mailingId);
 		assertEquals(response.getMailings().get(0).getMailingName(), mailingName);
