@@ -1,133 +1,15 @@
 package com.github.ka4ok85.wca;
 
+import com.github.ka4ok85.wca.command.*;
+import com.github.ka4ok85.wca.options.*;
+import com.github.ka4ok85.wca.response.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
-import com.github.ka4ok85.wca.command.AddContactToContactListCommand;
-import com.github.ka4ok85.wca.command.AddContactToProgramCommand;
-import com.github.ka4ok85.wca.command.AddListColumnCommand;
-import com.github.ka4ok85.wca.command.AddRecipientCommand;
-import com.github.ka4ok85.wca.command.CalculateQueryCommand;
-import com.github.ka4ok85.wca.command.CreateContactListCommand;
-import com.github.ka4ok85.wca.command.CreateTableCommand;
-import com.github.ka4ok85.wca.command.DeleteListCommand;
-import com.github.ka4ok85.wca.command.DeleteRelationalTableDataCommand;
-import com.github.ka4ok85.wca.command.RawRecipientDataExportCommand;
-import com.github.ka4ok85.wca.command.DeleteTableCommand;
-import com.github.ka4ok85.wca.command.DoubleOptInRecipientCommand;
-import com.github.ka4ok85.wca.command.ExportListCommand;
-import com.github.ka4ok85.wca.command.ExportMailingTemplateCommand;
-import com.github.ka4ok85.wca.command.ExportTableCommand;
-import com.github.ka4ok85.wca.command.GetAggregateTrackingForMailingCommand;
-import com.github.ka4ok85.wca.command.GetAggregateTrackingForOrgCommand;
-import com.github.ka4ok85.wca.command.GetAggregateTrackingForUserCommand;
-import com.github.ka4ok85.wca.command.GetFolderPathCommand;
-import com.github.ka4ok85.wca.command.GetListMetaDataCommand;
-import com.github.ka4ok85.wca.command.GetListsCommand;
-import com.github.ka4ok85.wca.command.GetMailingTemplatesCommand;
-import com.github.ka4ok85.wca.command.GetReportIdByDateCommand;
-import com.github.ka4ok85.wca.command.GetSentMailingsForListCommand;
-import com.github.ka4ok85.wca.command.GetSentMailingsForOrgCommand;
-import com.github.ka4ok85.wca.command.GetSentMailingsForUserCommand;
-import com.github.ka4ok85.wca.command.ImportListCommand;
-import com.github.ka4ok85.wca.command.ImportTableCommand;
-import com.github.ka4ok85.wca.command.InsertUpdateRelationalTableCommand;
-import com.github.ka4ok85.wca.command.PreviewMailingCommand;
-import com.github.ka4ok85.wca.command.JoinTableCommand;
-import com.github.ka4ok85.wca.command.ListRecipientMailingsCommand;
-import com.github.ka4ok85.wca.command.OptOutRecipientCommand;
-import com.github.ka4ok85.wca.command.PurgeDataCommand;
-import com.github.ka4ok85.wca.command.PurgeTableCommand;
-import com.github.ka4ok85.wca.command.RemoveRecipientCommand;
-import com.github.ka4ok85.wca.command.SelectRecipientDataCommand;
-import com.github.ka4ok85.wca.command.UpdateRecipientCommand;
-import com.github.ka4ok85.wca.command.WebTrackingDataExportCommand;
-import com.github.ka4ok85.wca.command.SetColumnValueCommand;
 import com.github.ka4ok85.wca.config.SpringConfig;
 import com.github.ka4ok85.wca.oauth.OAuthClient;
 import com.github.ka4ok85.wca.oauth.OAuthClientImplementation;
-import com.github.ka4ok85.wca.options.AddContactToContactListOptions;
-import com.github.ka4ok85.wca.options.AddContactToProgramOptions;
-import com.github.ka4ok85.wca.options.AddListColumnOptions;
-import com.github.ka4ok85.wca.options.AddRecipientOptions;
-import com.github.ka4ok85.wca.options.CalculateQueryOptions;
-import com.github.ka4ok85.wca.options.CreateContactListOptions;
-import com.github.ka4ok85.wca.options.CreateTableOptions;
-import com.github.ka4ok85.wca.options.DeleteListOptions;
-import com.github.ka4ok85.wca.options.DeleteRelationalTableDataOptions;
-import com.github.ka4ok85.wca.options.DeleteTableOptions;
-import com.github.ka4ok85.wca.options.DoubleOptInRecipientOptions;
-import com.github.ka4ok85.wca.options.ExportListOptions;
-import com.github.ka4ok85.wca.options.ExportMailingTemplateOptions;
-import com.github.ka4ok85.wca.options.ExportTableOptions;
-import com.github.ka4ok85.wca.options.GetAggregateTrackingForMailingOptions;
-import com.github.ka4ok85.wca.options.GetAggregateTrackingForOrgOptions;
-import com.github.ka4ok85.wca.options.GetAggregateTrackingForUserOptions;
-import com.github.ka4ok85.wca.options.GetFolderPathOptions;
-import com.github.ka4ok85.wca.options.GetListMetaDataOptions;
-import com.github.ka4ok85.wca.options.GetListsOptions;
-import com.github.ka4ok85.wca.options.GetMailingTemplatesOptions;
-import com.github.ka4ok85.wca.options.GetReportIdByDateOptions;
-import com.github.ka4ok85.wca.options.GetSentMailingsForListOptions;
-import com.github.ka4ok85.wca.options.GetSentMailingsForOrgOptions;
-import com.github.ka4ok85.wca.options.GetSentMailingsForUserOptions;
-import com.github.ka4ok85.wca.options.ImportListOptions;
-import com.github.ka4ok85.wca.options.ImportTableOptions;
-import com.github.ka4ok85.wca.options.InsertUpdateRelationalTableOptions;
-import com.github.ka4ok85.wca.options.JoinTableOptions;
-import com.github.ka4ok85.wca.options.ListRecipientMailingsOptions;
-import com.github.ka4ok85.wca.options.OptOutRecipientOptions;
-import com.github.ka4ok85.wca.options.PreviewMailingOptions;
-import com.github.ka4ok85.wca.options.PurgeDataOptions;
-import com.github.ka4ok85.wca.options.PurgeTableOptions;
-import com.github.ka4ok85.wca.options.RawRecipientDataExportOptions;
-import com.github.ka4ok85.wca.options.RemoveRecipientOptions;
-import com.github.ka4ok85.wca.options.SelectRecipientDataOptions;
-import com.github.ka4ok85.wca.options.SetColumnValueOptions;
-import com.github.ka4ok85.wca.options.UpdateRecipientOptions;
-import com.github.ka4ok85.wca.options.WebTrackingDataExportOptions;
-import com.github.ka4ok85.wca.response.AddContactToContactListResponse;
-import com.github.ka4ok85.wca.response.AddContactToProgramResponse;
-import com.github.ka4ok85.wca.response.AddListColumnResponse;
-import com.github.ka4ok85.wca.response.AddRecipientResponse;
-import com.github.ka4ok85.wca.response.CalculateQueryResponse;
-import com.github.ka4ok85.wca.response.CreateContactListResponse;
-import com.github.ka4ok85.wca.response.CreateTableResponse;
-import com.github.ka4ok85.wca.response.DeleteListResponse;
-import com.github.ka4ok85.wca.response.DeleteRelationalTableDataResponse;
-import com.github.ka4ok85.wca.response.DeleteTableResponse;
-import com.github.ka4ok85.wca.response.DoubleOptInRecipientResponse;
-import com.github.ka4ok85.wca.response.ExportListResponse;
-import com.github.ka4ok85.wca.response.ExportMailingTemplateResponse;
-import com.github.ka4ok85.wca.response.ExportTableResponse;
-import com.github.ka4ok85.wca.response.GetAggregateTrackingForMailingResponse;
-import com.github.ka4ok85.wca.response.GetAggregateTrackingForOrgResponse;
-import com.github.ka4ok85.wca.response.GetAggregateTrackingForUserResponse;
-import com.github.ka4ok85.wca.response.GetFolderPathResponse;
-import com.github.ka4ok85.wca.response.GetListMetaDataResponse;
-import com.github.ka4ok85.wca.response.GetListsResponse;
-import com.github.ka4ok85.wca.response.GetMailingTemplatesResponse;
-import com.github.ka4ok85.wca.response.GetReportIdByDateResponse;
-import com.github.ka4ok85.wca.response.GetSentMailingsForListResponse;
-import com.github.ka4ok85.wca.response.GetSentMailingsForOrgResponse;
-import com.github.ka4ok85.wca.response.GetSentMailingsForUserResponse;
-import com.github.ka4ok85.wca.response.ImportListResponse;
-import com.github.ka4ok85.wca.response.ImportTableResponse;
-import com.github.ka4ok85.wca.response.InsertUpdateRelationalTableResponse;
-import com.github.ka4ok85.wca.response.JoinTableResponse;
-import com.github.ka4ok85.wca.response.ListRecipientMailingsResponse;
-import com.github.ka4ok85.wca.response.OptOutRecipientResponse;
-import com.github.ka4ok85.wca.response.PreviewMailingResponse;
-import com.github.ka4ok85.wca.response.PurgeDataResponse;
-import com.github.ka4ok85.wca.response.PurgeTableResponse;
-import com.github.ka4ok85.wca.response.RawRecipientDataExportResponse;
-import com.github.ka4ok85.wca.response.RemoveRecipientResponse;
-import com.github.ka4ok85.wca.response.ResponseContainer;
-import com.github.ka4ok85.wca.response.SelectRecipientDataResponse;
-import com.github.ka4ok85.wca.response.SetColumnValueResponse;
-import com.github.ka4ok85.wca.response.UpdateRecipientResponse;
-import com.github.ka4ok85.wca.response.WebTrackingDataExportResponse;
 import com.github.ka4ok85.wca.sftp.SFTP;
 
 import org.springframework.retry.annotation.*;
@@ -160,6 +42,9 @@ public class Engage {
 	private DeleteRelationalTableDataCommand deleteRelationalTableDataBean = getApplicationContext()
 			.getBean(DeleteRelationalTableDataCommand.class);
 	private PurgeTableCommand purgeTableBean = getApplicationContext().getBean(PurgeTableCommand.class);
+
+	private ScheduleMailingCommand scheduleMailingBean = getApplicationContext().getBean(ScheduleMailingCommand.class);
+
 
 	private static AnnotationConfigApplicationContext applicationContext;
 	{
@@ -306,6 +191,13 @@ public class Engage {
 		purgeTableBean.setSftp(sftp);
 		ResponseContainer<PurgeTableResponse> result = purgeTableBean.executeCommand(options);
 
+		return result;
+	}
+
+	public ResponseContainer<ScheduleMailingResponse> scheduleMailing(ScheduleMailingOptions options) {
+		scheduleMailingBean.setoAuthClient(oAuthClient);
+		scheduleMailingBean.setSftp(sftp);
+		ResponseContainer<ScheduleMailingResponse> result = scheduleMailingBean.executeCommand(options);
 		return result;
 	}
 
