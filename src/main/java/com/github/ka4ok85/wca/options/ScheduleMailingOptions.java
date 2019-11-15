@@ -13,6 +13,7 @@ public class ScheduleMailingOptions extends AbstractOptions {
     private Long listId;
     private String mailingName;
     private boolean sendText;
+    private int scheduleInMinutes = 2;
 
     public ScheduleMailingOptions(Long templateId, Long listId, String mailingName){
         this.templateId = templateId;
@@ -25,7 +26,7 @@ public class ScheduleMailingOptions extends AbstractOptions {
 
     public String getCurrentTimeStampPlus10Minutes() {
         Date targetTime = new Date(); //now
-        targetTime = DateUtils.addMinutes(targetTime, 10); //add minute
+        targetTime = DateUtils.addMinutes(targetTime, scheduleInMinutes); //add minute
         return new SimpleDateFormat("dd/mm/yyyy hh:mm:ss a").format(targetTime);
     }
 
@@ -85,5 +86,11 @@ public class ScheduleMailingOptions extends AbstractOptions {
         this.sendText = sendText;
     }
 
+    public int getScheduleInMinutes() {
+        return scheduleInMinutes;
+    }
 
+    public void setScheduleInMinutes(int scheduleInMinutes) {
+        this.scheduleInMinutes = scheduleInMinutes;
+    }
 }
