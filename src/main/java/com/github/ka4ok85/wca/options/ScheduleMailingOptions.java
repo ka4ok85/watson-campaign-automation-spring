@@ -20,11 +20,11 @@ public class ScheduleMailingOptions extends AbstractOptions {
         this.listId = listId;
         this.mailingName = mailingName;
         this.visibility = Visibility.SHARED;
-        this.scheduled = getCurrentTimeStampPlus10Minutes();
+        this.scheduled = getCurrentTimeStampPlusMinutes();
         this.sendText = true;
     }
 
-    public String getCurrentTimeStampPlus10Minutes() {
+    public String getCurrentTimeStampPlusMinutes() {
         Date targetTime = new Date(); //now
         targetTime = DateUtils.addMinutes(targetTime, scheduleInMinutes); //add minute
         return new SimpleDateFormat("dd/mm/yyyy hh:mm:ss a").format(targetTime);
@@ -92,5 +92,6 @@ public class ScheduleMailingOptions extends AbstractOptions {
 
     public void setScheduleInMinutes(int scheduleInMinutes) {
         this.scheduleInMinutes = scheduleInMinutes;
+        this.scheduled = getCurrentTimeStampPlusMinutes();
     }
 }
