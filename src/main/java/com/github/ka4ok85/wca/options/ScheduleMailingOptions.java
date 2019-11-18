@@ -4,6 +4,8 @@ import com.github.ka4ok85.wca.constants.Visibility;
 import org.apache.commons.lang3.time.DateUtils;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class ScheduleMailingOptions extends AbstractOptions {
@@ -25,9 +27,9 @@ public class ScheduleMailingOptions extends AbstractOptions {
     }
 
     public String getCurrentTimeStampPlusMinutes() {
-        Date targetTime = new Date(); //now
-        targetTime = DateUtils.addMinutes(targetTime, scheduleInMinutes); //add minute
-        return new SimpleDateFormat("dd/mm/yyyy hh:mm:ss a").format(targetTime);
+        LocalDateTime someMinutesLater = LocalDateTime.now().plusMinutes(scheduleInMinutes);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a");
+        return someMinutesLater.format(formatter);
     }
 
     public Visibility getVisibility() {
