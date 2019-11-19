@@ -28,7 +28,7 @@ public class ScheduleMailingOptions extends AbstractOptions {
 
     public String getCurrentTimeStampPlusMinutes() {
         LocalDateTime someMinutesLater = LocalDateTime.now().plusMinutes(scheduleInMinutes);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
         return someMinutesLater.format(formatter);
     }
 
