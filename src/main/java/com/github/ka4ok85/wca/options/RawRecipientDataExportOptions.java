@@ -85,7 +85,6 @@ public class RawRecipientDataExportOptions extends AbstractOptions {
 	 *            with "mailingId" and "reportId" keys. Both keys are not
 	 *            required.
 	 * 
-	 * @return POJO Export List Response
 	 */
 	public void setMailingReportId(List<HashMap<String, Long>> mailingReportId) {
 		if (campaignId != null || listId != null) {

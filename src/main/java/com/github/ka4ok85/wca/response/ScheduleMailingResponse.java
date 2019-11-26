@@ -15,8 +15,8 @@ public class ScheduleMailingResponse extends AbstractResponse {
         return this.mailingId;
     }
 
-    public void setMailingId(Long tableId) {
-        this.mailingId = tableId;
+    public void setMailingId(Long mailingId) {
+        this.mailingId = mailingId;
     }
 
     public String toString() {

@@ -230,6 +230,46 @@ public class GetMailingTemplatesCommandTest {
 	}
 
 	@Test
+	public void testReadResponseHonorsDateFormat()
+			throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
+		GetMailingTemplatesCommand command = context.getBean(GetMailingTemplatesCommand.class);
+		GetMailingTemplatesOptions options = new GetMailingTemplatesOptions();
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy h:mm a");
+		String userId = "6d230b87-14af455a8d5-4097dfa4559ed783d26bfeed2dffc966";
+		String mailingName = "Pref Center Mailing";
+		LocalDateTime lastModified = LocalDateTime.of(2017, 2, 3, 12, 34);
+		String subject = "Pref center";
+		Visibility visibility = Visibility.SHARED;
+		Long mailingId = 343652L;
+		Boolean flaggedForBackup = true;
+		Boolean allowCrmBlock = true;
+
+		String envelope = "<RESULT><SUCCESS>TRUE</SUCCESS><MAILING_TEMPLATE><MAILING_ID>" + mailingId
+				+ "</MAILING_ID><MAILING_NAME>" + mailingName + "</MAILING_NAME><SUBJECT>" + subject
+				+ "</SUBJECT><LAST_MODIFIED>" + lastModified.format(formatter) + "</LAST_MODIFIED><VISIBILITY>"
+				+ visibility + "</VISIBILITY><USER_ID>" + userId + "</USER_ID><FLAGGED_FOR_BACKUP>" + flaggedForBackup
+				+ "</FLAGGED_FOR_BACKUP><ALLOW_CRM_BLOCK>" + allowCrmBlock
+				+ "</ALLOW_CRM_BLOCK></MAILING_TEMPLATE></RESULT>";
+		Element resultNode = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+				.parse(new ByteArrayInputStream(envelope.getBytes())).getDocumentElement();
+
+		ResponseContainer<GetMailingTemplatesResponse> responseContainer = command.readResponse(resultNode, options);
+		GetMailingTemplatesResponse response = responseContainer.getResposne();
+
+		assertEquals(response.getMailingTempaltes().size(), 1);
+
+		assertEquals(response.getMailingTempaltes().get(0).getLastModified(), lastModified);
+		assertEquals(response.getMailingTempaltes().get(0).getMailingId(), mailingId);
+		assertEquals(response.getMailingTempaltes().get(0).getMailingName(), mailingName);
+		assertEquals(response.getMailingTempaltes().get(0).getSubject(), subject);
+		assertEquals(response.getMailingTempaltes().get(0).getUserId(), userId);
+		assertEquals(response.getMailingTempaltes().get(0).getVisibility(), visibility);
+		assertEquals(response.getMailingTempaltes().get(0).isAllowCrmBlock(), allowCrmBlock);
+		assertEquals(response.getMailingTempaltes().get(0).isFlaggedForBackup(), flaggedForBackup);
+	}
+
+	@Test
 	public void testReadResponseHonorsBlankNodes()
 			throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
 		GetMailingTemplatesCommand command = context.getBean(GetMailingTemplatesCommand.class);

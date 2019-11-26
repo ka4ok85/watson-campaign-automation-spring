@@ -117,4 +117,53 @@ public class ListRecipientMailingsCommandTest {
 		assertEquals(response.getMailings().get(0).getTotalOptOuts(), totalOptOuts);
 	}
 
+	@Test
+	public void testReadResponseHonorsDateFormat()
+			throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
+		ListRecipientMailingsCommand command = context.getBean(ListRecipientMailingsCommand.class);
+		ListRecipientMailingsOptions options = new ListRecipientMailingsOptions(1L, 123L);
+
+		Long mailingId = 1L;
+		String mailingName = "Test MailingName";
+		String sentDateTime = "7/13/18 12:44 AM";
+		Long totalOpens = 2L;
+		Long totalClickstreams = 3L;
+		Long totalClicks = 4L;
+		Long totalConversions = 5L;
+		Long totalAttachments = 6L;
+		Long totalForwards = 7L;
+		Long totalMediaPlays = 8L;
+		Long totalBounces = 9L;
+		Long totalOptOuts = 10L;
+
+		String envelope = "<RESULT><SUCCESS>TRUE</SUCCESS><Mailing><MailingId>" + mailingId
+				+ "</MailingId><MailingName>" + mailingName + "</MailingName><SentTS>" + sentDateTime
+				+ "</SentTS><TotalOpens>" + totalOpens + "</TotalOpens><TotalClickstreams>" + totalClickstreams
+				+ "</TotalClickstreams><TotalClicks>" + totalClicks + "</TotalClicks><TotalConversions>"
+				+ totalConversions + "</TotalConversions><TotalAttachments>" + totalAttachments
+				+ "</TotalAttachments><TotalForwards>" + totalForwards + "</TotalForwards><TotalMediaPlays>"
+				+ totalMediaPlays + "</TotalMediaPlays><TotalBounces>" + totalBounces + "</TotalBounces><TotalOptOuts>"
+				+ totalOptOuts + "</TotalOptOuts></Mailing></RESULT>";
+		Element resultNode = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+				.parse(new ByteArrayInputStream(envelope.getBytes())).getDocumentElement();
+
+		ResponseContainer<ListRecipientMailingsResponse> responseContainer = command.readResponse(resultNode, options);
+		ListRecipientMailingsResponse response = responseContainer.getResposne();
+
+		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy h:mm a");
+		assertEquals(response.getMailings().size(), 1);
+		assertEquals(response.getMailings().get(0).getMailingId(), mailingId);
+		assertEquals(response.getMailings().get(0).getMailingName(), mailingName);
+		assertEquals(response.getMailings().get(0).getSentDateTime(), LocalDateTime.parse(sentDateTime, formatter));
+		assertEquals(response.getMailings().get(0).getSentDateTime(), LocalDateTime.parse(sentDateTime, formatter));
+		assertEquals(response.getMailings().get(0).getTotalOpens(), totalOpens);
+		assertEquals(response.getMailings().get(0).getTotalClickstreams(), totalClickstreams);
+		assertEquals(response.getMailings().get(0).getTotalClicks(), totalClicks);
+		assertEquals(response.getMailings().get(0).getTotalConversions(), totalConversions);
+		assertEquals(response.getMailings().get(0).getTotalAttachments(), totalAttachments);
+		assertEquals(response.getMailings().get(0).getTotalForwards(), totalForwards);
+		assertEquals(response.getMailings().get(0).getTotalMediaPlays(), totalMediaPlays);
+		assertEquals(response.getMailings().get(0).getTotalBounces(), totalBounces);
+		assertEquals(response.getMailings().get(0).getTotalOptOuts(), totalOptOuts);
+	}
 }

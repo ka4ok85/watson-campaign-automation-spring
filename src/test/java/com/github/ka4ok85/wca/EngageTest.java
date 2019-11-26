@@ -12,62 +12,15 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.github.ka4ok85.wca.command.AddRecipientCommand;
-import com.github.ka4ok85.wca.command.CreateContactListCommand;
-import com.github.ka4ok85.wca.command.CreateTableCommand;
-import com.github.ka4ok85.wca.command.DeleteListCommand;
-import com.github.ka4ok85.wca.command.DeleteRelationalTableDataCommand;
-import com.github.ka4ok85.wca.command.DoubleOptInRecipientCommand;
-import com.github.ka4ok85.wca.command.ExportListCommand;
-import com.github.ka4ok85.wca.command.ExportTableCommand;
-import com.github.ka4ok85.wca.command.GetFolderPathCommand;
-import com.github.ka4ok85.wca.command.GetListsCommand;
-import com.github.ka4ok85.wca.command.InsertUpdateRelationalTableCommand;
-import com.github.ka4ok85.wca.command.JoinTableCommand;
-import com.github.ka4ok85.wca.command.OptOutRecipientCommand;
-import com.github.ka4ok85.wca.command.PurgeTableCommand;
-import com.github.ka4ok85.wca.command.RemoveRecipientCommand;
-import com.github.ka4ok85.wca.command.SelectRecipientDataCommand;
-import com.github.ka4ok85.wca.command.UpdateRecipientCommand;
+import com.github.ka4ok85.wca.command.*;
 import com.github.ka4ok85.wca.config.SpringConfig;
+import com.github.ka4ok85.wca.constants.ColumnValueAction;
 import com.github.ka4ok85.wca.constants.GetFolderPathObjectType;
+import com.github.ka4ok85.wca.constants.ListColumnType;
 import com.github.ka4ok85.wca.constants.Visibility;
 import com.github.ka4ok85.wca.oauth.OAuthClient;
-import com.github.ka4ok85.wca.options.AddRecipientOptions;
-import com.github.ka4ok85.wca.options.CreateContactListOptions;
-import com.github.ka4ok85.wca.options.CreateTableOptions;
-import com.github.ka4ok85.wca.options.DeleteListOptions;
-import com.github.ka4ok85.wca.options.DeleteRelationalTableDataOptions;
-import com.github.ka4ok85.wca.options.DoubleOptInRecipientOptions;
-import com.github.ka4ok85.wca.options.ExportListOptions;
-import com.github.ka4ok85.wca.options.ExportTableOptions;
-import com.github.ka4ok85.wca.options.GetFolderPathOptions;
-import com.github.ka4ok85.wca.options.GetListsOptions;
-import com.github.ka4ok85.wca.options.InsertUpdateRelationalTableOptions;
-import com.github.ka4ok85.wca.options.JoinTableOptions;
-import com.github.ka4ok85.wca.options.OptOutRecipientOptions;
-import com.github.ka4ok85.wca.options.PurgeTableOptions;
-import com.github.ka4ok85.wca.options.RemoveRecipientOptions;
-import com.github.ka4ok85.wca.options.SelectRecipientDataOptions;
-import com.github.ka4ok85.wca.options.UpdateRecipientOptions;
-import com.github.ka4ok85.wca.response.AddRecipientResponse;
-import com.github.ka4ok85.wca.response.CreateContactListResponse;
-import com.github.ka4ok85.wca.response.CreateTableResponse;
-import com.github.ka4ok85.wca.response.DeleteListResponse;
-import com.github.ka4ok85.wca.response.DeleteRelationalTableDataResponse;
-import com.github.ka4ok85.wca.response.DoubleOptInRecipientResponse;
-import com.github.ka4ok85.wca.response.ExportListResponse;
-import com.github.ka4ok85.wca.response.ExportTableResponse;
-import com.github.ka4ok85.wca.response.GetFolderPathResponse;
-import com.github.ka4ok85.wca.response.GetListsResponse;
-import com.github.ka4ok85.wca.response.InsertUpdateRelationalTableResponse;
-import com.github.ka4ok85.wca.response.JoinTableResponse;
-import com.github.ka4ok85.wca.response.OptOutRecipientResponse;
-import com.github.ka4ok85.wca.response.PurgeTableResponse;
-import com.github.ka4ok85.wca.response.RemoveRecipientResponse;
-import com.github.ka4ok85.wca.response.ResponseContainer;
-import com.github.ka4ok85.wca.response.SelectRecipientDataResponse;
-import com.github.ka4ok85.wca.response.UpdateRecipientResponse;
+import com.github.ka4ok85.wca.options.*;
+import com.github.ka4ok85.wca.response.*;
 import com.github.ka4ok85.wca.sftp.SFTP;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -446,4 +399,92 @@ public class EngageTest {
 		assertEquals(responseContainer.getResposne(), response);
 	}
 
+	@Test
+	public void testRawRecipientDataExport() {
+		OAuthClient oAuthClient = mock(OAuthClient.class);
+		SFTP sftp = mock(SFTP.class);
+		Engage engage = new Engage(oAuthClient, sftp);
+
+		RawRecipientDataExportOptions options = new RawRecipientDataExportOptions();
+		RawRecipientDataExportResponse response = new RawRecipientDataExportResponse();
+
+		RawRecipientDataExportCommand rawRecipientDataExportBean = mock(RawRecipientDataExportCommand.class);
+		when(rawRecipientDataExportBean.executeCommand(options))
+				.thenReturn(new ResponseContainer<RawRecipientDataExportResponse>(response));
+
+		engage.setRawRecipientDataExportBean(rawRecipientDataExportBean);
+
+		ResponseContainer<RawRecipientDataExportResponse> responseContainer = engage.rawRecipientDataExport(options);
+
+		assertEquals(responseContainer.getClass(), ResponseContainer.class);
+		assertEquals(responseContainer.getResposne().getClass(), RawRecipientDataExportResponse.class);
+		assertEquals(responseContainer.getResposne(), response);
+	}
+
+	@Test
+	public void testAddListColumn() {
+		OAuthClient oAuthClient = mock(OAuthClient.class);
+		SFTP sftp = mock(SFTP.class);
+		Engage engage = new Engage(oAuthClient, sftp);
+
+		AddListColumnOptions options = new AddListColumnOptions(1L, "test column", ListColumnType.COUNTRY,
+				"default value");
+		AddListColumnResponse response = new AddListColumnResponse();
+
+		AddListColumnCommand addListColumnBean = mock(AddListColumnCommand.class);
+		when(addListColumnBean.executeCommand(options))
+				.thenReturn(new ResponseContainer<AddListColumnResponse>(response));
+
+		engage.setAddListColumnBean(addListColumnBean);
+
+		ResponseContainer<AddListColumnResponse> responseContainer = engage.addListColumn(options);
+
+		assertEquals(responseContainer.getClass(), ResponseContainer.class);
+		assertEquals(responseContainer.getResposne().getClass(), AddListColumnResponse.class);
+		assertEquals(responseContainer.getResposne(), response);
+	}
+
+	@Test
+	public void testSetColumnValue() {
+		OAuthClient oAuthClient = mock(OAuthClient.class);
+		SFTP sftp = mock(SFTP.class);
+		Engage engage = new Engage(oAuthClient, sftp);
+
+		SetColumnValueOptions options = new SetColumnValueOptions(1L, "test column", ColumnValueAction.UPDATE);
+		SetColumnValueResponse response = new SetColumnValueResponse();
+
+		SetColumnValueCommand setColumnValueBean = mock(SetColumnValueCommand.class);
+		when(setColumnValueBean.executeCommand(options))
+				.thenReturn(new ResponseContainer<SetColumnValueResponse>(response));
+
+		engage.setSetColumnValueBean(setColumnValueBean);
+
+		ResponseContainer<SetColumnValueResponse> responseContainer = engage.setColumnValue(options);
+
+		assertEquals(responseContainer.getClass(), ResponseContainer.class);
+		assertEquals(responseContainer.getResposne().getClass(), SetColumnValueResponse.class);
+		assertEquals(responseContainer.getResposne(), response);
+	}
+
+	@Test
+	public void testScheduleMailing() {
+		OAuthClient oAuthClient = mock(OAuthClient.class);
+		SFTP sftp = mock(SFTP.class);
+		Engage engage = new Engage(oAuthClient, sftp);
+
+		ScheduleMailingOptions options = new ScheduleMailingOptions(1L, 2L, "test column");
+		ScheduleMailingResponse response = new ScheduleMailingResponse();
+
+		ScheduleMailingCommand scheduleMailingBean = mock(ScheduleMailingCommand.class);
+		when(scheduleMailingBean.executeCommand(options))
+				.thenReturn(new ResponseContainer<ScheduleMailingResponse>(response));
+
+		engage.setScheduleMailingBean(scheduleMailingBean);
+
+		ResponseContainer<ScheduleMailingResponse> responseContainer = engage.scheduleMailing(options);
+
+		assertEquals(responseContainer.getClass(), ResponseContainer.class);
+		assertEquals(responseContainer.getResposne().getClass(), ScheduleMailingResponse.class);
+		assertEquals(responseContainer.getResposne(), response);
+	}
 }

@@ -1,6 +1,5 @@
 package com.github.ka4ok85.wca.command;
 
-
 import com.github.ka4ok85.wca.options.ScheduleMailingOptions;
 import com.github.ka4ok85.wca.response.ResponseContainer;
 import com.github.ka4ok85.wca.response.ScheduleMailingResponse;
@@ -12,6 +11,22 @@ import org.w3c.dom.Node;
 
 import java.util.Objects;
 
+/*
+ * TODO: ScheduleMailing API has additional parameters that are not yet added to this class
+ */
+/**
+ * <strong>Class for interacting with WCA ScheduleMailing API.</strong> It builds XML
+ * request for ScheduleMailing API using
+ * {@link com.github.ka4ok85.wca.options.ScheduleMailingOptions} and reads response
+ * into {@link com.github.ka4ok85.wca.response.ScheduleMailingResponse}.
+ * <p>
+ * It relies on Spring's {@link org.springframework.web.client.RestTemplate} for
+ * synchronous client-side HTTP access.
+ * </p>
+ *
+ * @author Gissel Serrala
+ * @since 0.0.4
+ */
 @Service
 @Scope("prototype")
 public class ScheduleMailingCommand extends AbstractInstantCommand<ScheduleMailingResponse, ScheduleMailingOptions> {

@@ -1,9 +1,7 @@
 package com.github.ka4ok85.wca.utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.transform.Source;
 
@@ -25,6 +23,7 @@ public class ImportMapperTest {
 			"<LIST_INFO>", 
 				"<ACTION>CREATE</ACTION>",
 				"<LIST_TYPE>0</LIST_TYPE>",
+				"<LIST_VISIBILITY>1</LIST_VISIBILITY>",
 				"<LIST_NAME>Test Import Mapper 3</LIST_NAME>",
 				"<FILE_TYPE>0</FILE_TYPE>",
 				"<HASHEADERS>true</HASHEADERS>",
@@ -107,6 +106,37 @@ public class ImportMapperTest {
 		Source test = Input.fromString(testString).build();
 		
 		String controlString = defaultXml;
+		Source control = Input.fromString(controlString).build();
+
+		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();
+		Assert.assertFalse(myDiff.toString(), myDiff.hasDifferences());
+	}
+	
+	@Test
+	public void testGenerateXMLStringExistingList() {
+		ImportMapper mapper = new ImportMapper(ImportMapperAction.UPDATE_ONLY, Visibility.SHARED);
+		
+		mapper.setListId(123L);
+		
+		List<String> syncFields = new ArrayList<String>();
+		syncFields.add("Account");
+		mapper.setSyncFields(syncFields );
+		
+		List<ImportMapperListColumn> columns = new ArrayList<ImportMapperListColumn>();
+		
+		ImportMapperListColumn column1 = new ImportMapperListColumn("First Name", ListColumnType.TEXT, false, false, true, null);
+		ImportMapperListColumn column2 = new ImportMapperListColumn("Last Name", ListColumnType.TEXT, false, false, false, "Doe");
+		ImportMapperListColumn column3 = new ImportMapperListColumn("Account", ListColumnType.NUMERIC, false, false, true, null);
+		
+		columns.add(column1);
+		columns.add(column2);
+		columns.add(column3);
+		mapper.setColumns(columns);
+
+		String testString = mapper.generateXMLString(); 
+		Source test = Input.fromString(testString).build();
+		
+		String controlString = defaultXml.replace("<ACTION>CREATE</ACTION>", "<ACTION>UPDATE_ONLY</ACTION>").replace("<LIST_NAME>Test Import Mapper 3</LIST_NAME>", "<LIST_ID>123</LIST_ID>");
 		Source control = Input.fromString(controlString).build();
 
 		Diff myDiff = DiffBuilder.compare(control).withTest(test).ignoreWhitespace().checkForSimilar().build();

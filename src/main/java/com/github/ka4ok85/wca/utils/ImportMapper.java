@@ -178,6 +178,10 @@ public class ImportMapper {
 			Element listTypeElement = doc.createElement("LIST_TYPE");
 			listTypeElement.setTextContent(listType.value().toString());
 			addChildNode(listTypeElement, listInfoElement);
+			
+			Element listVisibilityElement = doc.createElement("LIST_VISIBILITY");
+			listVisibilityElement.setTextContent(visibility.value().toString());
+			addChildNode(listVisibilityElement, listInfoElement);
 
 			if (listName != null) {
 				Element listNameElement = doc.createElement("LIST_NAME");
@@ -191,12 +195,9 @@ public class ImportMapper {
 				addChildNode(listIdElement, listInfoElement);
 			}
 
-			if (listId != null) {
-				Element listIdElement = doc.createElement("LIST_ID");
-				listIdElement.setTextContent(listId.toString());
-				addChildNode(listIdElement, listInfoElement);
-			}
-
+			
+			
+			
 			if (parentFolderPath != null) {
 				Element parentFolderPathElement = doc.createElement("PARENT_FOLDER_PATH");
 				parentFolderPathElement.setTextContent(parentFolderPath);

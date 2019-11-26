@@ -232,4 +232,68 @@ public class GetListsCommandTest {
 
 	}
 
+	@Test
+	public void testReadResponseHonorsDateFormat()
+			throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
+		GetListsCommand command = context.getBean(GetListsCommand.class);
+		GetListsOptions options = new GetListsOptions();
+		options.setIncludeTags(true);
+
+		Long id = 1L;
+		String name = "test";
+		ListType type = ListType.SEED_LISTS;
+		Long size = 4L;
+		Long numOptOuts = 5L;
+		Long numUndeliverable = 6L;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy h:mm a");
+		LocalDateTime lastModified = LocalDateTime.of(2018, 9, 18, 12, 34);
+		Visibility visibility = Visibility.PRIVATE;
+		String parentName = "test parent";
+		String userId = "111-333-555";
+		Long parentFolderId = 7L;
+		boolean isFolder = false;
+		boolean flaggedForBackup = false;
+		Long suppressionListId = 8L;
+		boolean isDatabaseTemplate = true;
+		String tag1 = "tag 1";
+		String tag2 = "tag 2";
+
+		String envelope = "<RESULT><SUCCESS>TRUE</SUCCESS><LIST><ID>" + id + "</ID><NAME>" + name + "</NAME><TYPE>"
+				+ type.value() + "</TYPE><SIZE>" + size + "</SIZE><NUM_OPT_OUTS>" + numOptOuts
+				+ "</NUM_OPT_OUTS><NUM_UNDELIVERABLE>" + numUndeliverable + "</NUM_UNDELIVERABLE><LAST_MODIFIED>"
+				+ lastModified.format(formatter) + "</LAST_MODIFIED><VISIBILITY>" + visibility.value()
+				+ "</VISIBILITY><PARENT_NAME>" + parentName + "</PARENT_NAME><USER_ID>" + userId
+				+ "</USER_ID><PARENT_FOLDER_ID>" + parentFolderId + "</PARENT_FOLDER_ID><IS_FOLDER>" + isFolder
+				+ "</IS_FOLDER><FLAGGED_FOR_BACKUP>" + flaggedForBackup + "</FLAGGED_FOR_BACKUP><SUPPRESSION_LIST_ID>"
+				+ suppressionListId + "</SUPPRESSION_LIST_ID><IS_DATABASE_TEMPLATE>" + isDatabaseTemplate
+				+ "</IS_DATABASE_TEMPLATE><TAGS><TAG>" + tag1 + "</TAG><TAG>" + tag2 + "</TAG></TAGS></LIST></RESULT>";
+		Element resultNode = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+				.parse(new ByteArrayInputStream(envelope.getBytes())).getDocumentElement();
+
+		ResponseContainer<GetListsResponse> responseContainer = command.readResponse(resultNode, options);
+		GetListsResponse response = responseContainer.getResposne();
+
+		assertEquals(response.getLists().size(), 1);
+
+		assertEquals(response.getLists().get(0).getFolderId(), parentFolderId);
+		assertEquals(response.getLists().get(0).getId(), id);
+		assertEquals(response.getLists().get(0).getLastModifiedDate(), lastModified);
+		assertEquals(response.getLists().get(0).getName(), name);
+		assertEquals(response.getLists().get(0).getNumberOptOuts(), numOptOuts);
+		assertEquals(response.getLists().get(0).getNumberUndeliverables(), numUndeliverable);
+		assertEquals(response.getLists().get(0).getParentName(), parentName);
+		assertEquals(response.getLists().get(0).getSize(), size);
+		assertEquals(response.getLists().get(0).getSuppressionList(), suppressionListId);
+		assertEquals(response.getLists().get(0).getType(), type);
+		assertEquals(response.getLists().get(0).getUserId(), userId);
+		assertEquals(response.getLists().get(0).getVisibility(), visibility);
+		assertEquals(response.getLists().get(0).isDatabaseTemplate(), isDatabaseTemplate);
+		assertEquals(response.getLists().get(0).isFlaggedForBackup(), flaggedForBackup);
+		assertEquals(response.getLists().get(0).isFolder(), isFolder);
+		assertEquals(response.getLists().get(0).getTags().size(), 2);
+		assertEquals(response.getLists().get(0).getTags().get(0), tag1);
+		assertEquals(response.getLists().get(0).getTags().get(1), tag2);
+
+	}
+
 }

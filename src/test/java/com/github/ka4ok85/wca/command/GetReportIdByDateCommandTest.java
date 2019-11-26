@@ -100,4 +100,35 @@ public class GetReportIdByDateCommandTest {
 		assertEquals(mailings.get(0).getSentDateTime(), LocalDateTime.parse(datetime1, responseFormatter));
 		assertEquals(mailings.get(1).getSentDateTime(), LocalDateTime.parse(datetime2, responseFormatter));
 	}
+	
+	@Test
+	public void testReadResponseHonorsDateFormat()
+			throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
+		GetReportIdByDateCommand command = context.getBean(GetReportIdByDateCommand.class);
+		LocalDateTime startDate = LocalDateTime.of(2018, 02, 01, 0, 0, 0);
+		LocalDateTime endDate = LocalDateTime.of(2018, 03, 01, 23, 59, 59);
+		GetReportIdByDateOptions options = new GetReportIdByDateOptions(1L, startDate, endDate);
+
+		Long reportId1 = 1052022240L;
+		Long reportId2 = 1052022241L;
+		String datetime1 = "6/11/18 12:49 AM";
+		String datetime2 = "7/12/18 02:59 PM";
+		String envelope = "<RESULT><SUCCESS>TRUE</SUCCESS><Mailing><ReportId>" + reportId1 + "</ReportId><SentTS>"
+				+ datetime1 + "</SentTS></Mailing><Mailing><ReportId>" + reportId2 + "</ReportId><SentTS>" + datetime2
+				+ "</SentTS></Mailing></RESULT>";
+
+		Element resultNode = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+				.parse(new ByteArrayInputStream(envelope.getBytes())).getDocumentElement();
+
+		ResponseContainer<GetReportIdByDateResponse> responseContainer = command.readResponse(resultNode, options);
+		GetReportIdByDateResponse response = responseContainer.getResposne();
+
+		List<ReportIdByDateMailing> mailings = response.getMailings();
+		assertEquals(mailings.size(), 2);
+		assertEquals(mailings.get(0).getReportId(), reportId1);
+		assertEquals(mailings.get(1).getReportId(), reportId2);
+		final DateTimeFormatter responseFormatter = DateTimeFormatter.ofPattern("M/d/yy h:mm a");
+		assertEquals(mailings.get(0).getSentDateTime(), LocalDateTime.parse(datetime1, responseFormatter));
+		assertEquals(mailings.get(1).getSentDateTime(), LocalDateTime.parse(datetime2, responseFormatter));
+	}
 }
