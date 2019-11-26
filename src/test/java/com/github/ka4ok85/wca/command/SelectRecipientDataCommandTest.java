@@ -171,7 +171,7 @@ public class SelectRecipientDataCommandTest {
 		SelectRecipientDataOptions options = new SelectRecipientDataOptions(1L);
 		options.setEmail("test@github.com");
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy K:mm a");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy h:mm a");
 		Long recipientId = 7821525927L;
 		LocalDateTime lastModified = LocalDateTime.of(2018, 8, 25, 1, 2);
 		String organizationId = "6d230b87-14af455a8ca-4097dfa4559ed783d26bfeed2dffc922";

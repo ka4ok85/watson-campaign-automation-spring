@@ -95,7 +95,7 @@ public class GetReportIdByDateCommand
 		XPath xpath = factory.newXPath();
 
 		List<ReportIdByDateMailing> mailings = new ArrayList<ReportIdByDateMailing>();
-		final DateTimeFormatter responseFormatter = DateTimeFormatter.ofPattern("M/d/yy K:mm a");
+		final DateTimeFormatter responseFormatter = DateTimeFormatter.ofPattern("M/d/yy h:mm a");
 		try {
 
 			NodeList mailingsNode = (NodeList) xpath.evaluate("Mailing", resultNode, XPathConstants.NODESET);

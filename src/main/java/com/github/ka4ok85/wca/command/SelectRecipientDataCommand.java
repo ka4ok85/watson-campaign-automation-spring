@@ -140,7 +140,7 @@ public class SelectRecipientDataCommand
 		Map<String, String> columns = new HashMap<String, String>();
 		List<Long> contactLists = new ArrayList<Long>();
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy K:mm a");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy h:mm a");
 		try {
 			email = ((Node) xpath.evaluate("Email", resultNode, XPathConstants.NODE)).getTextContent();
 			recipientId = Long.parseLong(

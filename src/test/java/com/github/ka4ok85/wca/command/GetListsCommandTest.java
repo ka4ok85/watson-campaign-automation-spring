@@ -181,7 +181,7 @@ public class GetListsCommandTest {
 		Long size = 4L;
 		Long numOptOuts = 5L;
 		Long numUndeliverable = 6L;
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy K:mm a");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yy h:mm a");
 		LocalDateTime lastModified = LocalDateTime.of(2018, 9, 18, 21, 34);
 		Visibility visibility = Visibility.PRIVATE;
 		String parentName = "test parent";
